@@ -1,0 +1,123 @@
+{
+  "id": "grandmas-birthday-gift",
+  "title": "هدیه تولد مادربزرگ",
+  "subtitle": "تصمیم‌گیری و توجه به پیامد",
+  "description": "به پشمالو کمک کن بهترین هدیه را برای مادربزرگش پیدا کند.",
+  "coverImage": "village-morning",
+  "startScene": "meet-pashmaloo",
+  "totalPhases": 6,
+  "theme": { "primary": "#7154c8", "secondary": "#f1a15f", "accent": "#ffd65a" },
+  "scenes": [
+    {
+      "id": "meet-pashmaloo",
+      "type": "dialogue",
+      "phase": 1,
+      "phaseTitle": "کشف مشکل",
+      "eyebrow": "صبحی تازه در دهکده حیوانات",
+      "text": "سلام دوست من! فردا تولد مادربزرگمه و می‌خوام با دست‌های خودم براش یک هدیه بسازم... اما نمی‌دونم چه هدیه‌ای ماندگارتره.",
+      "hint": "روی پشمالو بزن تا صحبتش را بشنوی.",
+      "image": "village-morning",
+      "character": "pashmaloo",
+      "characterName": "پشمالو",
+      "voiceText": "سلام دوست من! فردا تولد مادربزرگمه. کمکم می‌کنی یک هدیه خوب براش پیدا کنم؟",
+      "actionLabel": "با هم فکر می‌کنیم!",
+      "nextScene": "kind-reaction"
+    },
+    {
+      "id": "kind-reaction",
+      "type": "choice",
+      "phase": 2,
+      "phaseTitle": "واکنش",
+      "eyebrow": "پشمالو منتظر جواب توست",
+      "text": "دوست داری اول چه کار کنیم؟ هر دو انتخاب می‌توانند به پشمالو کمک کنند.",
+      "image": "village-morning",
+      "character": "pashmaloo",
+      "characterName": "پشمالو",
+      "choices": [
+        { "id": "explore", "text": "بریم باغ را بگردیم", "icon": "🔎", "nextScene": "garden-clues", "score": 2, "skill": "discovery" },
+        { "id": "ask", "text": "اول بیشتر فکر کنیم", "icon": "💭", "nextScene": "garden-clues", "score": 2, "skill": "analysis" }
+      ]
+    },
+    {
+      "id": "garden-clues",
+      "type": "hotspot",
+      "phase": 3,
+      "phaseTitle": "تحلیل و کشف",
+      "eyebrow": "باغ پر از سرنخ است",
+      "text": "دو چیز در باغ پیدا کن و درباره هرکدام بیشتر یاد بگیر.",
+      "hint": "به نشانه‌های درخشان روی گل‌ها و بلوط‌ها دست بزن.",
+      "image": "garden-discovery",
+      "characterName": "راهنمای باغ",
+      "actionLabel": "سرنخ‌ها را بررسی کردم",
+      "nextScene": "choose-tool",
+      "hotspots": [
+        { "id": "flowers-clue", "label": "گل‌های تازه", "icon": "🌸", "x": 16, "y": 61, "clue": "گل‌ها خیلی زیبا و خوش‌بو هستند، ولی ممکن است بعد از یک روز پژمرده شوند.", "reward": { "points": 3, "skill": "analysis" } },
+        { "id": "acorns-clue", "label": "دانه‌های بلوط", "icon": "🌰", "x": 79, "y": 67, "clue": "دانه‌های بلوط محکم‌اند و اگر با نخ کنار هم قرار بگیرند، مدت زیادی می‌مانند.", "reward": { "points": 3, "skill": "discovery" } }
+      ]
+    },
+    {
+      "id": "choose-tool",
+      "type": "dragDrop",
+      "phase": 4,
+      "phaseTitle": "کشف ابزار",
+      "eyebrow": "کارگاه هدیه‌سازی",
+      "text": "کدام وسیله به پشمالو کمک می‌کند دانه‌های بلوط را به هم وصل کند؟ آن را بکش و داخل کیف ابزار بینداز.",
+      "hint": "اگر اشتباه شد، دوباره امتحان کن؛ چیزی از امتیازت کم نمی‌شود.",
+      "image": "craft-workshop",
+      "character": "pashmaloo",
+      "characterName": "پشمالو",
+      "dragItems": [
+        { "id": "thread", "label": "نخ محکم", "icon": "🧵", "correct": true, "feedback": "آفرین! نخ دانه‌های بلوط را کنار هم نگه می‌دارد.", "reward": { "points": 4, "skill": "tool" } },
+        { "id": "paint", "label": "قلم‌مو", "icon": "🖌️", "correct": false, "feedback": "قلم‌مو برای رنگ‌کردن خوب است؛ ولی چطور دانه‌ها را به هم وصل کنیم؟", "reward": { "points": 0 } },
+        { "id": "watering-can", "label": "آب‌پاش", "icon": "🪣", "correct": false, "feedback": "آب‌پاش به گل‌ها کمک می‌کند، اما دانه‌ها را به هم وصل نمی‌کند. دوباره فکر کن!", "reward": { "points": 0 } }
+      ],
+      "dropTarget": { "label": "کیف ابزار پشمالو", "icon": "🎒", "nextScene": "gift-decision" }
+    },
+    {
+      "id": "gift-decision",
+      "type": "choice",
+      "phase": 5,
+      "phaseTitle": "انتخاب راه‌حل",
+      "eyebrow": "وقت تصمیم بزرگ رسیده",
+      "text": "حالا که پیامد هر انتخاب را می‌دانی، کدام هدیه را برای مادربزرگ آماده می‌کنی؟",
+      "image": "craft-workshop",
+      "character": "pashmaloo",
+      "characterName": "پشمالو",
+      "actionLabel": "درباره نتیجه فکر کنیم",
+      "choices": [
+        { "id": "flowers", "text": "دسته‌گل باغ", "icon": "🌸", "nextScene": "reasoning", "score": 5, "skill": "decision", "consequence": "دسته‌گل خیلی زیبا شد! پشمالو فهمید که گل‌ها تا فردا کمی پژمرده می‌شوند، اما هنوز می‌تواند آن‌ها را با مهربانی هدیه بدهد.", "summary": "تو دسته‌گل باغ را انتخاب کردی و پیامد کوتاه‌مدت آن را دیدی." },
+        { "id": "acorn-necklace", "text": "گردنبند بلوط", "icon": "📿", "nextScene": "reasoning", "score": 8, "skill": "decision", "tone": "recommended", "consequence": "گردنبند آماده شد! مادربزرگ می‌تواند این هدیه دست‌ساز را سال‌های زیادی نگه دارد.", "summary": "تو گردنبند بلوط را انتخاب کردی؛ هدیه‌ای دست‌ساز و ماندگار." }
+      ]
+    },
+    {
+      "id": "reasoning",
+      "type": "reflection",
+      "phase": 5,
+      "phaseTitle": "دلیل انتخاب",
+      "eyebrow": "فکرهای تو ارزشمندند",
+      "text": "چرا این هدیه را انتخاب کردی؟ اینجا جواب درست یا غلط نداریم.",
+      "image": "craft-workshop",
+      "character": "pashmaloo",
+      "characterName": "پشمالو",
+      "choices": [
+        { "id": "happy", "text": "مادربزرگ خوشحال می‌شود", "icon": "❤️", "nextScene": "celebration", "score": 2, "skill": "reasoning" },
+        { "id": "lasting", "text": "مدت بیشتری می‌ماند", "icon": "🌱", "nextScene": "celebration", "score": 3, "skill": "reasoning" },
+        { "id": "beautiful", "text": "خیلی زیباست", "icon": "✨", "nextScene": "celebration", "score": 2, "skill": "reflection" }
+      ]
+    },
+    {
+      "id": "celebration",
+      "type": "result",
+      "phase": 6,
+      "phaseTitle": "بازخورد و جشن",
+      "eyebrow": "مأموریت با موفقیت تمام شد!",
+      "text": "مادربزرگ از هدیه‌ای که با فکر و مهربانی آماده کردی خیلی خوشحال شد.",
+      "image": "birthday-celebration",
+      "character": "pashmaloo",
+      "characterName": "پشمالو",
+      "actionLabel": "دوباره بازی کن",
+      "voiceText": "آفرین! تو قبل از انتخاب، اطلاعات پیدا کردی و به نتیجه هر تصمیم فکر کردی.",
+      "learningSummary": "تو یاد گرفتی قبل از تصمیم‌گیری، اطلاعات جمع کنی، ابزار مناسب را پیدا کنی و نتیجه انتخابت را بررسی کنی."
+    }
+  ]
+}
