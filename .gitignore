@@ -28,3 +28,5 @@ coverage/
 # Temporary files
 tmp/
 temp/
+tmp-screens/
+tmp-preview.pid
