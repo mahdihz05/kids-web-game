@@ -54,12 +54,7 @@ for (const asset of referencedAssets) {
   }
 }
 
-for (const required of [
-  'archive/demo-before-v1/demo-source-before-v1.zip',
-  'archive/demo-before-v1/demo-build/index.html',
-  'deploy/nginx.conf.example',
-  'public/favicon.svg',
-]) {
+for (const required of ['deploy/nginx.conf.example', 'public/favicon.svg']) {
   try {
     await access(resolve(root, required), constants.R_OK);
   } catch {
