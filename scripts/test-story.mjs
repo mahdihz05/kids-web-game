@@ -14,7 +14,6 @@ for (const scene of story.scenes) {
   if (scene.dropTarget?.nextScene) targets.add(scene.dropTarget.nextScene);
   for (const choice of scene.choices ?? []) if (!choice.retry) targets.add(choice.nextScene);
   edges.set(scene.id, [...targets]);
-  check(Boolean(scene.voiceText), `${scene.id}: narration is missing`);
   for (const target of targets) check(scenes.has(target), `${scene.id}: missing target ${target}`);
   for (const choice of scene.choices ?? []) {
     if (choice.retry) check(choice.nextScene === scene.id, `${scene.id}/${choice.id}: retry must remain in the same scene`);

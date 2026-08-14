@@ -1,5 +1,4 @@
 import type { GameSnapshot } from '../engine/GameEngine';
-import { VoiceSystem } from '../engine/VoiceSystem';
 import type { ReflectionOption, Story, StoryChoice } from '../types/story';
 import { ChoiceGrid } from './ChoiceGrid';
 import { ResultPanel } from './ResultPanel';
@@ -33,7 +32,6 @@ export function ScenePanel({ story, snapshot, onChoose, onContinue, onContinueSc
   return <article className={`story-panel story-panel--${scene.type}`} aria-live="polite">
     <div className="speaker-row">
       <div><span className="phase-chip">مرحله {scene.phase} · {scene.phaseTitle}</span>{scene.eyebrow && <small>{scene.eyebrow}</small>}</div>
-      {scene.voiceText && <button className="voice-button" type="button" onClick={() => VoiceSystem.speak(scene.voiceText ?? scene.text, scene.audioUrl)}>🔊 <span>بشنو</span></button>}
     </div>
     {scene.type !== 'result' && <><h2>{scene.characterName ?? story.title}</h2><p className="dialogue-text">{dialogueText}</p>{scene.hint && !progress.feedback && <p className="scene-hint">💡 {scene.hint}</p>}</>}
 

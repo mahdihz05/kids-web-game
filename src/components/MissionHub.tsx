@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { missions } from '../data/missions';
 import type { ChildProfile } from '../types/story';
 import { ParentGate } from './ParentGate';
-import { SoundSystem } from '../engine/SoundSystem';
 
 interface MissionHubProps {
   profile: ChildProfile;
@@ -45,7 +44,7 @@ export function MissionHub({ profile, onStart, onParent, onStory }: MissionHubPr
                   {complete && <span className="mission-done">✓ انجام شد</span>}
                 </div>
                 <div className="mission-card__body"><small>{mission.skill}</small><h3>{mission.title}</h3>
-                  {mission.unlocked ? <button className="wake-book" type="button" onClick={() => { SoundSystem.play('magic'); onStart(); }}><img src="/assets/brand/magic-wand.png" alt="" />{complete ? 'دوباره وارد کتاب شو' : 'با چوب جادویی بازش کن'} <span>←</span></button> : <p>به‌زودی بیدار می‌شود</p>}
+                  {mission.unlocked ? <button className="wake-book" type="button" onClick={onStart}><img src="/assets/brand/magic-wand.png" alt="" />{complete ? 'دوباره وارد کتاب شو' : 'با چوب جادویی بازش کن'} <span>←</span></button> : <p>به‌زودی بیدار می‌شود</p>}
                 </div>
               </article>
             );

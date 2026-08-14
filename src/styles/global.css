@@ -88,12 +88,11 @@ button:focus-visible { outline: 4px solid #ffd763; outline-offset: 3px; }
 
 .game-canvas { position: absolute; inset: 0; z-index: -3; }.game-canvas canvas { display: block; }
 .scene-vignette { position: absolute; inset: 0; z-index: -2; pointer-events: none; background: linear-gradient(90deg, #160d254f 0%, transparent 40%), linear-gradient(0deg, #160d259c 0%, transparent 45%); }
-.character { position: absolute; z-index: 2; right: 7%; bottom: 3%; width: min(30vw, 380px); height: 85%; padding: 0; border: 0; background: none; cursor: pointer; filter: drop-shadow(0 22px 20px #25143266); animation: characterIn .7s cubic-bezier(.2,.8,.2,1); }.character img { width: 100%; height: 100%; object-fit: contain; object-position: bottom; }.character > span { position: absolute; right: 50%; bottom: 8px; transform: translateX(50%); padding: 5px 13px; border-radius: 99px; background: #ffffffdc; color: #7254b5; font-size: 10px; font-weight: 800; box-shadow: 0 5px 16px #3726433d; }
+.character { position: absolute; z-index: 2; right: 7%; bottom: 3%; width: min(30vw, 380px); height: 85%; padding: 0; border: 0; background: none; pointer-events: none; filter: drop-shadow(0 22px 20px #25143266); animation: characterIn .7s cubic-bezier(.2,.8,.2,1); }.character img { width: 100%; height: 100%; object-fit: contain; object-position: bottom; }.character > span { position: absolute; right: 50%; bottom: 8px; transform: translateX(50%); padding: 5px 13px; border-radius: 99px; background: #ffffffdc; color: #7254b5; font-size: 10px; font-weight: 800; box-shadow: 0 5px 16px #3726433d; }
 .game-stage--hotspot .character { display: none; }.game-stage--result .character { right: 4%; height: 80%; }
 
 .story-panel { position: absolute; z-index: 5; bottom: 28px; left: 30px; width: min(620px, 53%); padding: 22px 25px 24px; border: 1px solid #ffffff91; border-radius: 25px; background: #fffcf5f2; box-shadow: 0 20px 55px #24142f66; backdrop-filter: blur(14px); animation: panelUp .45s ease-out; }
 .speaker-row { display: flex; align-items: start; justify-content: space-between; gap: 12px; }.speaker-row > div > small { display: block; margin-top: 6px; color: #998c9d; font-size: 9px; }.phase-chip { display: inline-block; padding: 5px 10px; border-radius: 99px; background: #eee7fb; color: #7257b4; font-size: 9px; font-weight: 900; }
-.voice-button { min-height: 34px; padding: 0 10px; border: 1px solid #e4d9f2; border-radius: 11px; background: #fff; color: #7256b3; cursor: pointer; font-size: 10px; font-weight: 800; }.voice-button:hover { background: #7256b3; color: #fff; }
 .story-panel h2 { margin: 8px 0 2px; color: #5f449f; font-size: 20px; }.dialogue-text { min-height: 52px; margin: 3px 0 12px; color: #493f51; font-size: clamp(13px, 1.3vw, 16px); font-weight: 600; line-height: 1.95; }.scene-hint { margin: 7px 0 13px; padding: 7px 10px; border-radius: 11px; background: #fff6ce; color: #755e22; font-size: 10px; }
 .primary-button, .secondary-button { min-height: 48px; padding: 11px 20px; border-radius: 14px; cursor: pointer; font-weight: 800; transition: transform .15s ease, box-shadow .15s ease; }.primary-button { width: 100%; border: 0; background: linear-gradient(135deg, #8568d3, #6546b2); color: #fff; box-shadow: 0 6px 0 #49318d, 0 10px 20px #6445aa38; }.primary-button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 0 #49318d, 0 13px 23px #6445aa48; }.primary-button:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 2px 0 #49318d; }.primary-button:disabled { cursor: not-allowed; opacity: .55; box-shadow: none; }.secondary-button { border: 1px solid #dacee9; background: #fff; color: #6b51aa; }
 .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }.choice-grid--compact { grid-template-columns: repeat(3, 1fr); }.choice-card { position: relative; min-height: 94px; padding: 13px 10px; border: 2px solid #e7dff0; border-radius: 17px; background: #fff; color: #44384c; cursor: pointer; font-size: 12px; font-weight: 800; box-shadow: 0 5px 0 #e6dced; transition: transform .15s ease, border-color .15s ease; }.choice-card:hover { transform: translateY(-3px); border-color: #8264ca; }.choice-card__icon { display: block; margin-bottom: 2px; font-size: 29px; }.choice-card--glow::after { content: 'ماندگار'; position: absolute; top: -8px; left: 8px; padding: 2px 7px; border-radius: 99px; background: #dff5d7; color: #4b8247; font-size: 7px; }
@@ -119,7 +118,7 @@ button:focus-visible { outline: 4px solid #ffd763; outline-offset: 3px; }
   .game-app { width: 100vw; max-width: 100vw; min-height: 100svh; padding: 5px; overflow: hidden; }.game-topbar { width: 100%; min-width: 0; height: 56px; gap: 7px; padding: 0 5px; }.game-title { min-width: 0; flex: 1; }.game-title strong { max-width: 140px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 11px; }.game-topbar .round-button:last-child { display: none; }.phase-progress { display: none; }.round-button { width: 38px; height: 38px; }.live-score { height: 35px; padding: 0 8px; }.game-stage, .phase-journey { width: calc(100vw - 10px); max-width: calc(100vw - 10px); }.game-stage { height: calc(100svh - 166px); min-height: 420px; border-radius: 22px; }.phase-journey { height: 98px; margin-top: 5px; border-radius: 17px; }.phase-journey__track { min-width: 690px; padding: 6px 9px; }.journey-step { height: 80px; padding: 4px 8px; }.journey-step b { font-size: 27px; }.character { right: 50%; bottom: 32%; width: min(66vw, 300px); height: 58%; transform: translateX(50%); }.game-stage--result .character { right: 52%; bottom: 37%; height: 54%; }.story-panel, .game-stage--hotspot .story-panel, .game-stage--dragDrop .story-panel, .story-panel--result { right: 9px; bottom: 9px; left: 9px; width: auto; max-height: 56%; overflow-y: auto; transform: none; padding: 16px; border-radius: 19px; }.story-panel h2 { font-size: 16px; }.dialogue-text { font-size: 12px; line-height: 1.8; }.choice-card { min-height: 78px; font-size: 10px; }.choice-card__icon { font-size: 24px; }.choice-grid--compact { grid-template-columns: repeat(3, 1fr); }.hotspot > span { width: 54px; height: 54px; font-size: 25px; }.hotspot small { font-size: 8px; }.tool-playground { inset: 10% 3% auto; display: block; }.tool-shelf { justify-content: center; gap: 6px; }.drag-item { width: 83px; height: 82px; border-radius: 15px; }.drag-item > span { font-size: 27px; }.drag-item small { font-size: 8px; }.drop-zone { width: 150px; height: 105px; margin: 12px auto; }.drop-zone > span { font-size: 30px; }.game-stage--dragDrop .story-panel { max-height: 38%; }.result-panel { font-size: 10px; }.result-stars { font-size: 30px; }.mini-skills { display: none; }.learning-card { margin: 6px 0; }.result-actions { grid-template-columns: 1fr 1fr; }
   .dashboard { padding: 20px 14px; }.stats-row { grid-template-columns: 1fr; }.dashboard > header { margin: 20px 0; }.skill-row { grid-template-columns: 80px 1fr 20px; }.parent-note { align-items: start; }
 }
-@media (max-width: 390px) { .mission-grid { grid-template-columns: 1fr; }.mission-card { display: grid; grid-template-columns: 110px 1fr; }.mission-card__art { height: 100%; }.choice-grid--compact { grid-template-columns: 1fr; }.choice-grid--compact .choice-card { min-height: 55px; display: flex; align-items: center; gap: 8px; }.choice-grid--compact .choice-card__icon { display: inline; }.voice-button span { display: none; } }
+@media (max-width: 390px) { .mission-grid { grid-template-columns: 1fr; }.mission-card { display: grid; grid-template-columns: 110px 1fr; }.mission-card__art { height: 100%; }.choice-grid--compact { grid-template-columns: 1fr; }.choice-grid--compact .choice-card { min-height: 55px; display: flex; align-items: center; gap: 8px; }.choice-grid--compact .choice-card__icon { display: inline; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }.page-turn { transform: none; opacity: 0; }.page-turn--active { animation-name: reducedFade; } } @keyframes reducedFade { 50% { opacity: .75; } }
 
 /* V2 presentation polish and Motefaker brand */
@@ -160,7 +159,7 @@ button:focus-visible { outline: 4px solid #ffd763; outline-offset: 3px; }
 .wake-book img { animation: wandGlow 2.2s ease-in-out infinite; }
 .mission-cover { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 66% center; }
 .phase-chip { background: #e7f5ff; color: var(--brand-deep); }
-.story-panel h2, .voice-button, .secondary-button { color: var(--brand-deep); }
+.story-panel h2, .secondary-button { color: var(--brand-deep); }
 .journey-step--current { color: var(--brand-deep); background: #e8f7ff; box-shadow: inset 0 0 0 3px var(--brand-sky), 0 7px 20px #1652e82c; }
 .journey-step--current .journey-number { background: var(--brand-deep); }
 
@@ -170,7 +169,7 @@ button:focus-visible { outline: 4px solid #ffd763; outline-offset: 3px; }
 .game-canvas--ready .scene-loader { display: none; }
 .game-stage--hotspot .game-canvas { background-color: #315f44; background-repeat: no-repeat; background-size: contain; transform: none; }
 .dialogue-text { font-size: clamp(15px, 1.35vw, 18px); }
-.speaker-row > div > small, .phase-chip, .voice-button, .scene-hint, .progress-action > span { font-size: 12px; }
+.speaker-row > div { width: 100%; }.speaker-row > div > small, .phase-chip, .scene-hint, .progress-action > span { font-size: 12px; }
 .choice-card { min-height: 98px; font-size: 14px; }
 .choice-card--glow::after { content: 'انتخاب سنجیده'; background: #dff8ff; color: #0b659c; font-size: 10px; }
 .drag-item small, .drop-zone strong { font-size: 13px; }
@@ -210,9 +209,26 @@ button:focus-visible { outline: 4px solid #ffd763; outline-offset: 3px; }
 .parent-gate__close { margin-top: 12px; border: 0; background: none; color: #6b7788; cursor: pointer; }
 @keyframes parentHold { to { transform: scaleX(1); } }
 
+@media (min-width: 721px) and (max-width: 1050px) {
+  .game-app { padding: 8px 10px 12px; }
+  .game-stage { height: calc(100vh - 190px); border-radius: 25px; }
+  .phase-journey { height: 96px; border-radius: 20px; }
+  .phase-journey__track { min-width: 0; padding: 7px 8px; }
+  .journey-step { min-width: 0; padding: 5px; }.journey-step small { font-size: 9px; }.journey-step b { font-size: 30px; }
+  .story-panel { bottom: 18px; left: 18px; width: min(560px, 58%); padding: 18px 20px; }
+  .dialogue-text { font-size: 15px; }.choice-card { min-height: 82px; font-size: 12px; }
+  .character { right: 3%; width: min(34vw, 330px); }
+  .tool-playground { inset: 9% 3% auto; gap: 12px; }
+  .tool-shelf { display: grid; grid-template-columns: repeat(3, 78px); gap: 8px; }
+  .drag-item { width: 78px; height: 80px; padding: 5px; }.drag-item > span { font-size: 28px; }.drag-item small { font-size: 9px; }
+  .drop-zone { width: 140px; height: 108px; }.drop-zone > span { font-size: 32px; }
+  .craft-playground { top: 12%; right: 4%; left: 4%; min-height: 165px; padding: 18px; }
+  .craft-item { width: 86px; min-height: 86px; }.craft-item span { font-size: 34px; }
+  .game-stage--reflection .story-panel { width: min(720px, 86%); }
+}
+
 @media (max-width: 720px) {
   .game-app { padding-top: max(5px, env(safe-area-inset-top)); padding-right: max(5px, env(safe-area-inset-right)); padding-bottom: max(5px, env(safe-area-inset-bottom)); padding-left: max(5px, env(safe-area-inset-left)); }
-  .game-topbar .round-button.sound-toggle { display: grid; }
   .game-title strong { max-width: 112px; font-size: 12px; }
   .game-canvas--birthday-calendar { background-position: 88% center; }
   .game-canvas--gift-crossroads { background-position: 76% center; }
@@ -238,6 +254,21 @@ button:focus-visible { outline: 4px solid #ffd763; outline-offset: 3px; }
   .reflection-prompt { grid-template-columns: 1fr; }.reflection-prompt h3 { font-size: 11px; }.reflection-option { min-height: 42px; }
   .hero-friends { width: 100%; height: 49%; left: -8%; }.hero-friends img { width: 16%; }
   .intro-logo { width: 48px; height: 48px; position: absolute; top: 12px; left: 14px; }
+}
+
+@media (max-height: 600px) and (orientation: landscape) {
+  .game-app { height: 100svh; min-height: 0; padding: 4px 7px; }
+  .game-topbar { height: 44px; }.game-title small { display: none; }.round-button { width: 36px; height: 36px; }.live-score { height: 33px; }
+  .game-stage { height: calc(100svh - 126px); min-height: 245px; border-radius: 18px; }
+  .phase-journey { height: 72px; margin-top: 4px; border-radius: 15px; }
+  .phase-journey__track { min-width: 0; padding: 3px 7px; }.journey-step { height: 64px; grid-template-rows: 16px 27px 18px; }.journey-step b { font-size: 20px; }.journey-step small { font-size: 7px; }
+  .story-panel, .game-stage--hotspot .story-panel, .game-stage--dragDrop .story-panel, .game-stage--craft .story-panel, .game-stage--reflection .story-panel, .story-panel--result { right: auto; bottom: 7px; left: 7px; width: min(520px, 58%); max-height: calc(100% - 14px); padding: 10px 12px; overflow-y: auto; transform: none; border-radius: 16px; }
+  .story-panel h2 { margin-top: 4px; font-size: 15px; }.dialogue-text { min-height: 0; margin-bottom: 5px; font-size: 11px; line-height: 1.55; }.scene-hint { margin: 4px 0 6px; padding: 4px 7px; font-size: 8px; }
+  .choice-grid { gap: 5px; }.choice-card { min-height: 48px; padding: 5px; font-size: 9px; }.choice-card__icon { font-size: 19px; }.primary-button { min-height: 38px; padding: 7px 12px; }
+  .character { right: 6%; bottom: 0; width: min(31vw, 250px); height: 88%; transform: none; }
+  .tool-playground { inset: 4% 3% auto 50%; display: flex; gap: 8px; }.tool-shelf { grid-template-columns: repeat(3, 58px); gap: 5px; }.drag-item { width: 58px; height: 54px; padding: 3px; }.drag-item > span { font-size: 19px; }.drag-item small { font-size: 7px; }.drop-zone { width: 100px; height: 72px; margin: 0; }
+  .craft-playground { top: 5%; right: 51%; left: 2%; min-height: 110px; padding: 10px; }.craft-thread { top: 53px; }.craft-items { gap: 7px; }.craft-item { width: 58px; min-height: 58px; }.craft-item span { font-size: 23px; }.craft-item small { font-size: 7px; }
+  .reflection-board { gap: 4px; }.reflection-prompt { grid-template-columns: 120px 1fr; padding: 4px; }.reflection-option { min-height: 35px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

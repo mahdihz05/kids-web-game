@@ -4,6 +4,7 @@ const endpoint = process.argv[2] ?? 'http://127.0.0.1:9222';
 const baseUrl = process.argv[3] ?? 'http://127.0.0.1:4173';
 const output = new URL('../tmp-screens/final/', import.meta.url);
 await mkdir(output, { recursive: true });
+const metrics = [];
 
 const targets = await fetch(`${endpoint}/json`).then((response) => response.json());
 const page = targets.find((target) => target.type === 'page');
@@ -40,6 +41,21 @@ const navigate = async (url) => {
 const capture = async (name, width, height) => {
   await command('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: width < 600 });
   await wait(400);
+  const result = await command('Runtime.evaluate', {
+    expression: `JSON.stringify({
+      name: ${JSON.stringify(name)},
+      viewport: [innerWidth, innerHeight],
+      documentWidth: document.documentElement.scrollWidth,
+      horizontalOverflow: document.documentElement.scrollWidth > innerWidth,
+      audioControls: document.querySelectorAll('[data-audio-control]').length,
+      visibleButtons: [...document.querySelectorAll('button')].filter((button) => {
+        const rect = button.getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0;
+      }).length
+    })`,
+    returnByValue: true,
+  });
+  metrics.push(JSON.parse(result.result.value));
   const { data } = await command('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
   await writeFile(new URL(`${name}.png`, output), Buffer.from(data, 'base64'));
 };
@@ -51,15 +67,26 @@ await navigate(`${baseUrl}/`);
 await command('Runtime.evaluate', { expression: `localStorage.removeItem('motefaker:magical-library:intro-seen:v1')` });
 await navigate(`${baseUrl}/`);
 await capture('intro-desktop', 1440, 1000);
+await capture('intro-tablet-portrait', 768, 1024);
+await capture('intro-tablet-landscape', 1024, 768);
 await capture('intro-mobile', 390, 844);
+await capture('intro-mobile-landscape', 844, 390);
 
 await command('Runtime.evaluate', { expression: `localStorage.setItem('motefaker:magical-library:intro-seen:v1', 'true')` });
 await navigate(`${baseUrl}/`);
 await capture('hub-desktop', 1440, 1100);
+await capture('hub-tablet-portrait', 768, 1024);
+await capture('hub-tablet-landscape', 1024, 768);
 await capture('hub-mobile', 390, 844);
+await capture('hub-mobile-landscape', 844, 390);
 
 await navigate(`${baseUrl}/?play=1`);
 await capture('game-desktop', 1440, 1000);
+await capture('game-tablet-portrait', 768, 1024);
+await capture('game-tablet-landscape', 1024, 768);
 await capture('game-mobile', 390, 844);
+await capture('game-mobile-landscape', 844, 390);
+
+await writeFile(new URL('metrics.json', output), `${JSON.stringify(metrics, null, 2)}\n`);
 
 socket.close();

@@ -3,8 +3,6 @@ import storyData from './data/story.json';
 import { GameEngine, type GameSnapshot } from './engine/GameEngine';
 import { ProfileSystem } from './engine/ProfileSystem';
 import { ScoreSystem } from './engine/ScoreSystem';
-import { VoiceSystem } from './engine/VoiceSystem';
-import { SoundSystem } from './engine/SoundSystem';
 import type { CraftItem, DragItem, HotspotItem, ReflectionOption, Story, StoryChoice } from './types/story';
 import { GameCanvas } from './components/GameCanvas';
 import { InteractionLayer } from './components/InteractionLayer';
@@ -35,15 +33,11 @@ export function App() {
     return hasSeenStoryIntro() ? 'hub' : 'intro';
   });
   const [turnPhase, setTurnPhase] = useState<TurnPhase>('idle');
-  const [muted, setMuted] = useState(() => VoiceSystem.isMuted());
   const pendingAction = useRef<{ run: () => void; ready: Promise<void> } | null>(null);
 
   useEffect(() => engine.subscribe(setSnapshot), [engine]);
-  useEffect(() => () => VoiceSystem.stop(), []);
-  useEffect(() => { if (snapshot.scene.type === 'result') SoundSystem.play('success'); }, [snapshot.scene.id, snapshot.scene.type]);
   const transition = useCallback((action: () => void, nextSceneId?: string) => {
     if (turnPhase !== 'idle') return;
-    VoiceSystem.stop();
     const target = nextSceneId ? story.scenes.find((candidate) => candidate.id === nextSceneId) : undefined;
     const ready = target ? new Promise<void>((resolve) => {
       const preload = new Image();
@@ -66,22 +60,18 @@ export function App() {
   };
   const finishReveal = () => setTurnPhase('idle');
   const openGame = () => {
-    VoiceSystem.stop();
     if (snapshot.progress.completed) engine.restart();
     transition(() => setView('game'), snapshot.progress.completed ? story.startScene : snapshot.scene.id);
   };
   const goHome = () => {
-    VoiceSystem.stop();
     if (snapshot.progress.completed) setProfile((current) => ProfileSystem.complete(current, story.id, ScoreSystem.stars(snapshot.progress.score)));
     transition(() => setView('hub'));
   };
 
   const choose = (choice: StoryChoice) => {
-    SoundSystem.play(choice.retry ? 'error' : 'success');
     if (choice.retry || choice.consequence) engine.choose(choice);
     else transition(() => engine.choose(choice), choice.nextScene);
   };
-  const toggleMute = () => { const next = !muted; VoiceSystem.setMuted(next); setMuted(next); };
 
   const pageTurn = <PageTurn phase={turnPhase} onCoverEnd={finishCover} onRevealEnd={finishReveal} />;
   if (view === 'intro') return <div className="view-shell"><StoryIntro onClose={() => changeView('hub')} />{pageTurn}</div>;
@@ -97,17 +87,16 @@ export function App() {
       <div className="game-title"><small>مأموریت ۱ از ۱۰</small><strong>🎁 {story.title}</strong></div>
       <div className="phase-progress"><div><span>مسیر حل مسئله</span><b>{scene.phase}/{story.totalPhases}</b></div><i><b style={{ width: `${phasePercent}%` }} /></i></div>
       <div className="live-score">⭐ <strong>{progress.score}</strong></div>
-      <button className="round-button sound-toggle" onClick={toggleMute} type="button" aria-label={muted ? 'فعال‌کردن صدا' : 'بی‌صدا کردن'} aria-pressed={muted}>{muted ? '🔇' : '🔊'}</button>
     </header>
 
     <section className={`game-stage game-stage--${scene.type}`}>
       <GameCanvas image={scene.image} />
       <div className="scene-vignette" />
-      {scene.character && <button className="character" type="button" onClick={() => scene.voiceText && VoiceSystem.speak(scene.voiceText, scene.audioUrl)} aria-label="پشمالو، برای شنیدن صحبت کلیک کن"><img src="/assets/characters/pashmaloo.png" alt="پشمالو، خرگوش کوچک" /><span>پشمالو</span></button>}
+      {scene.character && <div className="character" aria-hidden="true"><img src="/assets/characters/pashmaloo.png" alt="" /><span>پشمالو</span></div>}
       <InteractionLayer scene={scene} progress={progress}
-        onDiscover={(item: HotspotItem) => { SoundSystem.play('magic'); engine.discover(item); }}
-        onTool={(item: DragItem) => { SoundSystem.play(item.correct ? 'success' : 'error'); engine.selectTool(item); }}
-        onCraft={(item: CraftItem) => { SoundSystem.play('craft'); engine.craft(item); }} />
+        onDiscover={(item: HotspotItem) => engine.discover(item)}
+        onTool={(item: DragItem) => engine.selectTool(item)}
+        onCraft={(item: CraftItem) => engine.craft(item)} />
       <ScenePanel story={story} snapshot={snapshot} onChoose={choose}
         onContinue={() => { const selected = scene.choices?.find((candidate) => progress.choices.some((record) => record.sceneId === scene.id && record.choiceId === candidate.id)); transition(() => engine.continueAfterConsequence(), selected?.nextScene); }}
         onContinueScene={() => transition(() => engine.continueScene(), scene.nextScene)}

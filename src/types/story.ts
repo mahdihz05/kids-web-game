@@ -74,7 +74,6 @@ export interface StoryScene {
   character?: string;
   characterName?: string;
   actionLabel?: string;
-  voiceText?: string;
   choices?: StoryChoice[];
   hotspots?: HotspotItem[];
   dragItems?: DragItem[];
@@ -83,7 +82,6 @@ export interface StoryScene {
   craftItems?: CraftItem[];
   requiredCraftCount?: number;
   reflectionPrompts?: ReflectionPrompt[];
-  audioUrl?: string;
   nextScene?: string;
   learningSummary?: string;
 }

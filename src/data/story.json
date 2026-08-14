@@ -11,12 +11,12 @@
     {
       "id": "birthday-intro", "type": "dialogue", "phase": 1, "phaseTitle": "کشف مسئله",
       "eyebrow": "فردا یک روز خیلی خاص است", "text": "پشمالو روی تقویم یک قلب دید؛ فردا تولد مادربزرگ بود! او دلش می‌خواست با دست‌های خودش یک هدیه قشنگ آماده کند، اما هنوز نمی‌دانست چه چیزی بسازد.",
-      "hint": "روی پشمالو یا دکمه «بشنو» بزن تا قصه را بشنوی.", "image": "birthday-calendar", "characterName": "پشمالو", "voiceText": "تولد مادربزرگ پشمالو نزدیک بود. پشمالو خیلی خوشحال بود و می‌خواست یک هدیه قشنگ آماده کند، اما یک مشکل داشت.",
+      "hint": "به تقویم نگاه کن و ببین پشمالو باید برای چه چیزی آماده شود.", "image": "birthday-calendar", "characterName": "پشمالو",
       "actionLabel": "مشکل را پیدا کنیم", "nextScene": "identify-problem"
     },
     {
       "id": "identify-problem", "type": "choice", "phase": 1, "phaseTitle": "کشف مسئله",
-      "eyebrow": "کارآگاه کوچولو، خوب فکر کن", "text": "مشکل اصلی پشمالو چیست؟", "image": "birthday-calendar", "characterName": "پشمالو", "voiceText": "مشکل اصلی پشمالو چیست؟",
+      "eyebrow": "کارآگاه کوچولو، خوب فکر کن", "text": "مشکل اصلی پشمالو چیست؟", "image": "birthday-calendar", "characterName": "پشمالو",
       "choices": [
         { "id": "no-gift", "text": "نمی‌داند چه هدیه‌ای آماده کند", "icon": "🎁", "nextScene": "feelings", "score": 3, "skill": "discovery", "feedback": "آفرین! پشمالو می‌خواهد هدیه بدهد، اما هنوز نمی‌داند چه هدیه‌ای انتخاب کند." },
         { "id": "no-date", "text": "نمی‌داند تولد چه روزی است", "icon": "📅", "nextScene": "identify-problem", "score": 0, "retry": true, "feedback": "به قلب روی تقویم نگاه کن؛ پشمالو روز تولد را پیدا کرده. دوباره فکر کن!" },
@@ -25,7 +25,7 @@
     },
     {
       "id": "feelings", "type": "choice", "phase": 2, "phaseTitle": "احساس و واکنش",
-      "eyebrow": "همه احساس‌ها حرفی برای گفتن دارند", "text": "پشمالو بین گل‌های باغ و گردنبند بلوط مردد است. اگر جای او بودی چه احساسی داشتی؟", "image": "gift-crossroads", "characterName": "پشمالو", "voiceText": "اگر بین دو هدیه مردد بودی، چه احساسی داشتی؟",
+      "eyebrow": "همه احساس‌ها حرفی برای گفتن دارند", "text": "پشمالو بین گل‌های باغ و گردنبند بلوط مردد است. اگر جای او بودی چه احساسی داشتی؟", "image": "gift-crossroads", "characterName": "پشمالو",
       "choices": [
         { "id": "confused", "text": "کمی گیج می‌شدم", "icon": "😕", "nextScene": "garden-clues", "score": 2, "skill": "reflection", "consequence": "آره، وقتی بین چند راه گیر می‌کنیم ممکن است کمی گیج شویم. با پیدا کردن اطلاعات، انتخاب آسان‌تر می‌شود." },
         { "id": "worried", "text": "کمی نگران می‌شدم", "icon": "😟", "nextScene": "garden-clues", "score": 2, "skill": "reflection", "consequence": "نگرانی طبیعی است. حالا آرام‌آرام سرنخ‌ها را پیدا می‌کنیم تا تصمیم بهتری بگیریم." },
@@ -35,7 +35,7 @@
     },
     {
       "id": "garden-clues", "type": "hotspot", "phase": 3, "phaseTitle": "تحلیل انتخاب‌ها",
-      "eyebrow": "باغ پر از سرنخ است", "text": "گل‌ها و بلوط‌ها را در باغ پیدا کن و ببین هرکدام چه پیامی دارند.", "hint": "به دو نشانه درخشان دست بزن.", "image": "garden-discovery", "characterName": "راهنمای باغ", "voiceText": "دو سرنخ را در باغ پیدا کن. گل‌ها و دانه‌های بلوط منتظر تو هستند.",
+      "eyebrow": "باغ پر از سرنخ است", "text": "گل‌ها و بلوط‌ها را در باغ پیدا کن و ببین هرکدام چه پیامی دارند.", "hint": "به دو نشانه درخشان دست بزن.", "image": "garden-discovery", "characterName": "راهنمای باغ",
       "actionLabel": "انتخاب‌ها را مقایسه کنیم", "nextScene": "compare-options",
       "hotspots": [
         { "id": "flowers-clue", "label": "گل‌های باغ", "icon": "🌸", "x": 20, "y": 63, "clue": "گل‌ها زیبا و خوش‌بو هستند، اما برای همه حیوانات دهکده‌اند و چیدنشان ممکن است باغبان را ناراحت کند.", "reward": { "points": 3, "skill": "analysis" } },
@@ -44,7 +44,7 @@
     },
     {
       "id": "compare-options", "type": "choice", "phase": 3, "phaseTitle": "تحلیل انتخاب‌ها",
-      "eyebrow": "به پیامد هر راه نگاه کن", "text": "با اطلاعاتی که پیدا کردی، کدام راه برای پشمالو بهتر به نظر می‌رسد؟", "image": "gift-crossroads", "characterName": "پشمالو", "voiceText": "گل‌ها زیبا هستند، اما ممکن است باغبان ناراحت شود. گردنبند زمان می‌برد، ولی دست‌ساز و ماندگار است. تو کدام را پیشنهاد می‌کنی؟",
+      "eyebrow": "به پیامد هر راه نگاه کن", "text": "با اطلاعاتی که پیدا کردی، کدام راه برای پشمالو بهتر به نظر می‌رسد؟", "image": "gift-crossroads", "characterName": "پشمالو",
       "choices": [
         { "id": "consider-flowers", "text": "گل‌های باغ", "icon": "🌸", "nextScene": "analysis-reason", "score": 2, "skill": "decision", "consequence": "انتخابت را شنیدم. حالا مهم است بگویی چرا این راه را دوست داری." },
         { "id": "consider-necklace", "text": "گردنبند بلوط", "icon": "📿", "nextScene": "analysis-reason", "score": 4, "skill": "decision", "tone": "recommended", "consequence": "انتخابت را شنیدم. حالا مهم است بگویی چرا این راه را دوست داری." }
@@ -52,7 +52,7 @@
     },
     {
       "id": "analysis-reason", "type": "choice", "phase": 3, "phaseTitle": "دلیل انتخاب",
-      "eyebrow": "فکرهای تو ارزشمندند", "text": "چرا این راه را انتخاب کردی؟", "image": "gift-crossroads", "characterName": "پشمالو", "voiceText": "چرا این راه را انتخاب کردی؟",
+      "eyebrow": "فکرهای تو ارزشمندند", "text": "چرا این راه را انتخاب کردی؟", "image": "gift-crossroads", "characterName": "پشمالو",
       "choices": [
         { "id": "protect-garden", "text": "چون به باغ آسیب نمی‌زند", "icon": "🌿", "nextScene": "choose-tools", "score": 4, "skill": "reasoning" },
         { "id": "handmade", "text": "چون خودش آن را می‌سازد", "icon": "👐", "nextScene": "choose-tools", "score": 4, "skill": "reasoning" },
@@ -62,7 +62,7 @@
     },
     {
       "id": "choose-tools", "type": "dragDrop", "phase": 4, "phaseTitle": "کشف ابزار",
-      "eyebrow": "کارگاه هدیه‌سازی", "text": "بلوط، نخ و صبر را به میز گردنبند ببر. ابزارهای باغبانی را روی میز خودشان بگذار.", "hint": "می‌توانی ابزار را بکشانی یا روی آن بزنی.", "image": "craft-workshop", "characterName": "پشمالو", "voiceText": "برای ساخت گردنبند به بلوط، نخ و کمی صبر نیاز داریم.",
+      "eyebrow": "کارگاه هدیه‌سازی", "text": "بلوط، نخ و صبر را به میز گردنبند ببر. ابزارهای باغبانی را روی میز خودشان بگذار.", "hint": "می‌توانی ابزار را بکشانی یا روی آن بزنی.", "image": "craft-workshop", "characterName": "پشمالو",
       "requiredItemIds": ["thread", "acorns", "patience"],
       "dragItems": [
         { "id": "thread", "label": "نخ محکم", "icon": "🧵", "correct": true, "feedback": "آفرین! نخ دانه‌ها را کنار هم نگه می‌دارد.", "reward": { "points": 2, "skill": "tool" } },
@@ -76,7 +76,7 @@
     },
     {
       "id": "final-decision", "type": "choice", "phase": 5, "phaseTitle": "انتخاب راه‌حل",
-      "eyebrow": "وقت تصمیم نهایی است", "text": "حالا که ابزار و پیامدها را می‌شناسی، پشمالو چه هدیه‌ای آماده کند؟", "image": "craft-workshop", "characterName": "پشمالو", "voiceText": "وقت تصمیم نهایی است. گل‌های باغ یا گردنبند دست‌ساز؟",
+      "eyebrow": "وقت تصمیم نهایی است", "text": "حالا که ابزار و پیامدها را می‌شناسی، پشمالو چه هدیه‌ای آماده کند؟", "image": "craft-workshop", "characterName": "پشمالو",
       "choices": [
         { "id": "flowers", "text": "گل‌های باغ را بچیند", "icon": "🌸", "nextScene": "flower-consequence", "score": 1, "skill": "decision", "summary": "تو ابتدا گل‌های باغ را انتخاب کردی و بعد پیامد آن را بررسی کردی." },
         { "id": "necklace", "text": "گردنبند بلوط بسازد", "icon": "📿", "nextScene": "craft-necklace", "score": 5, "skill": "decision", "tone": "recommended", "summary": "تو گردنبند بلوط را انتخاب کردی؛ هدیه‌ای دست‌ساز و ماندگار." }
@@ -84,12 +84,12 @@
     },
     {
       "id": "flower-consequence", "type": "dialogue", "phase": 5, "phaseTitle": "دیدن پیامد",
-      "eyebrow": "هر انتخاب یک نتیجه دارد", "text": "پشمالو به طرف گل‌ها رفت، اما باغبان مهربان رسید و گفت: «این گل‌ها برای همه حیوانات دهکده هستند. اگر همه را بچینیم، باغ خالی می‌شود.»", "image": "gardener-consequence", "characterName": "باغبان", "voiceText": "این گل‌ها برای همه حیوانات دهکده هستند. بهتر است راهی پیدا کنیم که به باغ آسیب نزند.",
+      "eyebrow": "هر انتخاب یک نتیجه دارد", "text": "پشمالو به طرف گل‌ها رفت، اما باغبان مهربان رسید و گفت: «این گل‌ها برای همه حیوانات دهکده هستند. اگر همه را بچینیم، باغ خالی می‌شود.»", "image": "gardener-consequence", "characterName": "باغبان",
       "actionLabel": "یک راه تازه پیدا کنیم", "nextScene": "flower-repair"
     },
     {
       "id": "flower-repair", "type": "choice", "phase": 5, "phaseTitle": "اصلاح تصمیم",
-      "eyebrow": "اشتباه، فرصت دوباره فکر کردن است", "text": "حالا پشمالو چه کاری می‌تواند انجام دهد؟", "image": "gardener-consequence", "characterName": "پشمالو", "voiceText": "حالا پشمالو چه کاری می‌تواند انجام دهد؟",
+      "eyebrow": "اشتباه، فرصت دوباره فکر کردن است", "text": "حالا پشمالو چه کاری می‌تواند انجام دهد؟", "image": "gardener-consequence", "characterName": "پشمالو",
       "choices": [
         { "id": "take-all", "text": "همه گل‌ها را بچیند", "icon": "🌸", "nextScene": "flower-repair", "score": 0, "retry": true, "feedback": "اگر همه گل‌ها را بچیند، باغ برای دیگران خالی می‌شود. راه مهربان‌تری پیدا کن." },
         { "id": "find-another", "text": "یک راه دیگر برای هدیه پیدا کند", "icon": "🌰", "nextScene": "craft-necklace", "score": 4, "skill": "reflection", "feedback": "آفرین! تغییر تصمیم بعد از دیدن پیامد، نشانه فکرکردن است." },
@@ -98,7 +98,7 @@
     },
     {
       "id": "craft-necklace", "type": "craft", "phase": 5, "phaseTitle": "ساخت هدیه",
-      "eyebrow": "با صبر و دست‌های خودت بساز", "text": "چهار بلوط را یکی‌یکی روی نخ بگذار تا گردنبند کامل شود.", "hint": "روی بلوط‌های درخشان بزن.", "image": "necklace-crafting", "characterName": "پشمالو", "voiceText": "پشمالو با صبر، دانه‌های بلوط را یکی یکی روی نخ گذاشت.",
+      "eyebrow": "با صبر و دست‌های خودت بساز", "text": "چهار بلوط را یکی‌یکی روی نخ بگذار تا گردنبند کامل شود.", "hint": "روی بلوط‌های درخشان بزن.", "image": "necklace-crafting", "characterName": "پشمالو",
       "requiredCraftCount": 4, "nextScene": "gift-grandma",
       "craftItems": [
         { "id": "bead-1", "label": "بلوط اول", "icon": "🌰", "reward": { "points": 1, "skill": "tool" } },
@@ -109,12 +109,12 @@
     },
     {
       "id": "gift-grandma", "type": "dialogue", "phase": 6, "phaseTitle": "بازاندیشی و جشن",
-      "eyebrow": "هدیه‌ای که با فکر ساخته شد", "text": "مادربزرگ گردنبند را گرفت و لبخند زد: «این بهترین هدیه دنیاست، چون خودت آن را با فکر و مهربانی ساختی.»", "image": "grandma-gift", "characterName": "مادربزرگ", "voiceText": "این بهترین هدیه دنیاست، چون خودت آن را با فکر و مهربانی ساختی.",
+      "eyebrow": "هدیه‌ای که با فکر ساخته شد", "text": "مادربزرگ گردنبند را گرفت و لبخند زد: «این بهترین هدیه دنیاست، چون خودت آن را با فکر و مهربانی ساختی.»", "image": "grandma-gift", "characterName": "مادربزرگ",
       "actionLabel": "درباره پیامد فکر کنیم", "nextScene": "counterfactual"
     },
     {
       "id": "counterfactual", "type": "choice", "phase": 6, "phaseTitle": "بازاندیشی",
-      "eyebrow": "یک سؤال آخر", "text": "اگر پشمالو گل‌های باغ را می‌چید، چه اتفاقی ممکن بود بیفتد؟", "image": "grandma-gift", "characterName": "کوکی متفکر", "voiceText": "اگر پشمالو گل‌های باغ را می‌چید، چه اتفاقی ممکن بود بیفتد؟",
+      "eyebrow": "یک سؤال آخر", "text": "اگر پشمالو گل‌های باغ را می‌چید، چه اتفاقی ممکن بود بیفتد؟", "image": "grandma-gift", "characterName": "کوکی متفکر",
       "choices": [
         { "id": "gardener-sad", "text": "باغبان ممکن بود ناراحت شود", "icon": "🌷", "nextScene": "two-stars-wish", "score": 4, "skill": "reflection" },
         { "id": "nothing", "text": "هیچ اتفاقی نمی‌افتاد", "icon": "😊", "nextScene": "counterfactual", "score": 0, "retry": true, "feedback": "به یاد بیاور گل‌ها برای همه دهکده بودند. دوباره فکر کن." },
@@ -123,7 +123,7 @@
     },
     {
       "id": "two-stars-wish", "type": "reflection", "phase": 6, "phaseTitle": "دو ستاره و یک آرزو",
-      "eyebrow": "فکرهای امروزت را نگه دار", "text": "سه جمله را با انتخاب تصویر موردعلاقه‌ات کامل کن.", "image": "birthday-celebration", "characterName": "کوکی متفکر", "voiceText": "دو ستاره و یک آرزو؛ بگو امروز چه یاد گرفتی و دفعه بعد چه آرزویی داری.", "nextScene": "celebration",
+      "eyebrow": "فکرهای امروزت را نگه دار", "text": "سه جمله را با انتخاب تصویر موردعلاقه‌ات کامل کن.", "image": "birthday-celebration", "characterName": "کوکی متفکر", "nextScene": "celebration",
       "reflectionPrompts": [
         { "id": "learned", "title": "من یاد گرفتم که...", "icon": "⭐", "options": [{ "id": "think-first", "text": "قبل از انتخاب فکر کنم", "icon": "🧠", "score": 2, "skill": "reflection" }] },
         { "id": "made", "title": "وقتی خودم چیزی بسازم...", "icon": "⭐", "options": [{ "id": "special-gift", "text": "می‌توانم هدیه‌ای خاص درست کنم", "icon": "❤️", "score": 2, "skill": "reasoning" }] },
@@ -136,7 +136,7 @@
     },
     {
       "id": "celebration", "type": "result", "phase": 6, "phaseTitle": "جشن موفقیت",
-      "eyebrow": "مأموریت با موفقیت تمام شد!", "text": "تو به پشمالو کمک کردی قبل از انتخاب، به نتیجه کارش فکر کند.", "image": "birthday-celebration", "characterName": "پشمالو", "voiceText": "آفرین! تو یک فکرکننده خوب هستی. قبل از انتخاب، اطلاعات پیدا کردی و به پیامد تصمیم فکر کردی.",
+      "eyebrow": "مأموریت با موفقیت تمام شد!", "text": "تو به پشمالو کمک کردی قبل از انتخاب، به نتیجه کارش فکر کند.", "image": "birthday-celebration", "characterName": "پشمالو",
       "actionLabel": "دوباره بازی کن", "learningSummary": "تو مشکل را پیدا کردی، احساس‌ها را شناختی، پیامدها را سنجیدی، ابزار مناسب را انتخاب کردی و با فکر یک تصمیم مهربانانه گرفتی."
     }
   ]
