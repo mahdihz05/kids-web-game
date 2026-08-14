@@ -1,5 +1,8 @@
+import { useState } from 'react';
 import { missions } from '../data/missions';
 import type { ChildProfile } from '../types/story';
+import { ParentGate } from './ParentGate';
+import { SoundSystem } from '../engine/SoundSystem';
 
 interface MissionHubProps {
   profile: ChildProfile;
@@ -8,15 +11,16 @@ interface MissionHubProps {
   onStory: () => void;
 }
 
-const brandFriends = ['friend-frog', 'friend-orange', 'friend-purple', 'friend-blue'];
+const brandFriends = ['friend-frog', 'friend-orange', 'friend-purple', 'friend-blue', 'friend-green', 'friend-yellow', 'friend-red', 'friend-cow', 'friend-unicorn'];
 
 export function MissionHub({ profile, onStart, onParent, onStory }: MissionHubProps) {
+  const [parentGateOpen, setParentGateOpen] = useState(false);
   return (
     <main className="hub">
       <header className="hub-header">
-        <div className="hub-brand"><span>📖</span><div><strong>کتابفروشی سحرآمیز متفکر</strong><small>هر فکر، یک کتاب را بیدار می‌کند</small></div></div>
+        <div className="hub-brand"><img src="/assets/brand/motefaker-mark.svg" alt="نشان متفکر" /><div><strong>کتابفروشی سحرآمیز متفکر</strong><small>هر فکر، یک کتاب را بیدار می‌کند</small></div></div>
         <div className="profile-pill"><span className="profile-avatar">{profile.avatar}</span><div><strong>{profile.name}</strong><small>⭐ {profile.totalStars} ستاره</small></div></div>
-        <div className="hub-actions"><button className="icon-button story-button" type="button" onClick={onStory}>✨ داستان کوکی</button><button className="icon-button parent-button" type="button" onClick={onParent} aria-label="بخش والدین">📊 <span>گزارش من</span></button></div>
+        <div className="hub-actions"><button className="icon-button story-button" type="button" onClick={onStory}>✨ داستان کوکی</button><button className="icon-button parent-button" type="button" onClick={() => setParentGateOpen(true)} aria-label="بخش والدین">📊 <span>گزارش من</span></button></div>
       </header>
 
       <section className="hub-hero">
@@ -36,18 +40,19 @@ export function MissionHub({ profile, onStart, onParent, onStory }: MissionHubPr
             return (
               <article className={`mission-card ${mission.unlocked ? 'mission-card--open' : 'mission-card--locked'}`} key={mission.id}>
                 <div className="mission-card__art" style={{ '--card-color': mission.color } as React.CSSProperties}>
-                  <span className="mission-number">{mission.number}</span>{mission.unlocked ? <img className="mission-hero" src="/assets/characters/pashmaloo.png" alt="پشمالو، قهرمان کتاب اول" /> : <span className="mission-icon">{mission.icon}</span>}
+                  <span className="mission-number">{mission.number}</span>{mission.unlocked ? <img className="mission-cover" src="/assets/scenes/birthday-calendar-v2.webp" alt="پشمالو با جلیقه سبز و شال زرد کنار تقویم تولد مادربزرگ" /> : <span className="mission-icon">{mission.icon}</span>}
                   {!mission.unlocked && <span className="mission-lock">🔒</span>}
                   {complete && <span className="mission-done">✓ انجام شد</span>}
                 </div>
                 <div className="mission-card__body"><small>{mission.skill}</small><h3>{mission.title}</h3>
-                  {mission.unlocked ? <button className="wake-book" type="button" onClick={onStart}><img src="/assets/brand/magic-wand.png" alt="" />{complete ? 'دوباره وارد کتاب شو' : 'با چوب جادویی بازش کن'} <span>←</span></button> : <p>به‌زودی بیدار می‌شود</p>}
+                  {mission.unlocked ? <button className="wake-book" type="button" onClick={() => { SoundSystem.play('magic'); onStart(); }}><img src="/assets/brand/magic-wand.png" alt="" />{complete ? 'دوباره وارد کتاب شو' : 'با چوب جادویی بازش کن'} <span>←</span></button> : <p>به‌زودی بیدار می‌شود</p>}
                 </div>
               </article>
             );
           })}
         </div>
       </section>
+      {parentGateOpen && <ParentGate onClose={() => setParentGateOpen(false)} onPass={() => { setParentGateOpen(false); onParent(); }} />}
     </main>
   );
 }

@@ -12,6 +12,7 @@ export function StoryIntro({ onClose }: { onClose: () => void }) {
       <div className="intro-sparkles" aria-hidden="true"><i>✦</i><i>✧</i><i>•</i><i>✦</i></div>
       <section className="intro-book">
         <div className="intro-page intro-page--copy">
+          <img className="intro-logo" src="/assets/brand/motefaker-mark.svg" alt="نشان متفکر" />
           <span className="intro-eyebrow">قصه از همین‌جا شروع می‌شود...</span>
           <h1 id="intro-title">به کتابفروشی سحرآمیز خوش آمدی!</h1>
           <div className="intro-text">

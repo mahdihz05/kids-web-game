@@ -18,9 +18,10 @@ export class ChoiceSystem {
       ...progress,
       score: ScoreSystem.add(progress.score, choice.score),
       skillScores,
-      choices: [...progress.choices.filter((item) => item.sceneId !== scene.id), record],
+      choices: choice.retry ? progress.choices : [...progress.choices.filter((item) => item.sceneId !== scene.id), record],
+      attempts: [...progress.attempts, record],
       pendingConsequence: choice.consequence,
-      feedback: undefined,
+      feedback: choice.retry ? choice.feedback : undefined,
       updatedAt: new Date().toISOString(),
     };
   }

@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 
 const endpoint = process.argv[2] ?? 'http://127.0.0.1:9222';
+const baseUrl = process.argv[3] ?? 'http://127.0.0.1:4173';
 const output = new URL('../tmp-screens/final/', import.meta.url);
 await mkdir(output, { recursive: true });
 
@@ -46,18 +47,18 @@ const capture = async (name, width, height) => {
 await command('Page.enable');
 await command('Runtime.enable');
 
-await navigate('http://127.0.0.1:4173/');
+await navigate(`${baseUrl}/`);
 await command('Runtime.evaluate', { expression: `localStorage.removeItem('motefaker:magical-library:intro-seen:v1')` });
-await navigate('http://127.0.0.1:4173/');
+await navigate(`${baseUrl}/`);
 await capture('intro-desktop', 1440, 1000);
 await capture('intro-mobile', 390, 844);
 
 await command('Runtime.evaluate', { expression: `localStorage.setItem('motefaker:magical-library:intro-seen:v1', 'true')` });
-await navigate('http://127.0.0.1:4173/');
+await navigate(`${baseUrl}/`);
 await capture('hub-desktop', 1440, 1100);
 await capture('hub-mobile', 390, 844);
 
-await navigate('http://127.0.0.1:4173/?play=1');
+await navigate(`${baseUrl}/?play=1`);
 await capture('game-desktop', 1440, 1000);
 await capture('game-mobile', 390, 844);
 

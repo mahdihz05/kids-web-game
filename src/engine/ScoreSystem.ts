@@ -4,8 +4,8 @@ export class ScoreSystem {
   }
 
   static stars(score: number): number {
-    if (score >= 22) return 3;
-    if (score >= 14) return 2;
+    if (score >= 34) return 3;
+    if (score >= 26) return 2;
     return 1;
   }
 }

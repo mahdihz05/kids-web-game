@@ -1,10 +1,10 @@
 const phases = [
   { title: 'کشف مسئله', icon: '🔎' },
-  { title: 'واکنش', icon: '💛' },
-  { title: 'تحلیل سرنخ‌ها', icon: '⚖️' },
-  { title: 'ابزار حل مسئله', icon: '🧰' },
-  { title: 'انتخاب و دلیل', icon: '🔮' },
-  { title: 'بازتاب و جشن', icon: '⭐' },
+  { title: 'احساس‌ها', icon: '💛' },
+  { title: 'تحلیل انتخاب‌ها', icon: '⚖️' },
+  { title: 'کشف ابزار', icon: '🧰' },
+  { title: 'تصمیم و پیامد', icon: '🔮' },
+  { title: 'بازاندیشی', icon: '⭐' },
 ];
 
 export function PhaseJourney({ currentPhase }: { currentPhase: number }) {

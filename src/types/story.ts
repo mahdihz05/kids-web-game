@@ -1,4 +1,4 @@
-export type SceneType = 'dialogue' | 'choice' | 'hotspot' | 'dragDrop' | 'reflection' | 'result';
+export type SceneType = 'dialogue' | 'choice' | 'hotspot' | 'dragDrop' | 'craft' | 'reflection' | 'result';
 export type SkillKey = 'discovery' | 'analysis' | 'decision' | 'tool' | 'reasoning' | 'reflection';
 
 export interface ScoreReward {
@@ -17,6 +17,8 @@ export interface StoryChoice {
   consequence?: string;
   summary?: string;
   tone?: 'neutral' | 'recommended';
+  retry?: boolean;
+  feedback?: string;
 }
 
 export interface HotspotItem {
@@ -38,6 +40,28 @@ export interface DragItem {
   reward: ScoreReward;
 }
 
+export interface CraftItem {
+  id: string;
+  label: string;
+  icon: string;
+  reward: ScoreReward;
+}
+
+export interface ReflectionOption {
+  id: string;
+  text: string;
+  icon: string;
+  score: number;
+  skill?: SkillKey;
+}
+
+export interface ReflectionPrompt {
+  id: string;
+  title: string;
+  icon: string;
+  options: ReflectionOption[];
+}
+
 export interface StoryScene {
   id: string;
   type: SceneType;
@@ -54,7 +78,12 @@ export interface StoryScene {
   choices?: StoryChoice[];
   hotspots?: HotspotItem[];
   dragItems?: DragItem[];
+  requiredItemIds?: string[];
   dropTarget?: { label: string; icon: string; nextScene: string };
+  craftItems?: CraftItem[];
+  requiredCraftCount?: number;
+  reflectionPrompts?: ReflectionPrompt[];
+  audioUrl?: string;
   nextScene?: string;
   learningSummary?: string;
 }
@@ -79,14 +108,23 @@ export interface ChoiceRecord {
   summary?: string;
 }
 
+export interface ReflectionRecord {
+  promptId: string;
+  optionId: string;
+  text: string;
+}
+
 export interface GameProgress {
   storyId: string;
   currentSceneId: string;
   score: number;
   skillScores: Record<SkillKey, number>;
   choices: ChoiceRecord[];
+  attempts: ChoiceRecord[];
   discoveries: Record<string, string[]>;
-  selectedTools: Record<string, string>;
+  selectedTools: Record<string, string[]>;
+  craftProgress: Record<string, string[]>;
+  reflections: Record<string, ReflectionRecord>;
   pendingConsequence?: string;
   feedback?: string;
   completed: boolean;

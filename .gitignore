@@ -30,3 +30,6 @@ tmp/
 temp/
 tmp-screens/
 tmp-preview.pid
+
+# Local source artwork kept outside the production bundle
+assets-source/generated-scenes/

@@ -27,7 +27,7 @@ export class ProfileSystem {
       ...profile,
       totalStars: firstCompletion ? profile.totalStars + stars : profile.totalStars,
       completedMissions: firstCompletion ? [...profile.completedMissions, missionId] : profile.completedMissions,
-      badges: firstCompletion && !profile.badges.includes('تصمیم‌گیر مهربان') ? [...profile.badges, 'تصمیم‌گیر مهربان'] : profile.badges,
+      badges: firstCompletion && !profile.badges.includes('فکرکننده‌ی خوب') ? [...profile.badges, 'فکرکننده‌ی خوب'] : profile.badges,
     };
     try { localStorage.setItem(PROFILE_KEY, JSON.stringify(next)); } catch { /* optional storage */ }
     return next;

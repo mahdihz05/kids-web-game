@@ -19,14 +19,15 @@ export class InteractionSystem {
 
   static tryTool(progress: GameProgress, sceneId: string, item: DragItem): GameProgress {
     if (!item.correct) return { ...progress, feedback: item.feedback };
-    if (progress.selectedTools[sceneId] === item.id) return progress;
+    const selected = progress.selectedTools[sceneId] ?? [];
+    if (selected.includes(item.id)) return progress;
     const skillScores = { ...progress.skillScores };
     if (item.reward.skill) skillScores[item.reward.skill] += item.reward.points;
     return {
       ...progress,
       score: ScoreSystem.add(progress.score, item.reward.points),
       skillScores,
-      selectedTools: { ...progress.selectedTools, [sceneId]: item.id },
+      selectedTools: { ...progress.selectedTools, [sceneId]: [...selected, item.id] },
       feedback: item.feedback,
       updatedAt: new Date().toISOString(),
     };

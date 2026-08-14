@@ -1,8 +1,9 @@
-import type { DragItem, GameProgress, HotspotItem, Story, StoryChoice, StoryScene } from '../types/story';
+import type { CraftItem, DragItem, GameProgress, HotspotItem, ReflectionOption, Story, StoryChoice, StoryScene } from '../types/story';
 import { ChoiceSystem } from './ChoiceSystem';
 import { InteractionSystem } from './InteractionSystem';
 import { SaveSystem } from './SaveSystem';
 import { SceneManager } from './SceneManager';
+import { ScoreSystem } from './ScoreSystem';
 
 export type GameSnapshot = { scene: StoryScene; progress: GameProgress };
 type Listener = (snapshot: GameSnapshot) => void;
@@ -34,7 +35,8 @@ export class GameEngine {
     if (!scene.choices?.some((item) => item.id === choice.id)) return;
 
     this.progress = ChoiceSystem.apply(this.progress, scene, choice);
-    if (!choice.consequence) this.goTo(choice.nextScene);
+    if (choice.retry) this.persistAndNotify();
+    else if (!choice.consequence) this.goTo(choice.nextScene);
     else this.persistAndNotify();
   }
 
@@ -52,6 +54,41 @@ export class GameEngine {
     this.persistAndNotify();
   }
 
+  craft(item: CraftItem): void {
+    const scene = this.sceneManager.get(this.progress.currentSceneId);
+    if (!scene.craftItems?.some((candidate) => candidate.id === item.id)) return;
+    const completed = this.progress.craftProgress[scene.id] ?? [];
+    if (completed.includes(item.id)) return;
+    const skillScores = { ...this.progress.skillScores };
+    if (item.reward.skill) skillScores[item.reward.skill] += item.reward.points;
+    this.progress = {
+      ...this.progress,
+      score: ScoreSystem.add(this.progress.score, item.reward.points),
+      skillScores,
+      craftProgress: { ...this.progress.craftProgress, [scene.id]: [...completed, item.id] },
+      feedback: `${item.label} به گردنبند اضافه شد!`,
+      updatedAt: new Date().toISOString(),
+    };
+    this.persistAndNotify();
+  }
+
+  reflect(promptId: string, option: ReflectionOption): void {
+    const scene = this.sceneManager.get(this.progress.currentSceneId);
+    const prompt = scene.reflectionPrompts?.find((candidate) => candidate.id === promptId);
+    if (!prompt?.options.some((candidate) => candidate.id === option.id)) return;
+    const previous = this.progress.reflections[promptId];
+    const skillScores = { ...this.progress.skillScores };
+    if (!previous && option.skill) skillScores[option.skill] += option.score;
+    this.progress = {
+      ...this.progress,
+      score: previous ? this.progress.score : ScoreSystem.add(this.progress.score, option.score),
+      skillScores,
+      reflections: { ...this.progress.reflections, [promptId]: { promptId, optionId: option.id, text: option.text } },
+      updatedAt: new Date().toISOString(),
+    };
+    this.persistAndNotify();
+  }
+
   continueScene(): void {
     const scene = this.sceneManager.get(this.progress.currentSceneId);
     if (scene.nextScene) this.goTo(scene.nextScene);
@@ -59,7 +96,20 @@ export class GameEngine {
 
   continueAfterTool(): void {
     const scene = this.sceneManager.get(this.progress.currentSceneId);
-    if (this.progress.selectedTools[scene.id] && scene.dropTarget) this.goTo(scene.dropTarget.nextScene);
+    const required = scene.requiredItemIds ?? [];
+    const selected = this.progress.selectedTools[scene.id] ?? [];
+    if (required.every((id) => selected.includes(id)) && scene.dropTarget) this.goTo(scene.dropTarget.nextScene);
+  }
+
+  continueCraft(): void {
+    const scene = this.sceneManager.get(this.progress.currentSceneId);
+    const completed = this.progress.craftProgress[scene.id] ?? [];
+    if (completed.length >= (scene.requiredCraftCount ?? scene.craftItems?.length ?? 0) && scene.nextScene) this.goTo(scene.nextScene);
+  }
+
+  continueReflection(): void {
+    const scene = this.sceneManager.get(this.progress.currentSceneId);
+    if (scene.reflectionPrompts?.every((prompt) => this.progress.reflections[prompt.id]) && scene.nextScene) this.goTo(scene.nextScene);
   }
 
   continueAfterConsequence(): void {
@@ -95,7 +145,10 @@ export class GameEngine {
     if (saved?.storyId === this.story.id) {
       try {
         this.sceneManager.get(saved.currentSceneId);
-        if (saved.skillScores && saved.discoveries && saved.selectedTools) return saved;
+        if (saved.skillScores && saved.discoveries && saved.selectedTools) {
+          const selectedTools = Object.fromEntries(Object.entries(saved.selectedTools).map(([key, value]) => [key, Array.isArray(value) ? value : [value]]));
+          return { ...this.createProgress(), ...saved, selectedTools, attempts: saved.attempts ?? [], craftProgress: saved.craftProgress ?? {}, reflections: saved.reflections ?? {} };
+        }
         this.saveSystem.clear();
       } catch {
         this.saveSystem.clear();
@@ -111,8 +164,11 @@ export class GameEngine {
       score: 0,
       skillScores: { discovery: 0, analysis: 0, decision: 0, tool: 0, reasoning: 0, reflection: 0 },
       choices: [],
+      attempts: [],
       discoveries: {},
       selectedTools: {},
+      craftProgress: {},
+      reflections: {},
       completed: false,
       updatedAt: new Date().toISOString(),
     };
