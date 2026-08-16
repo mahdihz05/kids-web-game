@@ -39,7 +39,7 @@ export function MissionHub({ profile, onStart, onParent, onStory }: MissionHubPr
             return (
               <article className={`mission-card ${mission.unlocked ? 'mission-card--open' : 'mission-card--locked'}`} key={mission.id}>
                 <div className="mission-card__art" style={{ '--card-color': mission.color } as React.CSSProperties}>
-                  <span className="mission-number">{mission.number}</span>{mission.unlocked ? <img className="mission-cover" src="/assets/scenes/birthday-calendar-v2.webp" alt="پشمالو با جلیقه سبز و شال زرد کنار تقویم تولد مادربزرگ" /> : <span className="mission-icon">{mission.icon}</span>}
+                  <span className="mission-number">{mission.number}</span>{mission.unlocked ? <img className="mission-cover" src="/assets/scenes-v3/calendar-v3.png" alt="پشمالو با جلیقه بنفش و کیف فیروزه‌ای کنار تقویم تولد مادربزرگ" /> : <span className="mission-icon">{mission.icon}</span>}
                   {!mission.unlocked && <span className="mission-lock">🔒</span>}
                   {complete && <span className="mission-done">✓ انجام شد</span>}
                 </div>

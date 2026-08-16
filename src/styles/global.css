@@ -288,3 +288,58 @@ button:focus-visible { outline: 4px solid #ffd763; outline-offset: 3px; }
 .reflection-board { gap: 14px; }.reflection-prompt { display: block; padding: 12px; background: #fffaf0; border: 0; border-radius: 22px; }.reflection-prompt h3 { margin: 0 0 8px; font-size: 16px; }.reflection-prompt > div { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }.reflection-option { min-width: 0; min-height: 126px; overflow: hidden; border: 3px solid #fff; border-radius: 16px; font-size: 11px; }.reflection-option img { width: 100%; height: 84px; display: block; object-fit: cover; }.reflection-option span { display: block; padding: 6px; }
 .story-book-backdrop { position: fixed; z-index: 1200; inset: 0; display: grid; place-items: center; padding: 18px; background: #071a44a8; backdrop-filter: blur(4px); }.story-book { position: relative; width: min(650px, 96vw); max-height: min(740px, 90vh); overflow-y: auto; padding: clamp(26px, 5vw, 46px); border: 4px solid #e1bd70; border-radius: 28px; background: #fffaf0; color: #3d2e23; box-shadow: 0 28px 80px #071a4499; direction: rtl; }.story-book > span { color: #976419; font-weight: 900; }.story-book h2 { margin: 8px 0 22px; color: #1652e8; }.story-book h3 { margin: 20px 0 5px; color: #6b4a1d; }.story-book p { margin: 0; line-height: 2; }.story-book__close { position: absolute; top: 13px; left: 15px; width: 34px; height: 34px; border: 0; border-radius: 50%; background: #f4e1bf; color: #6b4a1d; cursor: pointer; font-size: 23px; }
 @media (max-width: 720px) { .story-panel { max-height: 64%; }.choice-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }.choice-card { min-height: 120px; }.choice-card img { height: 78px; }.reflection-option { min-height: 108px; }.reflection-option img { height: 68px; }.scene-prompt { font-size: 15px; }.narration-button { min-height: 32px; margin-bottom: 6px; } }
+
+/* Final responsive image system: never stretch or crop the story artwork. */
+img { max-inline-size: 100%; }
+.game-canvas { display: grid; place-items: center; overflow: hidden; background-position: center; background-repeat: no-repeat; background-size: cover; transform: none; }
+.game-canvas::before { content: ''; position: absolute; inset: 0; background: #1911279c; backdrop-filter: blur(14px); }
+.game-canvas__image { position: relative; z-index: 1; inline-size: 100%; block-size: 100%; display: block; object-fit: contain; object-position: center; opacity: 0; transition: opacity .3s ease; }
+.game-canvas--ready { transform: none; }.game-canvas--ready .game-canvas__image { opacity: 1; }
+.game-stage--hotspot .game-canvas { background-size: cover; }.game-stage--hotspot .game-canvas__image { object-fit: contain; }
+.scene-loader { z-index: 2; }
+
+.choice-card img { inline-size: 100%; block-size: auto; aspect-ratio: 1; display: block; object-fit: contain; object-position: center; background: #f5f1eb; }
+.reflection-option img { inline-size: 100%; block-size: auto; aspect-ratio: 3 / 2; display: block; object-fit: contain; object-position: center; background: #f5f1eb; }
+.drag-item img, .craft-item img { inline-size: 100%; block-size: auto; aspect-ratio: 1; object-fit: contain; object-position: center; }
+.mission-cover, .intro-page--art > img:first-of-type, .hero-friends img, .character img, .wake-book img { max-inline-size: 100%; }
+
+@media (min-width: 1051px) {
+  .choice-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .story-panel--choice .choice-grid:has(.choice-card:nth-child(4)) { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .reflection-prompt > div { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+}
+
+@media (min-width: 721px) and (max-width: 1050px) {
+  .choice-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .choice-card img { aspect-ratio: 4 / 3; }
+  .drag-item img { block-size: 50px; aspect-ratio: 1; }
+  .craft-item img { block-size: 54px; }
+  .reflection-option img { aspect-ratio: 16 / 10; }
+}
+
+@media (max-width: 720px) {
+  .game-canvas::before { backdrop-filter: blur(10px); }
+  .choice-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .choice-card { min-inline-size: 0; min-block-size: 0; }
+  .choice-card img { block-size: auto; aspect-ratio: 1; }
+  .drag-item img { block-size: 42px; aspect-ratio: 1; }
+  .craft-item img { block-size: 46px; aspect-ratio: 1; }
+  .reflection-option img { block-size: auto; aspect-ratio: 16 / 10; }
+  .story-book img { block-size: auto; object-fit: contain; }
+}
+
+@media (max-width: 430px) and (orientation: portrait) {
+  .choice-card span { padding: 6px 4px; font-size: 10px; }
+  .reflection-prompt > div { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .reflection-option { min-block-size: 0; }
+  .tool-shelf { gap: 4px; }
+}
+
+@media (max-height: 600px) and (orientation: landscape) {
+  .choice-card { grid-template-columns: 74px 1fr; grid-template-rows: 1fr; align-items: center; }
+  .choice-card img { inline-size: 74px; block-size: 56px; aspect-ratio: auto; object-fit: contain; }
+  .choice-card span { padding: 4px; }
+  .reflection-option { display: grid; grid-template-columns: 72px 1fr; align-items: center; }
+  .reflection-option img { inline-size: 72px; block-size: 48px; aspect-ratio: auto; object-fit: contain; }
+  .drag-item img { block-size: 30px; }.craft-item img { block-size: 34px; }
+}

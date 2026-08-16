@@ -12,5 +12,8 @@ export function GameCanvas({ image }: { image: string }) {
     preload.src = path;
     return () => { preload.onload = null; preload.onerror = null; };
   }, [path]);
-  return <div className={`game-canvas game-canvas--${image} ${ready ? 'game-canvas--ready' : ''}`} style={{ backgroundImage: `url("${path}")` }}><span className="scene-loader">کتاب دارد بیدار می‌شود…</span></div>;
+  return <div className={`game-canvas game-canvas--${image} ${ready ? 'game-canvas--ready' : ''}`} style={{ backgroundImage: `url("${path}")` }}>
+    <img className="game-canvas__image" src={path} alt="" aria-hidden="true" />
+    <span className="scene-loader">کتاب دارد بیدار می‌شود…</span>
+  </div>;
 }

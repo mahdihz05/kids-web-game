@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "validate:v1": "node scripts/validate-v1.mjs",
     "test": "node scripts/test-story.mjs",
-    "check": "npm run test && npm run validate:v1 && npm run lint && npm run build",
+    "test:responsive": "node scripts/test-responsive.mjs",
+    "check": "npm run test && npm run test:responsive && npm run validate:v1 && npm run lint && npm run build",
     "preview": "vite preview"
   },
   "dependencies": {
