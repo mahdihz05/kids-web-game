@@ -51,8 +51,8 @@
       "id": "compare-options", "type": "choice", "phase": 3, "phaseTitle": "تحلیل انتخاب‌ها", "prompt": "کدام هدیه را می‌بینی؟", "narration": "گل و گردنبند را با هم مقایسه کن.",
       "eyebrow": "به پیامد هر راه نگاه کن", "text": "با اطلاعاتی که پیدا کردی، کدام راه برای پشمالو بهتر به نظر می‌رسد؟", "image": "gift-crossroads", "characterName": "پشمالو",
       "choices": [
-        { "id": "consider-flowers", "text": "گل‌های باغ", "caption": "گل‌های باغ", "image": "choice-flower", "icon": "🌸", "nextScene": "analysis-reason", "score": 2, "skill": "decision", "consequence": "انتخابت را شنیدم. چرا این راه را دوست داری؟" },
-        { "id": "consider-necklace", "text": "گردنبند بلوط", "caption": "گردنبند بلوط", "image": "choice-necklace", "icon": "📿", "nextScene": "analysis-reason", "score": 4, "skill": "decision", "consequence": "انتخابت را شنیدم. چرا این راه را دوست داری؟" }
+        { "id": "consider-flowers", "text": "گل‌های باغ", "caption": "گل‌های باغ", "image": "choice-flower", "icon": "🌸", "nextScene": "flower-consequence", "score": 2, "skill": "decision" },
+        { "id": "consider-necklace", "text": "گردنبند بلوط", "caption": "گردنبند بلوط", "image": "choice-necklace", "icon": "📿", "nextScene": "analysis-reason", "score": 4, "skill": "decision" }
       ]
     },
     {

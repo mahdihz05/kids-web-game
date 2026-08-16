@@ -18,6 +18,10 @@ check(css.includes('@media (min-width: 721px) and (max-width: 1050px)'), 'Tablet
 check(css.includes('@media (max-width: 720px)'), 'Mobile breakpoint is missing.');
 check(css.includes('@media (max-height: 600px) and (orientation: landscape)'), 'Landscape breakpoint is missing.');
 check(css.includes('max-inline-size: 100%'), 'Global image overflow guard is missing.');
+check(css.includes('.game-canvas { inset: 0 0 auto; block-size: 42%; z-index: 0; }'), 'Mobile portrait must reserve visible space for the scene.');
+check(css.includes('.story-panel--choice { overflow: hidden; }'), 'Mobile choices must fit without panel scrolling.');
+check(css.includes('.choice-card:nth-child(3):last-child'), 'Three-choice mobile layout is missing.');
+check(css.includes('.choice-card:nth-child(4)'), 'Four-choice mobile layout is missing.');
 
 for (const [index, source] of components.entries()) {
   check(!/<img[^>]+(?:width|height)=/i.test(source), `Component ${index + 1} contains a fixed image dimension.`);

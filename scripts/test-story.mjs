@@ -36,14 +36,16 @@ function follow(decisions) {
   return { route };
 }
 
-const necklace = follow({ 'final-decision': 'necklace' });
-const flowers = follow({ 'final-decision': ['flowers', 'necklace'], 'flower-repair': 'find-another' });
+const necklace = follow({ 'compare-options': 'consider-necklace', 'final-decision': 'necklace' });
+const flowers = follow({ 'compare-options': 'consider-flowers', 'flower-repair': 'find-another', 'final-decision': 'necklace' });
 for (const [name, run] of Object.entries({ necklace, flowers })) check(run.result === 'celebration', `${name} branch does not reach celebration`);
 check(necklace.route.indexOf('choose-tools') < necklace.route.indexOf('craft-necklace'), 'Tools must precede crafting');
 check(flowers.route.includes('flower-consequence') && flowers.route.includes('flower-repair'), 'Flower branch must show consequence and repair');
-check(flowers.route.filter((id) => id === 'final-decision').length === 2, 'Flower repair must return to final choice');
-check(flowers.route.indexOf('flower-repair') < flowers.route.lastIndexOf('final-decision'), 'Flower repair return order is wrong');
-check(flowers.route.indexOf('choose-tools') > flowers.route.lastIndexOf('final-decision'), 'Flower branch must only open tools after necklace is selected');
+check(!flowers.route.includes('analysis-reason'), 'Flower selection must not ask for a reason before the gardener');
+check(flowers.route.indexOf('flower-consequence') === flowers.route.indexOf('compare-options') + 1, 'Flower selection must go directly to the gardener');
+check(flowers.route.indexOf('flower-repair') < flowers.route.indexOf('final-decision'), 'Flower repair must return to a new gift choice');
+check(flowers.route.indexOf('choose-tools') > flowers.route.indexOf('final-decision'), 'Flower branch must only open tools after necklace is selected');
+check(scenes.get('compare-options').choices.find((choice) => choice.id === 'consider-flowers').nextScene === 'flower-consequence', 'First flower choice must target gardener consequence');
 check(scenes.get('final-decision').choices.find((choice) => choice.id === 'necklace').nextScene === 'choose-tools', 'Necklace must open tools');
 check(scenes.get('choose-tools').dropTarget.nextScene === 'craft-necklace', 'Completed tools must open crafting');
 

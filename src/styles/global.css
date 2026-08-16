@@ -343,3 +343,48 @@ img { max-inline-size: 100%; }
   .reflection-option img { inline-size: 72px; block-size: 48px; aspect-ratio: auto; object-fit: contain; }
   .drag-item img { block-size: 30px; }.craft-item img { block-size: 34px; }
 }
+
+/* Mobile/tablet portrait: reserve a real viewport area for the scene image. */
+@media (max-width: 720px) and (orientation: portrait) {
+  .game-stage { isolation: isolate; }
+  .game-canvas { inset: 0 0 auto; block-size: 42%; z-index: 0; }
+  .scene-vignette { inset: 0 0 auto; block-size: 42%; z-index: 1; }
+  .character { display: none; }
+  .interaction-layer { inset: 0 0 auto; block-size: 42%; }
+  .story-panel,
+  .game-stage--hotspot .story-panel,
+  .game-stage--dragDrop .story-panel,
+  .game-stage--craft .story-panel,
+  .game-stage--reflection .story-panel,
+  .story-panel--result { top: 42%; right: 0; bottom: 0; left: 0; inline-size: 100%; block-size: 58%; max-block-size: none; padding: 10px 12px; overflow-y: auto; transform: none; border-radius: 18px 18px 0 0; }
+  .story-panel--choice { overflow: hidden; }
+  .story-panel--choice .speaker-row { display: none; }
+  .story-panel--choice h2 { margin: 0; font-size: 14px; }
+  .story-panel--choice .scene-prompt { margin: 2px 0 4px; font-size: 14px; }
+  .story-panel--choice .narration-button { min-block-size: 28px; margin-block-end: 4px; padding: 3px 9px; font-size: 10px; }
+  .story-panel--choice .choice-grid { gap: 5px; }
+  .story-panel--choice .choice-card { min-block-size: 0; border-width: 2px; border-radius: 12px; box-shadow: 0 3px 10px #15305f1c; }
+  .story-panel--choice .choice-card img { block-size: clamp(54px, 8.5svh, 72px); aspect-ratio: auto; }
+  .story-panel--choice .choice-card span { min-block-size: 28px; display: grid; place-items: center; padding: 3px; font-size: 10px; }
+  .story-panel--choice .choice-grid:has(.choice-card:nth-child(3):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .story-panel--choice .choice-grid:has(.choice-card:nth-child(4)) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tool-playground { top: 1.5%; right: 3%; bottom: auto; left: 3%; block-size: 39%; display: grid; grid-template-columns: minmax(0, 1fr) 100px; gap: 5px; }
+  .tool-shelf { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+  .drag-item { block-size: 68px; }.drop-zone { inline-size: 96px; block-size: 76px; margin: 0; }
+  .craft-playground { top: 3%; right: 3%; bottom: auto; left: 3%; min-block-size: 0; block-size: 36%; padding: 8px 4px; }
+}
+
+@media (min-width: 721px) and (max-width: 1050px) and (orientation: portrait) {
+  .game-canvas { inset: 0 0 auto; block-size: 46%; z-index: 0; }
+  .scene-vignette, .interaction-layer { inset: 0 0 auto; block-size: 46%; }
+  .character { display: none; }
+  .story-panel,
+  .game-stage--hotspot .story-panel,
+  .game-stage--dragDrop .story-panel,
+  .game-stage--craft .story-panel,
+  .game-stage--reflection .story-panel,
+  .story-panel--result { top: 46%; right: 0; bottom: 0; left: 0; inline-size: 100%; block-size: 54%; max-block-size: none; overflow-y: auto; transform: none; border-radius: 20px 20px 0 0; }
+  .story-panel--choice { overflow: hidden; }
+  .story-panel--choice .choice-card img { block-size: clamp(76px, 10svh, 108px); aspect-ratio: auto; }
+  .tool-playground, .craft-playground { top: 4%; bottom: auto; max-block-size: 39%; }
+}
