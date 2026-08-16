@@ -17,9 +17,10 @@ export function ScenePanel({ story, snapshot, onChoose, onContinue, onContinueSc
   const craftReady = craftCount >= (scene.requiredCraftCount ?? scene.craftItems?.length ?? 0);
   const reflectionReady = scene.reflectionPrompts?.every((prompt) => progress.reflections[prompt.id]) ?? false;
   const shortPrompt = progress.pendingConsequence ?? progress.feedback ?? scene.prompt ?? scene.text;
-  return <article className={`story-panel story-panel--${scene.type}`} aria-live="polite">
+  const isIntro = scene.id === story.startScene;
+  return <article className={`story-panel story-panel--${scene.type} ${isIntro ? 'story-panel--mission-intro' : ''}`} aria-live="polite">
     <div className="speaker-row"><span className="phase-chip">مرحله {scene.phase} · {scene.phaseTitle}</span></div>
-    {scene.type !== 'result' && <><h2>{scene.characterName ?? story.title}</h2><p className="scene-prompt">{shortPrompt}</p><NarrationButton text={scene.narration ?? scene.text} audio={scene.audio} /></>}
+    {scene.type !== 'result' && <><h2>{scene.characterName ?? story.title}</h2><p className="scene-prompt">{shortPrompt}</p>{!isIntro && <NarrationButton text={scene.narration ?? scene.text} audio={scene.audio} />}</>}
     {progress.pendingConsequence ? <button className="primary-button" onClick={onContinue} type="button">ادامه ←</button>
       : scene.type === 'dialogue' ? <button className="primary-button" onClick={onContinueScene} type="button">{scene.actionLabel} ←</button>
       : scene.type === 'choice' ? <ChoiceGrid choices={scene.choices ?? []} onChoose={onChoose} />

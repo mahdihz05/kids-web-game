@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-export function NarrationButton({ text, audio }: { text?: string; audio?: string }) {
+export function NarrationButton({ text, audio, iconOnly = false }: { text?: string; audio?: string; iconOnly?: boolean }) {
   const player = useRef<HTMLAudioElement | null>(null);
   const [speaking, setSpeaking] = useState(false);
   useEffect(() => () => { player.current?.pause(); window.speechSynthesis?.cancel(); }, []);
@@ -19,6 +19,10 @@ export function NarrationButton({ text, audio }: { text?: string; audio?: string
     element.onended = () => setSpeaking(false); element.onerror = speak;
     element.play().then(() => setSpeaking(true)).catch(speak);
   };
+  if (iconOnly) return <button className={`narration-button narration-button--icon ${speaking ? 'narration-button--playing' : ''}`}
+    onClick={play} type="button" aria-pressed={speaking} aria-label={speaking ? 'توقف پخش داستان' : 'شنیدن داستان'}>
+    <span aria-hidden="true">{speaking ? '■' : '🔊'}</span>
+  </button>;
   return <button className={`narration-button ${speaking ? 'narration-button--playing' : ''}`} onClick={play} type="button" aria-pressed={speaking}>
     <span aria-hidden="true">{speaking ? '❚❚' : '▶'}</span>{speaking ? 'بس کن' : 'بشنو'}
   </button>;

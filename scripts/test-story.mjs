@@ -40,6 +40,8 @@ const necklace = follow({ 'compare-options': 'consider-necklace', 'final-decisio
 const flowers = follow({ 'compare-options': 'consider-flowers', 'flower-repair': 'find-another', 'final-decision': 'necklace' });
 for (const [name, run] of Object.entries({ necklace, flowers })) check(run.result === 'celebration', `${name} branch does not reach celebration`);
 check(necklace.route.indexOf('choose-tools') < necklace.route.indexOf('craft-necklace'), 'Tools must precede crafting');
+check(!necklace.route.includes('final-decision'), 'Necklace reason must not repeat the gift-choice scene');
+check(scenes.get('analysis-reason').choices.every((choice) => choice.nextScene === 'choose-tools'), 'Every necklace reason must continue to tools');
 check(flowers.route.includes('flower-consequence') && flowers.route.includes('flower-repair'), 'Flower branch must show consequence and repair');
 check(!flowers.route.includes('analysis-reason'), 'Flower selection must not ask for a reason before the gardener');
 check(flowers.route.indexOf('flower-consequence') === flowers.route.indexOf('compare-options') + 1, 'Flower selection must go directly to the gardener');

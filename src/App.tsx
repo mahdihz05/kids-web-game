@@ -13,6 +13,7 @@ import { PhaseJourney } from './components/PhaseJourney';
 import { StoryIntro } from './components/StoryIntro';
 import { PageTurn, type TurnPhase } from './components/PageTurn';
 import { StoryBook } from './components/StoryBook';
+import { NarrationButton } from './components/NarrationButton';
 import { hasSeenStoryIntro } from './utils/introStorage';
 import { assetPath } from './game/assets';
 
@@ -88,7 +89,8 @@ export function App() {
       <button className="round-button" onClick={goHome} type="button" aria-label="بازگشت به دهکده">⌂</button>
       <div className="game-title"><small>مأموریت ۱ از ۱۰</small><strong>🎁 {story.title}</strong></div>
       <div className="phase-progress"><div><span>مسیر حل مسئله</span><b>{scene.phase}/{story.totalPhases}</b></div><i><b style={{ width: `${phasePercent}%` }} /></i></div>
-      <button className="round-button story-reader" onClick={() => setBookOpen(true)} type="button" aria-label="داستان کامل">📖</button>
+      {scene.bookText && <button className="round-button story-reader" onClick={() => setBookOpen(true)} type="button" aria-label="داستان این بخش">📖</button>}
+      {scene.id === story.startScene && <NarrationButton iconOnly text={scene.narration ?? scene.text} audio={scene.audio} />}
       <div className="live-score">⭐ <strong>{progress.score}</strong></div>
     </header>
 
@@ -111,5 +113,5 @@ export function App() {
       <div className="ambient-particles" aria-hidden="true"><i>✦</i><i>✧</i><i>•</i></div>
     </section>
     <PhaseJourney currentPhase={scene.phase} />
-  </main>{bookOpen && <StoryBook story={story} onClose={() => setBookOpen(false)} />}{pageTurn}</div>;
+  </main>{bookOpen && <StoryBook story={story} text={scene.bookText} onClose={() => setBookOpen(false)} />}{pageTurn}</div>;
 }

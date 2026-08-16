@@ -78,6 +78,7 @@ export interface StoryScene {
   prompt?: string;
   narration?: string;
   audio?: string;
+  bookText?: string;
   hint?: string;
   image: string;
   character?: string;

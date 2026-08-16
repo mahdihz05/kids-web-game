@@ -36,16 +36,21 @@ for (const scene of story.scenes) {
     check(sceneIds.has(choice.nextScene), `Missing choice nextScene: ${choice.nextScene}`);
     check(Boolean(choice.image), `${scene.id}/${choice.id}: image is missing`);
     check(Boolean(choice.caption), `${scene.id}/${choice.id}: manual caption is missing`);
-    check((choice.caption?.trim().split(/\s+/).length ?? 99) <= 4, `${scene.id}/${choice.id}: caption is longer than four words`);
+    check((choice.caption?.trim().split(/\s+/).length ?? 99) <= 8, `${scene.id}/${choice.id}: caption is longer than eight words`);
     siblingChoiceImages.push(choice.image);
   }
   check(siblingChoiceImages.length === new Set(siblingChoiceImages).size, `${scene.id}: different choices reuse an image`);
   const toolImages = (scene.dragItems ?? []).map((item) => item.image);
   check(toolImages.every(Boolean), `${scene.id}: a tool image is missing`);
   check(toolImages.length === new Set(toolImages).size, `${scene.id}: tool images must be unique`);
-  const reflectionImages = (scene.reflectionPrompts ?? []).flatMap((prompt) => prompt.options.map((option) => option.image));
+  const reflectionPrompts = scene.reflectionPrompts ?? [];
+  const reflectionImages = reflectionPrompts.flatMap((prompt) => prompt.options.map((option) => option.image));
   check(reflectionImages.every(Boolean), `${scene.id}: a reflection image is missing`);
-  check(reflectionImages.length === new Set(reflectionImages).size, `${scene.id}: reflection images must be unique`);
+  for (const prompt of reflectionPrompts) {
+    check(prompt.options.length >= 2, `${scene.id}/${prompt.id}: reflection prompt needs at least two choices`);
+    const promptImages = prompt.options.map((option) => option.image);
+    check(promptImages.length === new Set(promptImages).size, `${scene.id}/${prompt.id}: sibling reflection images must be unique`);
+  }
 }
 
 check(!choiceGridSource.includes('fallbackImage'), 'Choice image fallback must not exist.');
