@@ -9,8 +9,10 @@ export interface ScoreReward {
 export interface StoryChoice {
   id: string;
   text: string;
+  caption?: string;
   icon?: string;
   image?: string;
+  audio?: string;
   nextScene: string;
   score: number;
   skill?: SkillKey;
@@ -25,6 +27,7 @@ export interface HotspotItem {
   id: string;
   label: string;
   icon: string;
+  image?: string;
   x: number;
   y: number;
   clue: string;
@@ -35,6 +38,7 @@ export interface DragItem {
   id: string;
   label: string;
   icon: string;
+  image?: string;
   correct: boolean;
   feedback: string;
   reward: ScoreReward;
@@ -44,6 +48,7 @@ export interface CraftItem {
   id: string;
   label: string;
   icon: string;
+  image?: string;
   reward: ScoreReward;
 }
 
@@ -51,6 +56,7 @@ export interface ReflectionOption {
   id: string;
   text: string;
   icon: string;
+  image?: string;
   score: number;
   skill?: SkillKey;
 }
@@ -69,6 +75,9 @@ export interface StoryScene {
   phaseTitle: string;
   eyebrow?: string;
   text: string;
+  prompt?: string;
+  narration?: string;
+  audio?: string;
   hint?: string;
   image: string;
   character?: string;
@@ -95,6 +104,7 @@ export interface Story {
   startScene: string;
   totalPhases: number;
   theme: { primary: string; secondary: string; accent: string };
+  bookContent?: { title: string; paragraphs: string[] }[];
   scenes: StoryScene[];
 }
 

@@ -14,6 +14,7 @@ export const assetManifest: GameAsset[] = [
   { key: 'gardener-consequence', path: '/assets/scenes/gardener-consequence-v2.webp', type: 'image' },
   { key: 'necklace-crafting', path: '/assets/scenes/necklace-craft-v2.webp', type: 'image' },
   { key: 'grandma-gift', path: '/assets/scenes/grandma-gift-v2.webp', type: 'image' },
+  { key: 'pashmaloo-choice', path: '/assets/scenes/pashmaloo-choice-v1.png', type: 'image' },
 ];
 
 export function assetPath(key: string): string {

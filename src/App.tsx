@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import storyData from './data/story.json';
+import { story } from './data/storyContent';
 import { GameEngine, type GameSnapshot } from './engine/GameEngine';
 import { ProfileSystem } from './engine/ProfileSystem';
 import { ScoreSystem } from './engine/ScoreSystem';
-import type { CraftItem, DragItem, HotspotItem, ReflectionOption, Story, StoryChoice } from './types/story';
+import type { CraftItem, DragItem, HotspotItem, ReflectionOption, StoryChoice } from './types/story';
 import { GameCanvas } from './components/GameCanvas';
 import { InteractionLayer } from './components/InteractionLayer';
 import { MissionHub } from './components/MissionHub';
@@ -12,10 +12,10 @@ import { ScenePanel } from './components/ScenePanel';
 import { PhaseJourney } from './components/PhaseJourney';
 import { StoryIntro } from './components/StoryIntro';
 import { PageTurn, type TurnPhase } from './components/PageTurn';
+import { StoryBook } from './components/StoryBook';
 import { hasSeenStoryIntro } from './utils/introStorage';
 import { assetPath } from './game/assets';
 
-const story = storyData as Story;
 type AppView = 'intro' | 'hub' | 'game' | 'parent';
 
 export function App() {
@@ -33,6 +33,7 @@ export function App() {
     return hasSeenStoryIntro() ? 'hub' : 'intro';
   });
   const [turnPhase, setTurnPhase] = useState<TurnPhase>('idle');
+  const [bookOpen, setBookOpen] = useState(false);
   const pendingAction = useRef<{ run: () => void; ready: Promise<void> } | null>(null);
 
   useEffect(() => engine.subscribe(setSnapshot), [engine]);
@@ -86,6 +87,7 @@ export function App() {
       <button className="round-button" onClick={goHome} type="button" aria-label="بازگشت به دهکده">⌂</button>
       <div className="game-title"><small>مأموریت ۱ از ۱۰</small><strong>🎁 {story.title}</strong></div>
       <div className="phase-progress"><div><span>مسیر حل مسئله</span><b>{scene.phase}/{story.totalPhases}</b></div><i><b style={{ width: `${phasePercent}%` }} /></i></div>
+      <button className="round-button story-reader" onClick={() => setBookOpen(true)} type="button" aria-label="داستان کامل">📖</button>
       <div className="live-score">⭐ <strong>{progress.score}</strong></div>
     </header>
 
@@ -108,5 +110,5 @@ export function App() {
       <div className="ambient-particles" aria-hidden="true"><i>✦</i><i>✧</i><i>•</i></div>
     </section>
     <PhaseJourney currentPhase={scene.phase} />
-  </main>{pageTurn}</div>;
+  </main>{bookOpen && <StoryBook story={story} onClose={() => setBookOpen(false)} />}{pageTurn}</div>;
 }

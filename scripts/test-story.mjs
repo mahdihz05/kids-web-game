@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
 const story = JSON.parse(await readFile(resolve(root, 'src/data/story.json'), 'utf8'));
+const storyContent = await readFile(resolve(root, 'src/data/storyContent.ts'), 'utf8');
 const scenes = new Map(story.scenes.map((scene) => [scene.id, scene]));
 const failures = [];
 const check = (condition, message) => { if (!condition) failures.push(message); };
@@ -57,6 +58,10 @@ for (const [name, run] of Object.entries({ necklace, flowers })) {
 check(flowers.route.some((scene) => scene.id === 'flower-consequence'), 'Flower branch skips its consequence');
 check(flowers.route.some((scene) => scene.id === 'flower-repair'), 'Flower branch skips decision repair');
 check(necklace.route.some((scene) => scene.id === 'craft-necklace'), 'Necklace branch skips crafting');
+check(storyContent.includes("choice.nextScene = 'final-decision'"), 'Reason selection must lead to the final visual choice.');
+check(storyContent.includes("choice.nextScene = 'choose-tools'"), 'Necklace must lead to tools only after the final choice.');
+check(storyContent.includes("choice.nextScene = 'final-decision'; });"), 'Flower repair must return to the final choice.');
+check(storyContent.includes("scene.narration = scene.text"), 'Every scene must expose narration content.');
 
 const tools = scenes.get('choose-tools');
 check(JSON.stringify(tools?.requiredItemIds?.sort()) === JSON.stringify(['acorns', 'patience', 'thread'].sort()), 'Tool scene must require acorns, thread and patience');
