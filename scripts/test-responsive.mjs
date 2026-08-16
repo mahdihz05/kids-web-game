@@ -17,8 +17,9 @@ check(contract.includes('object-fit: contain'), 'Scene images must preserve thei
 check(contract.includes('overflow: hidden') && contract.includes('.story-panel--choice'), 'Choice panels must not scroll or leak cards.');
 check(contract.includes('grid-auto-rows: minmax(0, 1fr)'), 'Choice rows must shrink to available panel height.');
 check(contract.includes('.choice-card:nth-child(3):last-child'), 'Three-choice layout is missing.');
-check(contract.includes('.choice-card:nth-child(4)'), 'Four-choice desktop layout is missing.');
+check(contract.includes('repeat(auto-fit, minmax(110px, 1fr))'), 'Four-choice desktop row is missing.');
 check(contract.includes('@media (min-width: 1200px)'), 'Desktop breakpoint is missing.');
+check(contract.includes('bottom: 28px') && contract.includes('width: min(620px, 53%)'), 'Desktop panel must use the original bottom overlay.');
 check(contract.includes('@media (min-width: 768px) and (max-width: 1199px) and (orientation: landscape)'), 'Tablet landscape breakpoint is missing.');
 check(contract.includes('@media (min-width: 768px) and (max-width: 1199px) and (orientation: portrait)'), 'Tablet portrait breakpoint is missing.');
 check(contract.includes('@media (max-width: 767px) and (orientation: portrait)'), 'Mobile portrait breakpoint is missing.');
@@ -27,7 +28,7 @@ check(contract.includes('@media (max-width: 900px) and (max-height: 600px) and (
 for (const [index, source] of components.entries()) check(!/<img[^>]+(?:width|height)=/i.test(source), `Component ${index + 1} contains a fixed image dimension.`);
 
 const profiles = [
-  { name: 'desktop', width: 1440, height: 1000, scene: [40, 0, 60, 100], panel: [0, 0, 40, 100] },
+  { name: 'desktop', width: 1440, height: 1000, scene: [0, 0, 100, 100], panel: [2, 54, 43, 40], allowOverlap: true },
   { name: 'tablet portrait', width: 768, height: 1024, scene: [0, 0, 100, 44], panel: [0, 44, 100, 56] },
   { name: 'tablet landscape', width: 1024, height: 768, scene: [44, 0, 56, 100], panel: [0, 0, 44, 100] },
   { name: 'mobile portrait', width: 390, height: 844, scene: [0, 0, 100, 40], panel: [0, 40, 100, 60] },
@@ -40,11 +41,12 @@ for (const profile of profiles) {
     check(x >= 0 && y >= 0 && x + width <= 100 && y + height <= 100, `${profile.name}: ${label} leaves the game stage`);
     check(width > 0 && height > 0, `${profile.name}: ${label} has no visible area`);
   }
-  check(intersects(profile.scene, profile.panel) === 0, `${profile.name}: scene is hidden behind the panel`);
+  if (profile.allowOverlap) check(profile.panel[1] >= 50, `${profile.name}: original panel must remain at the bottom`);
+  else check(intersects(profile.scene, profile.panel) === 0, `${profile.name}: scene is hidden behind the panel`);
   const stageHeight = profile.height <= 600 && profile.width > profile.height ? profile.height - 126 : profile.height - 198;
   const panelHeight = stageHeight * (profile.panel[3] / 100);
   check(panelHeight >= 240, `${profile.name}: panel is too short for a four-choice grid`);
 }
 
 if (failures.length) { console.error(failures.map((failure) => `✗ ${failure}`).join('\n')); process.exit(1); }
-console.log(`✓ Responsive layout contract passed: ${profiles.length} non-overlapping device profiles and bounded choice grids.`);
+console.log('✓ Responsive layout contract passed: original desktop bottom panel, four non-overlapping tablet/mobile profiles, bounded choice grids.');

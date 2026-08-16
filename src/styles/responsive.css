@@ -85,9 +85,37 @@
 
 /* Desktop */
 @media (min-width: 1200px) {
-  .game-app .game-stage { --scene-left: 40%; --scene-top: 0%; --scene-width: 60%; --scene-height: 100%; }
-  .game-app .story-panel--choice .choice-grid:has(> .choice-card:nth-child(4)) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .game-app .story-panel--choice .choice-card span { font-size: 12px; }
+  .game-app .game-stage { --scene-left: 0%; --scene-top: 0%; --scene-width: 100%; --scene-height: 100%; }
+  .game-app .game-stage .story-panel,
+  .game-app .game-stage--hotspot .story-panel,
+  .game-app .game-stage--dragDrop .story-panel,
+  .game-app .game-stage--craft .story-panel,
+  .game-app .game-stage--reflection .story-panel,
+  .game-app .game-stage .story-panel--result {
+    top: auto;
+    left: 30px;
+    right: auto;
+    bottom: 28px;
+    width: min(620px, 53%);
+    height: auto;
+    max-height: calc(100% - 56px);
+    padding: 22px 25px 24px;
+    overflow-y: auto;
+    transform: none;
+    border-radius: 25px;
+  }
+  .game-app .game-stage .story-panel--choice { display: block; overflow-y: auto; }
+  .game-app .story-panel--choice .choice-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    grid-auto-rows: auto;
+    min-height: auto;
+  }
+  .game-app .story-panel--choice .choice-card { height: auto; min-height: 142px; }
+  .game-app .story-panel--choice .choice-card img { height: 94px; }
+  .game-app .story-panel--choice .choice-card span { min-height: 34px; font-size: 12px; }
+  .game-app .game-stage .tool-playground { inset: 16% 4% auto 4%; width: auto; max-height: none; }
+  .game-app .game-stage .craft-playground { top: 18%; right: 7%; left: 7%; width: auto; max-height: none; }
 }
 
 /* Tablet landscape and compact desktop */
