@@ -10,6 +10,10 @@ const introSource = await readFile(resolve(root, 'src/components/StoryIntro.tsx'
 const storageSource = await readFile(resolve(root, 'src/utils/introStorage.ts'), 'utf8');
 const hubSource = await readFile(resolve(root, 'src/components/MissionHub.tsx'), 'utf8');
 const assetManifest = await readFile(resolve(root, 'src/game/assets.ts'), 'utf8');
+const choiceGridSource = await readFile(resolve(root, 'src/components/ChoiceGrid.tsx'), 'utf8');
+const reflectionSource = await readFile(resolve(root, 'src/components/ReflectionBoard.tsx'), 'utf8');
+const interactionSource = await readFile(resolve(root, 'src/components/InteractionLayer.tsx'), 'utf8');
+const stylesSource = await readFile(resolve(root, 'src/styles/global.css'), 'utf8');
 
 const failures = [];
 const check = (condition, message) => {
@@ -24,11 +28,34 @@ check(story.scenes.some((scene) => scene.type === 'result'), 'Result scene is mi
 
 const sceneIds = new Set(story.scenes.map((scene) => scene.id));
 for (const scene of story.scenes) {
+  check(Boolean(scene.prompt), `${scene.id}: short prompt is missing`);
+  check(Boolean(scene.narration), `${scene.id}: narration is missing`);
   if (scene.nextScene) check(sceneIds.has(scene.nextScene), `Missing nextScene: ${scene.nextScene}`);
+  const siblingChoiceImages = [];
   for (const choice of scene.choices ?? []) {
     check(sceneIds.has(choice.nextScene), `Missing choice nextScene: ${choice.nextScene}`);
+    check(Boolean(choice.image), `${scene.id}/${choice.id}: image is missing`);
+    check(Boolean(choice.caption), `${scene.id}/${choice.id}: manual caption is missing`);
+    check((choice.caption?.trim().split(/\s+/).length ?? 99) <= 4, `${scene.id}/${choice.id}: caption is longer than four words`);
+    siblingChoiceImages.push(choice.image);
   }
+  check(siblingChoiceImages.length === new Set(siblingChoiceImages).size, `${scene.id}: different choices reuse an image`);
+  const toolImages = (scene.dragItems ?? []).map((item) => item.image);
+  check(toolImages.every(Boolean), `${scene.id}: a tool image is missing`);
+  check(toolImages.length === new Set(toolImages).size, `${scene.id}: tool images must be unique`);
+  const reflectionImages = (scene.reflectionPrompts ?? []).flatMap((prompt) => prompt.options.map((option) => option.image));
+  check(reflectionImages.every(Boolean), `${scene.id}: a reflection image is missing`);
+  check(reflectionImages.length === new Set(reflectionImages).size, `${scene.id}: reflection images must be unique`);
 }
+
+check(!choiceGridSource.includes('fallbackImage'), 'Choice image fallback must not exist.');
+check(!reflectionSource.includes("assetPath('birthday-celebration')"), 'Reflection image fallback must not exist.');
+check(!assetManifest.includes('??'), 'Asset resolver must not contain a fallback.');
+check(!assetManifest.includes('pashmaloo-choice'), 'The duplicated temporary choice image must not remain connected.');
+check(!JSON.stringify(story).includes('"tone":"recommended"'), 'Recommended-choice labels must not exist.');
+check(interactionSource.includes('offsetX + (item.x / 100) * renderedWidth'), 'Contained hotspot positioning regression.');
+check(interactionSource.includes('onDragStart') && interactionSource.includes('onDrop'), 'Drag/drop interaction regression.');
+check(stylesSource.includes('@media (prefers-reduced-motion: reduce)'), 'Reduced-motion support is missing.');
 
 const missionFlags = [...missionsSource.matchAll(/unlocked:\s*(true|false)/g)].map((match) => match[1]);
 check(missionFlags.length === 10, 'Exactly ten missions must be registered.');
@@ -45,6 +72,21 @@ check(hubSource.includes('به‌زودی بیدار می‌شود'), 'Locked bo
 const referencedAssets = new Set();
 for (const source of [appSource, introSource, hubSource, assetManifest]) {
   for (const match of source.matchAll(/['"`]\/assets\/([^'"`$}]+)/g)) referencedAssets.add(match[1]);
+}
+
+const assetEntries = new Map([...assetManifest.matchAll(/key:\s*'([^']+)'\s*,\s*path:\s*'([^']+)'/g)].map((match) => [match[1], match[2]]));
+const storyAssetKeys = new Set([story.coverImage]);
+for (const scene of story.scenes) {
+  storyAssetKeys.add(scene.image);
+  for (const choice of scene.choices ?? []) storyAssetKeys.add(choice.image);
+  for (const item of scene.dragItems ?? []) storyAssetKeys.add(item.image);
+  for (const item of scene.craftItems ?? []) storyAssetKeys.add(item.image);
+  for (const prompt of scene.reflectionPrompts ?? []) for (const option of prompt.options) storyAssetKeys.add(option.image);
+}
+for (const key of storyAssetKeys) {
+  const path = assetEntries.get(key);
+  check(Boolean(path), `Story asset key is missing from manifest: ${key}`);
+  if (path) { try { await access(resolve(root, `public${path}`), constants.R_OK); } catch { failures.push(`Story asset file is missing: ${path}`); } }
 }
 for (const asset of referencedAssets) {
   try {

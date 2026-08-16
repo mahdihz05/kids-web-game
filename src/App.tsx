@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { story } from './data/storyContent';
+import storySource from './data/story.json';
 import { GameEngine, type GameSnapshot } from './engine/GameEngine';
 import { ProfileSystem } from './engine/ProfileSystem';
 import { ScoreSystem } from './engine/ScoreSystem';
-import type { CraftItem, DragItem, HotspotItem, ReflectionOption, StoryChoice } from './types/story';
+import type { CraftItem, DragItem, HotspotItem, ReflectionOption, Story, StoryChoice } from './types/story';
 import { GameCanvas } from './components/GameCanvas';
 import { InteractionLayer } from './components/InteractionLayer';
 import { MissionHub } from './components/MissionHub';
@@ -17,6 +17,7 @@ import { hasSeenStoryIntro } from './utils/introStorage';
 import { assetPath } from './game/assets';
 
 type AppView = 'intro' | 'hub' | 'game' | 'parent';
+const story = storySource as Story;
 
 export function App() {
   const engine = useMemo(() => new GameEngine(story), []);

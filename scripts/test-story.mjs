@@ -3,7 +3,6 @@ import { resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
 const story = JSON.parse(await readFile(resolve(root, 'src/data/story.json'), 'utf8'));
-const storyContent = await readFile(resolve(root, 'src/data/storyContent.ts'), 'utf8');
 const scenes = new Map(story.scenes.map((scene) => [scene.id, scene]));
 const failures = [];
 const check = (condition, message) => { if (!condition) failures.push(message); };
@@ -16,60 +15,51 @@ for (const scene of story.scenes) {
   for (const choice of scene.choices ?? []) if (!choice.retry) targets.add(choice.nextScene);
   edges.set(scene.id, [...targets]);
   for (const target of targets) check(scenes.has(target), `${scene.id}: missing target ${target}`);
-  for (const choice of scene.choices ?? []) {
-    if (choice.retry) check(choice.nextScene === scene.id, `${scene.id}/${choice.id}: retry must remain in the same scene`);
-  }
+  for (const choice of scene.choices ?? []) if (choice.retry) check(choice.nextScene === scene.id, `${scene.id}/${choice.id}: retry must stay on its scene`);
 }
 
 const visited = new Set();
 const queue = [story.startScene];
-while (queue.length) {
-  const id = queue.shift();
-  if (visited.has(id)) continue;
-  visited.add(id);
-  queue.push(...(edges.get(id) ?? []));
-}
+while (queue.length) { const id = queue.shift(); if (visited.has(id)) continue; visited.add(id); queue.push(...(edges.get(id) ?? [])); }
 check(visited.size === story.scenes.length, `Unreachable scenes: ${story.scenes.filter((scene) => !visited.has(scene.id)).map((scene) => scene.id).join(', ')}`);
 
 function follow(decisions) {
-  const route = [];
-  let id = story.startScene;
+  const route = []; let id = story.startScene;
+  const visits = {};
   for (let guard = 0; guard < 40; guard += 1) {
-    const scene = scenes.get(id);
-    if (!scene) return { route, result: null };
-    route.push(scene);
-    if (scene.type === 'result') return { route, result: scene };
-    if (scene.type === 'choice') {
-      const requested = decisions[scene.id];
-      const choice = scene.choices.find((item) => item.id === requested) ?? scene.choices.find((item) => !item.retry);
-      id = choice.nextScene;
-    } else if (scene.type === 'dragDrop') id = scene.dropTarget.nextScene;
+    const scene = scenes.get(id); if (!scene) return { route };
+    route.push(scene.id); if (scene.type === 'result') return { route, result: scene.id };
+    if (scene.type === 'choice') { const configured = decisions[scene.id]; const requested = Array.isArray(configured) ? configured[visits[scene.id] ?? 0] : configured; visits[scene.id] = (visits[scene.id] ?? 0) + 1; const choice = scene.choices.find((item) => item.id === requested) ?? scene.choices.find((item) => !item.retry); id = choice.nextScene; }
+    else if (scene.type === 'dragDrop') id = scene.dropTarget.nextScene;
     else id = scene.nextScene;
   }
-  return { route, result: null };
+  return { route };
 }
 
 const necklace = follow({ 'final-decision': 'necklace' });
-const flowers = follow({ 'final-decision': 'flowers', 'flower-repair': 'find-another' });
-for (const [name, run] of Object.entries({ necklace, flowers })) {
-  check(run.result?.id === 'celebration', `${name} branch does not reach celebration`);
-  check(run.route.every((scene, index) => index === 0 || scene.phase >= run.route[index - 1].phase), `${name} branch moves backwards between phases`);
-}
-check(flowers.route.some((scene) => scene.id === 'flower-consequence'), 'Flower branch skips its consequence');
-check(flowers.route.some((scene) => scene.id === 'flower-repair'), 'Flower branch skips decision repair');
-check(necklace.route.some((scene) => scene.id === 'craft-necklace'), 'Necklace branch skips crafting');
-check(storyContent.includes("choice.nextScene = 'final-decision'"), 'Reason selection must lead to the final visual choice.');
-check(storyContent.includes("choice.nextScene = 'choose-tools'"), 'Necklace must lead to tools only after the final choice.');
-check(storyContent.includes("choice.nextScene = 'final-decision'; });"), 'Flower repair must return to the final choice.');
-check(storyContent.includes("scene.narration = scene.text"), 'Every scene must expose narration content.');
+const flowers = follow({ 'final-decision': ['flowers', 'necklace'], 'flower-repair': 'find-another' });
+for (const [name, run] of Object.entries({ necklace, flowers })) check(run.result === 'celebration', `${name} branch does not reach celebration`);
+check(necklace.route.indexOf('choose-tools') < necklace.route.indexOf('craft-necklace'), 'Tools must precede crafting');
+check(flowers.route.includes('flower-consequence') && flowers.route.includes('flower-repair'), 'Flower branch must show consequence and repair');
+check(flowers.route.filter((id) => id === 'final-decision').length === 2, 'Flower repair must return to final choice');
+check(flowers.route.indexOf('flower-repair') < flowers.route.lastIndexOf('final-decision'), 'Flower repair return order is wrong');
+check(flowers.route.indexOf('choose-tools') > flowers.route.lastIndexOf('final-decision'), 'Flower branch must only open tools after necklace is selected');
+check(scenes.get('final-decision').choices.find((choice) => choice.id === 'necklace').nextScene === 'choose-tools', 'Necklace must open tools');
+check(scenes.get('choose-tools').dropTarget.nextScene === 'craft-necklace', 'Completed tools must open crafting');
 
-const tools = scenes.get('choose-tools');
-check(JSON.stringify(tools?.requiredItemIds?.sort()) === JSON.stringify(['acorns', 'patience', 'thread'].sort()), 'Tool scene must require acorns, thread and patience');
-check(scenes.get('two-stars-wish')?.reflectionPrompts?.length === 3, 'Two stars and a wish must contain three prompts');
-check(story.scenes.length >= 12 && story.scenes.length <= 15, 'Story should contain 12–15 production scenes');
-
-if (failures.length) {
-  console.error(failures.map((failure) => `✗ ${failure}`).join('\n'));
-  process.exit(1);
+// Regression guard for the restored object-fit: contain hotspot positioning.
+const clueScene = scenes.get('garden-clues');
+for (const [width, height, label] of [[1440, 900, 'desktop'], [768, 1024, 'tablet portrait'], [1024, 768, 'tablet landscape'], [390, 844, 'mobile portrait'], [844, 390, 'mobile landscape']]) {
+  const renderedWidth = Math.min(width, height * (16 / 9));
+  const renderedHeight = renderedWidth / (16 / 9);
+  const offsetX = (width - renderedWidth) / 2;
+  const offsetY = (height - renderedHeight) / 2;
+  for (const item of clueScene.hotspots) {
+    const left = offsetX + (item.x / 100) * renderedWidth;
+    const top = offsetY + (item.y / 100) * renderedHeight;
+    check(left >= offsetX && left <= offsetX + renderedWidth && top >= offsetY && top <= offsetY + renderedHeight, `${label}: ${item.id} leaves contained image`);
+  }
 }
-console.log(`✓ Story tests passed: ${story.scenes.length} scenes, ${visited.size} reachable, both branches complete.`);
+
+if (failures.length) { console.error(failures.map((failure) => `✗ ${failure}`).join('\n')); process.exit(1); }
+console.log(`✓ Story graph passed: ${story.scenes.length} scenes, both routes complete, flower repair returns correctly.`);

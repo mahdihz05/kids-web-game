@@ -9,9 +9,9 @@ export interface ScoreReward {
 export interface StoryChoice {
   id: string;
   text: string;
-  caption?: string;
+  caption: string;
   icon?: string;
-  image?: string;
+  image: string;
   audio?: string;
   nextScene: string;
   score: number;
@@ -38,7 +38,7 @@ export interface DragItem {
   id: string;
   label: string;
   icon: string;
-  image?: string;
+  image: string;
   correct: boolean;
   feedback: string;
   reward: ScoreReward;
@@ -48,7 +48,7 @@ export interface CraftItem {
   id: string;
   label: string;
   icon: string;
-  image?: string;
+  image: string;
   reward: ScoreReward;
 }
 
@@ -56,7 +56,7 @@ export interface ReflectionOption {
   id: string;
   text: string;
   icon: string;
-  image?: string;
+  image: string;
   score: number;
   skill?: SkillKey;
 }
