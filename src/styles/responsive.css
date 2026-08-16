@@ -66,6 +66,15 @@
 .game-app .story-panel--choice .choice-card img { width: 100%; height: 100%; min-height: 0; aspect-ratio: auto; object-fit: contain; }
 .game-app .story-panel--choice .choice-card span { min-height: 32px; display: grid; place-items: center; padding: 5px; }
 
+/* The final two-stars-and-a-wish cards stay compact at every viewport. */
+.game-app .reflection-board { gap: 7px; margin: 6px 0 8px; }
+.game-app .reflection-prompt { padding: 7px; border-radius: 15px; }
+.game-app .reflection-prompt h3 { margin: 0 0 5px; font-size: 12px; }
+.game-app .reflection-prompt > div { gap: 6px; }
+.game-app .reflection-option { min-height: 78px; border-radius: 12px; }
+.game-app .reflection-option img { width: 100%; height: 50px; aspect-ratio: auto; object-fit: contain; }
+.game-app .reflection-option span { padding: 4px; font-size: 9px; }
+
 .game-app .game-stage .tool-playground {
   top: 7%;
   right: auto;
@@ -114,6 +123,12 @@
   .game-app .story-panel--choice .choice-card { height: auto; min-height: 142px; }
   .game-app .story-panel--choice .choice-card img { height: 94px; }
   .game-app .story-panel--choice .choice-card span { min-height: 34px; font-size: 12px; }
+  .game-app .game-stage--reflection .story-panel { width: min(600px, 50%); padding: 16px 18px; }
+  .game-app .reflection-prompt { display: grid; grid-template-columns: 132px minmax(0, 1fr); align-items: center; }
+  .game-app .reflection-prompt h3 { margin: 0; font-size: 11px; }
+  .game-app .reflection-prompt > div { grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); }
+  .game-app .reflection-option { min-height: 72px; }
+  .game-app .reflection-option img { height: 46px; }
   .game-app .game-stage .character,
   .game-app .game-stage--result .character { left: 5%; right: auto; }
   .game-app .game-stage .tool-playground { inset: 16% 4% auto 4%; width: auto; max-height: none; }
@@ -137,6 +152,8 @@
   .game-app .story-panel--choice h2 { margin-top: 0; font-size: 15px; }
   .game-app .story-panel--choice .scene-prompt { margin: 2px 0 5px; font-size: 14px; }
   .game-app .story-panel--choice .narration-button { min-height: 30px; margin-bottom: 5px; padding: 4px 9px; }
+  .game-app .reflection-option { min-height: 66px; }
+  .game-app .reflection-option img { height: 40px; }
 }
 
 /* Tablet portrait */
@@ -153,6 +170,8 @@
   .game-app .game-stage .tool-playground,
   .game-app .game-stage .craft-playground { top: 3%; right: 3%; left: 3%; width: 94%; max-height: 38%; }
   .game-app .story-panel--choice .choice-card span { min-height: 28px; }
+  .game-app .reflection-option { min-height: 70px; }
+  .game-app .reflection-option img { height: 44px; }
 }
 
 /* Mobile portrait */
@@ -173,6 +192,12 @@
   .game-app .story-panel--choice .choice-grid { gap: 4px; }
   .game-app .story-panel--choice .choice-card { border-width: 2px; border-radius: 11px; }
   .game-app .story-panel--choice .choice-card span { min-height: 25px; padding: 2px; font-size: 9px; }
+  .game-app .reflection-board { gap: 4px; margin: 3px 0 5px; }
+  .game-app .reflection-prompt { padding: 4px; }
+  .game-app .reflection-prompt h3 { margin-bottom: 3px; font-size: 10px; }
+  .game-app .reflection-option { min-height: 58px; }
+  .game-app .reflection-option img { height: 34px; }
+  .game-app .reflection-option span { padding: 2px; font-size: 8px; }
   .game-app .game-stage .tool-playground { top: 1%; right: 2%; left: 2%; width: 96%; max-height: 37%; grid-template-columns: minmax(0, 1fr) 94px; }
   .game-app .game-stage .craft-playground { top: 2%; right: 2%; left: 2%; width: 96%; max-height: 35%; }
 }
@@ -195,6 +220,12 @@
   .game-app .story-panel--choice .choice-card { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; padding: 0; }
   .game-app .story-panel--choice .choice-card img { width: 100%; height: 100%; }
   .game-app .story-panel--choice .choice-card span { min-height: 20px; padding: 1px; font-size: 8px; }
+  .game-app .reflection-board { gap: 3px; margin: 2px 0; }
+  .game-app .reflection-prompt { padding: 3px; }
+  .game-app .reflection-prompt h3 { margin: 0 0 2px; font-size: 9px; }
+  .game-app .reflection-option { min-height: 42px; }
+  .game-app .reflection-option img { width: 58px; height: 38px; }
+  .game-app .reflection-option span { padding: 1px; font-size: 7px; }
   .game-app .game-stage .character,
   .game-app .game-stage--result .character { left: 2%; right: auto; }
   .game-app .game-stage .tool-playground,

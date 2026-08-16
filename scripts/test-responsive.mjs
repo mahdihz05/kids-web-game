@@ -21,6 +21,7 @@ check(contract.includes('repeat(auto-fit, minmax(110px, 1fr))'), 'Four-choice de
 check(contract.includes('@media (min-width: 1200px)'), 'Desktop breakpoint is missing.');
 check(contract.includes('bottom: 28px') && contract.includes('width: min(620px, 53%)'), 'Desktop panel must use the original bottom overlay.');
 check(contract.includes('right: 30px') && contract.includes('left: auto'), 'Desktop panel must be anchored on the RTL/right side.');
+check(contract.includes('height: 50px; aspect-ratio: auto; object-fit: contain'), 'Final reflection images must remain visually compact.');
 check(contract.includes('@media (min-width: 768px) and (max-width: 1199px) and (orientation: landscape)'), 'Tablet landscape breakpoint is missing.');
 check(contract.includes('@media (min-width: 768px) and (max-width: 1199px) and (orientation: portrait)'), 'Tablet portrait breakpoint is missing.');
 check(contract.includes('@media (max-width: 767px) and (orientation: portrait)'), 'Mobile portrait breakpoint is missing.');

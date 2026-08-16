@@ -1,4 +1,4 @@
-import { access, readFile } from 'node:fs/promises';
+import { access, readFile, stat } from 'node:fs/promises';
 import { constants } from 'node:fs';
 import { resolve } from 'node:path';
 
@@ -86,7 +86,16 @@ for (const scene of story.scenes) {
 for (const key of storyAssetKeys) {
   const path = assetEntries.get(key);
   check(Boolean(path), `Story asset key is missing from manifest: ${key}`);
-  if (path) { try { await access(resolve(root, `public${path}`), constants.R_OK); } catch { failures.push(`Story asset file is missing: ${path}`); } }
+  if (path) {
+    try {
+      const assetFile = resolve(root, `public${path}`);
+      await access(assetFile, constants.R_OK);
+      if (key.startsWith('reflection-')) {
+        check(path.endsWith('.webp'), `${key}: final reflection asset must use WebP`);
+        check((await stat(assetFile)).size <= 100_000, `${key}: final reflection asset exceeds 100 KB`);
+      }
+    } catch { failures.push(`Story asset file is missing: ${path}`); }
+  }
 }
 for (const asset of referencedAssets) {
   try {
