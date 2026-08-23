@@ -33,7 +33,8 @@ npm run check
 3. `dist` و `dist-next` را جابه‌جا کنید.
 4. کانتینر `kids-web-game-demo` را restart کنید تا Bind Mount دوباره resolve شود.
 5. سرویس API را با `docker compose up -d --build api` به‌روزرسانی کنید.
-6. آدرس `http://SERVER_IP:8397/`، `?library=1`، `?play=1`، `?play=oak-rescue` و `/admin` را Smoke Test کنید.
+6. برای کانتینر demo روی پورت `8397`، فایل `deploy/nginx.demo.conf` را به `/etc/nginx/conf.d/default.conf` mount کنید تا `/api/` به سرویس `api` پراکسی شود.
+7. آدرس `http://SERVER_IP:8397/`، `?library=1`، `?play=1`، `?play=oak-rescue` و `/admin` را Smoke Test کنید.
 
 ## Rollback
 
