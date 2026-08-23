@@ -9,7 +9,8 @@ const failures = [];
 const check = (condition, message) => { if (!condition) failures.push(message); };
 
 for (const event of ['start', 'scene_enter', 'choice', 'interaction', 'complete', 'replay', 'heartbeat']) check(client.includes(`'${event}'`) && server.includes(`'${event}'`), `Event contract is missing ${event}`);
-check(client.includes('crypto.randomUUID()'), 'Anonymous UUID generation is missing.');
+check(client.includes('globalThis.crypto?.randomUUID'), 'Native anonymous UUID generation is missing.');
+check(client.includes('new Uint8Array(16)') && client.includes('Math.random()'), 'HTTP-compatible UUID fallback is missing.');
 check(!client.includes('profile.name') && !client.includes('profile.age'), 'PII must not enter analytics payloads.');
 check(migration.includes('event_id uuid PRIMARY KEY'), 'Database deduplication key is missing.');
 check(server.includes("timeZone: 'Asia/Tehran'"), 'Tehran reporting timezone is missing.');
