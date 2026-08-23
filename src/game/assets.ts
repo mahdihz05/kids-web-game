@@ -41,6 +41,19 @@ export const assetManifest: GameAsset[] = [
   { key: 'tool-scissors', path: '/assets/tools/tool-scissors-v1.png', type: 'image' },
   { key: 'tool-ribbon', path: '/assets/tools/tool-ribbon-v1.png', type: 'image' },
   { key: 'craft-acorn', path: '/assets/tools/craft-acorn-v1.png', type: 'image' },
+  { key: 'oak-river-problem', path: '/assets/oak-rescue/scenes/river-problem-v1.webp', type: 'image' },
+  { key: 'oak-feelings', path: '/assets/oak-rescue/scenes/feelings-v1.webp', type: 'image' },
+  { key: 'oak-clue-search', path: '/assets/oak-rescue/scenes/clue-search-v1.webp', type: 'image' },
+  { key: 'oak-compare-solutions', path: '/assets/oak-rescue/scenes/compare-solutions-v1.webp', type: 'image' },
+  { key: 'oak-stones-consequence', path: '/assets/oak-rescue/scenes/stones-consequence-v1.webp', type: 'image' },
+  { key: 'oak-net-workshop', path: '/assets/oak-rescue/scenes/net-workshop-v1.webp', type: 'image' },
+  { key: 'oak-finale', path: '/assets/oak-rescue/scenes/finale-v1.webp', type: 'image' },
+  { key: 'oak-tool-rope', path: '/assets/oak-rescue/tools/strong-rope-v1.webp', type: 'image' },
+  { key: 'oak-tool-hoop', path: '/assets/oak-rescue/tools/wooden-hoop-v1.webp', type: 'image' },
+  { key: 'oak-tool-stick', path: '/assets/oak-rescue/tools/weaving-stick-v1.webp', type: 'image' },
+  { key: 'oak-reflection-compare', path: '/assets/oak-rescue/reflection/compare-v1.webp', type: 'image' },
+  { key: 'oak-reflection-consequence', path: '/assets/oak-rescue/reflection/consequence-v1.webp', type: 'image' },
+  { key: 'oak-reflection-change-route', path: '/assets/oak-rescue/reflection/change-route-v1.webp', type: 'image' },
 ];
 
 const assetMap = new Map(assetManifest.map((asset) => [asset.key, asset.path]));

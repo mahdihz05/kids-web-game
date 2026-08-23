@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
 const story = JSON.parse(await readFile(resolve(root, 'src/data/story.json'), 'utf8'));
+const oakStory = JSON.parse(await readFile(resolve(root, 'src/data/oak-rescue.json'), 'utf8'));
 const missionsSource = await readFile(resolve(root, 'src/data/missions.ts'), 'utf8');
 const appSource = await readFile(resolve(root, 'src/App.tsx'), 'utf8');
 const introSource = await readFile(resolve(root, 'src/components/StoryIntro.tsx'), 'utf8');
@@ -64,8 +65,8 @@ check(stylesSource.includes('@media (prefers-reduced-motion: reduce)'), 'Reduced
 
 const missionFlags = [...missionsSource.matchAll(/unlocked:\s*(true|false)/g)].map((match) => match[1]);
 check(missionFlags.length === 10, 'Exactly ten missions must be registered.');
-check(missionFlags.filter((flag) => flag === 'true').length === 1, 'Exactly one mission must be unlocked.');
-check(missionFlags.slice(1).every((flag) => flag === 'false'), 'Missions 2-10 must remain locked.');
+check(missionFlags.filter((flag) => flag === 'true').length === 2, 'Exactly two missions must be unlocked.');
+check(missionFlags.slice(2).every((flag) => flag === 'false'), 'Missions 3-10 must remain locked.');
 
 check(appSource.includes("params.has('library')"), 'Library smoke-test route is missing.');
 check(appSource.includes('<PhaseJourney'), 'Persistent phase journey is missing.');
@@ -81,13 +82,14 @@ for (const source of [appSource, introSource, hubSource, assetManifest]) {
 
 const assetEntries = new Map([...assetManifest.matchAll(/key:\s*'([^']+)'\s*,\s*path:\s*'([^']+)'/g)].map((match) => [match[1], match[2]]));
 const storyAssetKeys = new Set([story.coverImage]);
-for (const scene of story.scenes) {
+for (const scene of [...story.scenes, ...oakStory.scenes]) {
   storyAssetKeys.add(scene.image);
   for (const choice of scene.choices ?? []) storyAssetKeys.add(choice.image);
   for (const item of scene.dragItems ?? []) storyAssetKeys.add(item.image);
   for (const item of scene.craftItems ?? []) storyAssetKeys.add(item.image);
   for (const prompt of scene.reflectionPrompts ?? []) for (const option of prompt.options) storyAssetKeys.add(option.image);
 }
+storyAssetKeys.add(oakStory.coverImage);
 for (const key of storyAssetKeys) {
   const path = assetEntries.get(key);
   check(Boolean(path), `Story asset key is missing from manifest: ${key}`);
@@ -123,4 +125,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`✓ V1 contract validated: ${story.scenes.length} scenes, 6 phases, 1 unlocked mission, ${referencedAssets.size} checked assets.`);
+console.log(`✓ V1 regression contract validated: ${story.scenes.length} scenes, 6 phases, first mission unchanged, ${referencedAssets.size} checked assets.`);

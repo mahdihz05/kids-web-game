@@ -14,13 +14,13 @@ export function ResultPanel({ story, scene, progress, onRestart, onHome }: { sto
   ];
   return <div className="result-panel">
     <div className="result-stars" aria-label={`${stars} ستاره از ۳ ستاره`}>{[1, 2, 3].map((star) => <span className={star <= stars ? 'active' : ''} key={star}>★</span>)}</div>
-    <div className="result-badge"><span>🏅</span><div><small>نشان تازه</small><strong>فکرکننده‌ی خوب</strong></div></div>
+    <div className="result-badge"><span>🏅</span><div><small>نشان تازه</small><strong>{story.badgeTitle ?? 'فکرکننده‌ی خوب'}</strong></div></div>
     <div className="result-score"><small>امتیاز مأموریت</small><strong>{progress.score}</strong></div>
     <p className="result-summary">{DialogueSystem.storyChoiceSummary(progress.choices)}</p>
     <p className="result-reason">{DialogueSystem.reasonSummary(progress.choices, reflectionScene)}</p>
     {progress.reflections.wish && <p className="result-wish">🌙 آرزوی دفعه بعد: {progress.reflections.wish.text}</p>}
     <div className="mini-skills">{metrics.map((metric) => <div key={metric.id}><span>{metric.label}</span><i><b style={{ width: `${Math.min(100, metric.value * 10)}%` }} /></i></div>)}</div>
     <div className="learning-card"><span>💡</span><p>{scene.learningSummary}</p></div>
-    <div className="result-actions"><button className="primary-button" type="button" onClick={onHome}>ادامه در دهکده</button><button className="secondary-button" type="button" onClick={onRestart}>↻ {scene.actionLabel}</button></div>
+    <div className="result-actions"><button className="primary-button" type="button" onClick={onHome}>ادامه در دهکده</button><button className="secondary-button" type="button" onClick={onRestart}>↻ {scene.actionLabel ?? 'دوباره بازی کن'}</button></div>
   </div>;
 }

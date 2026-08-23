@@ -68,6 +68,14 @@ export interface ReflectionPrompt {
   options: ReflectionOption[];
 }
 
+export interface SolutionComparisonRow {
+  solution: string;
+  icon: string;
+  speed: string;
+  amount: string;
+  cooperation: string;
+}
+
 export interface StoryScene {
   id: string;
   type: SceneType;
@@ -91,7 +99,10 @@ export interface StoryScene {
   dropTarget?: { label: string; icon: string; nextScene: string };
   craftItems?: CraftItem[];
   requiredCraftCount?: number;
+  craftUnitLabel?: string;
+  craftCompleteLabel?: string;
   reflectionPrompts?: ReflectionPrompt[];
+  solutionComparison?: { rows: SolutionComparisonRow[] };
   nextScene?: string;
   learningSummary?: string;
 }
@@ -101,6 +112,7 @@ export interface Story {
   title: string;
   subtitle: string;
   description: string;
+  badgeTitle?: string;
   coverImage: string;
   startScene: string;
   totalPhases: number;

@@ -17,6 +17,7 @@
   right: auto;
   bottom: auto;
 }
+
 .game-app .game-stage .game-canvas { z-index: 0; }
 .game-app .game-stage .scene-vignette { z-index: 1; pointer-events: none; }
 .game-app .game-stage .interaction-layer { z-index: 3; }
@@ -422,4 +423,27 @@
 
 @media (prefers-reduced-motion: reduce) {
   .game-app .game-canvas__image { transition: none; }
+}
+
+/* Reflection cards use dedicated square artwork, like mission one. */
+.game-app .reflection-prompt > div { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+.game-app .reflection-option { min-height: 76px; display: grid; grid-template-columns: 76px minmax(0, 1fr); align-items: center; padding: 0; }
+.game-app .reflection-option img { inline-size: 76px; block-size: 76px; aspect-ratio: 1; object-fit: cover; object-position: center; background: #f5f1eb; }
+.game-app .reflection-option span { margin: 0; padding: 8px; }
+
+@media (min-width: 1200px) {
+  .game-app .reflection-option { min-height: 88px; grid-template-columns: 88px minmax(0, 1fr); }
+  .game-app .reflection-option img { inline-size: 88px; block-size: 88px; }
+}
+
+@media (max-width: 767px) and (orientation: portrait) {
+  .game-app .reflection-prompt > div { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+  .game-app .reflection-option { min-height: 60px; grid-template-columns: 60px minmax(0, 1fr); }
+  .game-app .reflection-option img { inline-size: 60px; block-size: 60px; }
+  .game-app .reflection-option span { padding: 4px; font-size: 9px; }
+}
+
+@media (max-height: 600px) and (orientation: landscape) {
+  .game-app .reflection-option { min-height: 48px; grid-template-columns: 48px minmax(0, 1fr); }
+  .game-app .reflection-option img { inline-size: 48px; block-size: 48px; }
 }

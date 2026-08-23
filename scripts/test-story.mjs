@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
 const story = JSON.parse(await readFile(resolve(root, 'src/data/story.json'), 'utf8'));
+const oakStory = JSON.parse(await readFile(resolve(root, 'src/data/oak-rescue.json'), 'utf8'));
 const scenes = new Map(story.scenes.map((scene) => [scene.id, scene]));
 const failures = [];
 const check = (condition, message) => { if (!condition) failures.push(message); };
@@ -67,3 +68,60 @@ for (const [width, height, label] of [[1440, 900, 'desktop'], [768, 1024, 'table
 
 if (failures.length) { console.error(failures.map((failure) => `✗ ${failure}`).join('\n')); process.exit(1); }
 console.log(`✓ Story graph passed: ${story.scenes.length} scenes, both routes complete, flower repair returns correctly.`);
+
+function validateStoryGraph(candidate) {
+  const byId = new Map(candidate.scenes.map((scene) => [scene.id, scene]));
+  const reachable = new Set();
+  const pending = [candidate.startScene];
+  while (pending.length) {
+    const id = pending.shift();
+    if (reachable.has(id)) continue;
+    reachable.add(id);
+    const scene = byId.get(id);
+    check(Boolean(scene), `${candidate.id}: missing scene ${id}`);
+    if (!scene) continue;
+    if (scene.nextScene) pending.push(scene.nextScene);
+    if (scene.dropTarget?.nextScene) pending.push(scene.dropTarget.nextScene);
+    for (const choice of scene.choices ?? []) {
+      check(byId.has(choice.nextScene), `${candidate.id}/${scene.id}: missing choice target ${choice.nextScene}`);
+      if (!choice.retry) pending.push(choice.nextScene);
+      else check(choice.nextScene === scene.id, `${candidate.id}/${scene.id}/${choice.id}: retry must remain on scene`);
+    }
+  }
+  check(reachable.size === candidate.scenes.length, `${candidate.id}: unreachable scenes ${candidate.scenes.filter((scene) => !reachable.has(scene.id)).map((scene) => scene.id).join(', ')}`);
+}
+
+validateStoryGraph(oakStory);
+const oakScenes = new Map(oakStory.scenes.map((scene) => [scene.id, scene]));
+check(oakScenes.get('oak-clues')?.hotspots?.length === 3, 'Oak rescue must include three responsive clues.');
+check(oakScenes.get('oak-tools')?.requiredItemIds?.length === 3, 'Oak rescue must require three net tools.');
+check(oakScenes.get('oak-tools')?.dragItems?.length === 6, 'Oak rescue must show the six tools from the client flow.');
+check(oakScenes.get('oak-weave')?.requiredCraftCount === 3, 'Oak rescue net must have three ordered craft steps.');
+check(oakScenes.has('oak-rabbit-result') && oakScenes.has('oak-bridge-result') && oakScenes.has('oak-rabbit-repair') && oakScenes.has('oak-bridge-repair'), 'Oak rescue consequence/repair paths are incomplete.');
+check(oakScenes.get('oak-feeling')?.choices?.length === 4 && oakScenes.get('oak-feeling').choices.every((choice) => !choice.retry && choice.nextScene === 'oak-clues'), 'Every feeling must be accepted and connected to the story.');
+check(oakScenes.get('oak-final-compare')?.solutionComparison?.rows?.length === 3, 'Oak rescue must include the final three-way solution comparison.');
+check(JSON.stringify(oakScenes.get('oak-final-compare')?.solutionComparison).includes('speed') && JSON.stringify(oakScenes.get('oak-final-compare')?.solutionComparison).includes('amount') && JSON.stringify(oakScenes.get('oak-final-compare')?.solutionComparison).includes('cooperation'), 'Final comparison must cover speed, acorn amount and cooperation.');
+check(JSON.stringify(oakScenes.get('oak-reflection')?.reflectionPrompts?.map((prompt) => prompt.options.length)) === '[2,2,3]', 'Oak reflection must preserve the 2/2/3 option structure from the deck.');
+function followOak(decisions) {
+  let id = oakStory.startScene;
+  const route = [];
+  for (let guard = 0; guard < 40; guard += 1) {
+    const scene = oakScenes.get(id); if (!scene) break;
+    route.push(id); if (scene.type === 'result') return { route, result: id };
+    if (scene.type === 'choice') id = (scene.choices.find((choice) => choice.id === decisions[scene.id]) ?? scene.choices.find((choice) => !choice.retry)).nextScene;
+    else if (scene.type === 'dragDrop') id = scene.dropTarget.nextScene;
+    else id = scene.nextScene;
+  }
+  return { route };
+}
+const oakRoutes = {
+  net: followOak({ 'oak-compare': 'rope-net' }),
+  rabbit: followOak({ 'oak-compare': 'rabbit-jump', 'oak-rabbit-repair': 'try-net' }),
+  bridge: followOak({ 'oak-compare': 'log-bridge', 'oak-bridge-repair': 'try-net' }),
+};
+for (const [name, run] of Object.entries(oakRoutes)) check(run.result === 'oak-result', `Oak ${name} route does not reach its result.`);
+check(oakRoutes.rabbit.route.includes('oak-rabbit-result') && oakRoutes.rabbit.route.includes('oak-rabbit-repair'), 'Rabbit route must save a few acorns, then reopen the decision.');
+check(oakRoutes.bridge.route.includes('oak-bridge-result') && oakRoutes.bridge.route.includes('oak-bridge-repair'), 'Bridge route must show the slow/heavy consequence and reopen the decision.');
+for (const run of Object.values(oakRoutes)) check(run.route.includes('oak-final-compare') && run.route.includes('oak-reflection'), 'Every oak route must end with comparison and reflection.');
+if (failures.length) { console.error(failures.map((failure) => `✗ ${failure}`).join('\n')); process.exit(1); }
+console.log(`✓ Oak rescue graph passed: ${oakStory.scenes.length} scenes, deck-aligned net/rabbit/bridge routes complete.`);

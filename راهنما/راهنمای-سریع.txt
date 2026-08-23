@@ -1,0 +1,47 @@
+راهنمای سریع انتشار آنلاین بازی
+================================
+
+کاربر نهایی فقط نشانی سایت را در مرورگر باز می‌کند و هیچ فایل یا برنامه‌ای نصب نمی‌کند.
+
+۱) Terminal را در پوشه پروژه باز کنید.
+
+۲) این فرمان‌ها را به‌ترتیب اجرا کنید:
+
+   npm ci
+   npm run check
+   npm run build
+
+۳) بعد از موفقیت build، پوشه dist ساخته می‌شود.
+
+۴) برای خود بازی، محتوای داخل dist را در ریشه سایت مانند public_html آپلود کنید.
+
+۵) اگر گزارش مدیریت باید فعال باشد، فایل .env را از روی .env.example بسازید، مقادیر Production را امن تنظیم کنید و روی سرور اجرا کنید:
+
+   docker compose up --build -d
+
+۶) تنظیم Nginx باید علاوه بر SPA، مسیر /api/ را به http://127.0.0.1:3001 پراکسی کند. نمونه آماده در deploy/nginx.conf.example است.
+
+نمونه آپلود با SSH:
+
+   scp -r dist/* USER@HOST:/home/USER/public_html/
+
+نمونه آپلود روی VPS:
+
+   scp -r dist USER@SERVER:/tmp/kids-web-game-dist
+
+۷) وب‌سرور باید فایل index.html را به‌عنوان صفحه اصلی نمایش دهد و مسیرهای ناشناخته را به index.html برگرداند.
+
+۸) HTTPS را فعال کنید و این نشانی‌ها را تست کنید:
+
+   https://YOUR-DOMAIN/
+   https://YOUR-DOMAIN/?library=1
+   https://YOUR-DOMAIN/?play=1
+   https://YOUR-DOMAIN/?play=oak-rescue
+   https://YOUR-DOMAIN/admin
+
+نکات مهم:
+- قبل از به‌روزرسانی از نسخه آنلاین بکاپ بگیرید.
+- اگر npm run check خطا داد، نسخه را منتشر نکنید.
+- رمز سرور و کلید SSH را داخل ZIP، PDF یا GitHub قرار ندهید.
+- فایل .env و رمز مدیر را فقط در سرور نگه دارید؛ هرگز آن را commit نکنید.
+- توضیحات کامل، روش Nginx، rollback و رفع خطا در PDF همین پوشه قرار دارد.

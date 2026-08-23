@@ -31,5 +31,8 @@ temp/
 tmp-screens/
 tmp-preview.pid
 
+# Local handoff archives (generated for delivery, not versioned)
+تحویل/*.zip
+
 # Local source artwork kept outside the production bundle
 assets-source/generated-scenes/

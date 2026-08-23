@@ -5,7 +5,7 @@ import { ParentGate } from './ParentGate';
 
 interface MissionHubProps {
   profile: ChildProfile;
-  onStart: () => void;
+  onStart: (missionId: string) => void;
   onParent: () => void;
   onStory: () => void;
 }
@@ -24,7 +24,7 @@ export function MissionHub({ profile, onStart, onParent, onStory }: MissionHubPr
 
       <section className="hub-hero">
         <div className="hub-hero__copy">
-          <span className="tiny-label">کتاب اول بیدار شده است!</span>
+          <span className="tiny-label">دو کتاب برای ماجراجویی بیدار شده‌اند!</span>
           <h1>فکر کن، کمک کن<br />و قصه‌ها را زنده کن</h1>
           <p>پشمالو منتظر توست؛ وارد کتابش شو و برای انتخاب یک هدیه ماندگار کمکش کن.</p>
         </div>
@@ -32,19 +32,19 @@ export function MissionHub({ profile, onStart, onParent, onStory }: MissionHubPr
       </section>
 
       <section className="mission-section">
-        <div className="section-title"><div><span>۱۰ قصه آموزشی</span><h2>قفسه کتاب‌های سحرآمیز</h2></div><p>۱ از ۱۰ کتاب بیدار شده</p></div>
+        <div className="section-title"><div><span>۱۰ قصه آموزشی</span><h2>قفسه کتاب‌های سحرآمیز</h2></div><p>۲ از ۱۰ کتاب بیدار شده</p></div>
         <div className="mission-grid">
           {missions.map((mission) => {
             const complete = profile.completedMissions.includes(mission.id);
             return (
               <article className={`mission-card ${mission.unlocked ? 'mission-card--open' : 'mission-card--locked'}`} key={mission.id}>
                 <div className="mission-card__art" style={{ '--card-color': mission.color } as React.CSSProperties}>
-                  <span className="mission-number">{mission.number}</span>{mission.unlocked ? <img className="mission-cover" src="/assets/scenes-v3/calendar-v3.png" alt="پشمالو با جلیقه بنفش و کیف فیروزه‌ای کنار تقویم تولد مادربزرگ" /> : <span className="mission-icon">{mission.icon}</span>}
+                  <span className="mission-number">{mission.number}</span>{mission.unlocked ? <img className="mission-cover" src={mission.coverImage} alt={`تصویر مأموریت ${mission.title}`} /> : <span className="mission-icon">{mission.icon}</span>}
                   {!mission.unlocked && <span className="mission-lock">🔒</span>}
                   {complete && <span className="mission-done">✓ انجام شد</span>}
                 </div>
                 <div className="mission-card__body"><small>{mission.skill}</small><h3>{mission.title}</h3>
-                  {mission.unlocked ? <button className="wake-book" type="button" onClick={onStart}><img src="/assets/brand/magic-wand.png" alt="" />{complete ? 'دوباره وارد کتاب شو' : 'با چوب جادویی بازش کن'} <span>←</span></button> : <p>به‌زودی بیدار می‌شود</p>}
+                  {mission.unlocked ? <button className="wake-book" type="button" onClick={() => onStart(mission.id)}><img src="/assets/brand/magic-wand.png" alt="" />{complete ? 'دوباره وارد کتاب شو' : 'با چوب جادویی بازش کن'} <span>←</span></button> : <p>به‌زودی بیدار می‌شود</p>}
                 </div>
               </article>
             );

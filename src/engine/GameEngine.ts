@@ -66,7 +66,7 @@ export class GameEngine {
       score: ScoreSystem.add(this.progress.score, item.reward.points),
       skillScores,
       craftProgress: { ...this.progress.craftProgress, [scene.id]: [...completed, item.id] },
-      feedback: `${item.label} به گردنبند اضافه شد!`,
+      feedback: scene.craftUnitLabel ? `${item.label} کامل شد!` : `${item.label} به گردنبند اضافه شد!`,
       updatedAt: new Date().toISOString(),
     };
     this.persistAndNotify();

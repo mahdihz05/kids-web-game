@@ -55,12 +55,12 @@ export function InteractionLayer({ scene, progress, onDiscover, onTool, onCraft 
 
   if (scene.type === 'craft') {
     const completed = progress.craftProgress[scene.id] ?? [];
-    return <div className="craft-playground" aria-label="ساخت گردنبند بلوط"><div className="craft-thread" aria-hidden="true" /><div className="craft-items">{scene.craftItems?.map((item, index) => {
+    return <div className="craft-playground" aria-label={scene.prompt ?? 'ساخت مرحله‌ای'}><div className="craft-thread" aria-hidden="true" /><div className="craft-items">{scene.craftItems?.map((item, index) => {
       const done = completed.includes(item.id); const unlocked = index <= completed.length;
       return <button className={`craft-item ${done ? 'craft-item--done' : ''}`} disabled={!unlocked || done} type="button" onClick={() => onCraft(item)} key={item.id} aria-label={`${item.label}${done ? '، اضافه شد' : ''}`}>
         <img src={assetPath(item.image)} alt="" /><small>{done ? 'اضافه شد' : item.label}</small>
       </button>;
-    })}</div><strong className="craft-counter">{completed.length} از {scene.requiredCraftCount ?? scene.craftItems?.length} بلوط</strong></div>;
+    })}</div><strong className="craft-counter">{completed.length} از {scene.requiredCraftCount ?? scene.craftItems?.length} {scene.craftUnitLabel ?? 'بلوط'}</strong></div>;
   }
   return null;
 }

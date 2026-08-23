@@ -5,6 +5,8 @@ const root = resolve(import.meta.dirname, '..');
 const contract = await readFile(resolve(root, 'src/styles/responsive.css'), 'utf8');
 const main = await readFile(resolve(root, 'src/main.tsx'), 'utf8');
 const canvas = await readFile(resolve(root, 'src/components/GameCanvas.tsx'), 'utf8');
+const globalStyles = await readFile(resolve(root, 'src/styles/global.css'), 'utf8');
+const admin = await readFile(resolve(root, 'src/components/AdminDashboard.tsx'), 'utf8');
 const components = await Promise.all([
   'ChoiceGrid.tsx', 'InteractionLayer.tsx', 'ReflectionBoard.tsx', 'MissionHub.tsx', 'StoryIntro.tsx',
 ].map((file) => readFile(resolve(root, 'src/components', file), 'utf8')));
@@ -20,13 +22,16 @@ check(contract.includes('.choice-card:nth-child(3):last-child'), 'Three-choice l
 check(contract.includes('@media (min-width: 1200px)'), 'Desktop breakpoint is missing.');
 check(contract.includes('--scene-width: 60%') && contract.includes('width: calc(40% - 32px)'), 'Desktop scene and inset panel must use a non-overlapping 60/40 split.');
 check(contract.includes('right: 16px') && contract.includes('left: auto'), 'Desktop panel must be inset on the RTL/right side.');
-check(contract.includes('.reflection-option img { height: 78px; object-fit: cover; }'), 'Desktop reflection images must use the enlarged visual layout.');
-check(contract.includes('.reflection-option img { height: 56px; object-fit: cover; }'), 'Mobile reflection images must use the enlarged visual layout.');
+check(contract.includes('grid-template-columns: 88px minmax(0, 1fr)') && contract.includes('block-size: 88px'), 'Desktop reflection cards must use square artwork.');
+check(contract.includes('grid-template-columns: 60px minmax(0, 1fr)') && contract.includes('block-size: 60px'), 'Mobile reflection cards must use square artwork.');
 check(contract.includes('@media (min-width: 768px) and (max-width: 1199px) and (orientation: landscape)'), 'Tablet landscape breakpoint is missing.');
 check(contract.includes('@media (min-width: 768px) and (max-width: 1199px) and (orientation: portrait)'), 'Tablet portrait breakpoint is missing.');
 check(contract.includes('@media (max-width: 767px) and (orientation: portrait)'), 'Mobile portrait breakpoint is missing.');
 check(contract.includes('@media (max-width: 900px) and (max-height: 600px) and (orientation: landscape)'), 'Mobile landscape breakpoint is missing.');
 check(contract.includes('grid-template-columns: repeat(2, minmax(0, 1fr))') && contract.includes('object-fit: cover'), 'Mobile choices must use a compact two-column image grid.');
+check(globalStyles.includes('.admin-table-wrap') && globalStyles.includes('overflow-x: auto'), 'Admin tables must remain usable on narrow screens.');
+check(globalStyles.includes('@media (max-width: 720px)') && globalStyles.includes('.admin-header'), 'Admin mobile header layout is missing.');
+check(admin.includes('admin-table-wrap') && admin.includes('aria-label="بازه گزارش"'), 'Admin responsive/filter contract is missing.');
 
 for (const [index, source] of components.entries()) check(!/<img[^>]+(?:width|height)=/i.test(source), `Component ${index + 1} contains a fixed image dimension.`);
 

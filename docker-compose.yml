@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: motefaker
+      POSTGRES_USER: motefaker
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    volumes:
+      - motefaker_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U motefaker"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://motefaker:${POSTGRES_PASSWORD}@postgres:5432/motefaker
+      ADMIN_PASSWORD_SHA256: ${ADMIN_PASSWORD_SHA256:?set ADMIN_PASSWORD_SHA256}
+      COOKIE_SECRET: ${COOKIE_SECRET:?set COOKIE_SECRET}
+      COOKIE_SECURE: ${COOKIE_SECURE:-true}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:3001:3001"
+volumes:
+  motefaker_pgdata:
