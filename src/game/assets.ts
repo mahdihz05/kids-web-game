@@ -54,6 +54,23 @@ export const assetManifest: GameAsset[] = [
   { key: 'oak-reflection-compare', path: '/assets/oak-rescue/reflection/compare-v1.webp', type: 'image' },
   { key: 'oak-reflection-consequence', path: '/assets/oak-rescue/reflection/consequence-v1.webp', type: 'image' },
   { key: 'oak-reflection-change-route', path: '/assets/oak-rescue/reflection/change-route-v1.webp', type: 'image' },
+  { key: 'oak-problem-food-v2', path: '/assets/oak-rescue/choices-v2/problem-food-v2.webp', type: 'image' },
+  { key: 'oak-problem-weather-v2', path: '/assets/oak-rescue/choices-v2/problem-weather-v2.webp', type: 'image' },
+  { key: 'oak-problem-nest-v2', path: '/assets/oak-rescue/choices-v2/problem-nest-v2.webp', type: 'image' },
+  { key: 'oak-feeling-worried-v2', path: '/assets/oak-rescue/choices-v2/feeling-worried-v2.webp', type: 'image' },
+  { key: 'oak-feeling-happy-v2', path: '/assets/oak-rescue/choices-v2/feeling-happy-v2.webp', type: 'image' },
+  { key: 'oak-feeling-angry-v2', path: '/assets/oak-rescue/choices-v2/feeling-angry-v2.webp', type: 'image' },
+  { key: 'oak-feeling-bored-v2', path: '/assets/oak-rescue/choices-v2/feeling-bored-v2.webp', type: 'image' },
+  { key: 'oak-bridge-building-v2', path: '/assets/oak-rescue/choices-v2/bridge-building-v2.webp', type: 'image' },
+  { key: 'oak-rabbit-stones-v2', path: '/assets/oak-rescue/choices-v2/rabbit-stones-v2.webp', type: 'image' },
+  { key: 'oak-tool-stone-v2', path: '/assets/oak-rescue/choices-v2/tool-stone-v2.webp', type: 'image' },
+  { key: 'oak-tool-leaves-v2', path: '/assets/oak-rescue/choices-v2/tool-leaves-v2.webp', type: 'image' },
+  { key: 'oak-tool-twigs-v2', path: '/assets/oak-rescue/choices-v2/tool-twigs-v2.webp', type: 'image' },
+  { key: 'oak-final-speed-amount-v2', path: '/assets/oak-rescue/choices-v2/final-speed-amount-v2.webp', type: 'image' },
+  { key: 'oak-final-cooperation-v2', path: '/assets/oak-rescue/choices-v2/final-cooperation-v2.webp', type: 'image' },
+  { key: 'oak-final-fewer-tools-v2', path: '/assets/oak-rescue/choices-v2/final-fewer-tools-v2.webp', type: 'image' },
+  { key: 'oak-final-bigger-v2', path: '/assets/oak-rescue/choices-v2/final-bigger-v2.webp', type: 'image' },
+  { key: 'oak-final-prettier-v2', path: '/assets/oak-rescue/choices-v2/final-prettier-v2.webp', type: 'image' },
 ];
 
 const assetMap = new Map(assetManifest.map((asset) => [asset.key, asset.path]));

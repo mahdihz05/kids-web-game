@@ -32,11 +32,30 @@ const stageMetadata: Record<string, Record<string, { title: string; order: numbe
   ].map(([id, title], index) => [id, { title, order: index + 1 }])),
   'oak-rescue': Object.fromEntries([
     ['oak-intro', 'آغاز داستان'], ['oak-problem', 'کشف مشکل'], ['oak-feeling', 'واکنش و احساس'], ['oak-clues', 'پیدا کردن سرنخ‌ها'],
-    ['oak-compare', 'انتخاب راه اول'], ['oak-rabbit-result', 'پیامد پرش خرگوش'], ['oak-rabbit-repair', 'اصلاح تصمیم پس از پرش'],
-    ['oak-bridge-result', 'پیامد ساخت پل'], ['oak-bridge-repair', 'اصلاح تصمیم پس از پل'], ['oak-net-result', 'نتیجه انتخاب تور'],
+    ['oak-compare', 'انتخاب راه‌حل'], ['oak-rabbit-result', 'پیامد پرش خرگوش'], ['oak-bridge-result', 'پیامد ساخت پل'], ['oak-net-result', 'تحلیل راه‌حل تور'],
     ['oak-tools', 'انتخاب ابزار تور'], ['oak-weave', 'بافتن تور'], ['oak-success', 'نجات بلوط‌ها'], ['oak-final-compare', 'مقایسه نهایی راه‌ها'],
-    ['oak-reflection', 'بازاندیشی'], ['oak-result', 'جشن موفقیت'],
+    ['oak-final-question', 'انتخاب بهترین راه‌حل'], ['oak-reflection', 'بازاندیشی'], ['oak-result', 'جشن موفقیت'],
   ].map(([id, title], index) => [id, { title, order: index + 1 }])),
+};
+
+type ChoiceMeta = { id: string; label: string };
+const choiceMetadata: Record<string, Record<string, ChoiceMeta[]>> = {
+  'grandmas-birthday-gift': {
+    'identify-problem': [['no-gift', 'هدیه‌ای ندارد'], ['no-date', 'روز تولد را نمی‌داند'], ['lost-home', 'خانه را گم کرده']].map(([id, label]) => ({ id, label })),
+    feelings: [['confused', 'کمی گیج'], ['worried', 'کمی نگران'], ['happy', 'خیلی خوشحال'], ['sleepy', 'کمی خواب‌آلود']].map(([id, label]) => ({ id, label })),
+    'compare-options': [['consider-flowers', 'گل‌های باغ'], ['consider-necklace', 'گردنبند بلوط']].map(([id, label]) => ({ id, label })),
+    'analysis-reason': [['protect-garden', 'باغ سالم می‌ماند'], ['handmade', 'با دستان خودش می‌سازد'], ['fast', 'پژمرده نمی‌شود'], ['lovely', 'قابل استفاده است']].map(([id, label]) => ({ id, label })),
+    'final-decision': [['flowers', 'گل‌های باغ'], ['necklace', 'گردنبند بلوط']].map(([id, label]) => ({ id, label })),
+    'flower-repair': [['take-all', 'همهٔ گل‌ها'], ['find-another', 'راه دیگر'], ['go-empty', 'بدون هدیه']].map(([id, label]) => ({ id, label })),
+    counterfactual: [['gardener-sad', 'باغبان ناراحت'], ['nothing', 'هیچ اتفاقی'], ['more-flowers', 'گل‌های بیشتر']].map(([id, label]) => ({ id, label })),
+  },
+  'oak-rescue': {
+    'oak-problem': [['not-enough-food', 'غذای زمستان کم شده'], ['cold-weather', 'هوای سرد'], ['broken-nest', 'لانه خراب']].map(([id, label]) => ({ id, label })),
+    'oak-feeling': [['worried', 'خیلی نگران'], ['happy', 'کمی خوشحال'], ['angry', 'کمی عصبانی'], ['bored', 'بی‌حوصله']].map(([id, label]) => ({ id, label })),
+    'oak-compare': [['log-bridge', 'ساختن پل'], ['rope-net', 'بافتن تور'], ['rabbit-jump', 'پریدن از سنگ‌ها']].map(([id, label]) => ({ id, label })),
+    'oak-net-result': [['rabbit-fast', 'خرگوش سریع است'], ['everyone-helps', 'همه کمک می‌کنند'], ['collect-many', 'چند بلوط با هم'], ['needs-rope', 'طناب و زمان']].map(([id, label]) => ({ id, label })),
+    'oak-final-question': [['speed-and-amount', 'سرعت و تعداد بلوط'], ['fewer-tools', 'وسایل کمتر'], ['bigger', 'بزرگ‌تر بودن'], ['prettier', 'قشنگ‌تر بودن']].map(([id, label]) => ({ id, label })),
+  },
 };
 
 function isAdmin(request: { cookies: Record<string, string | undefined>; unsignCookie: (value: string) => { valid: boolean; value: string | null } }) {
@@ -67,7 +86,8 @@ async function report(range: string) {
   const result = await pool.query<DbEvent>(`SELECT device_id, run_id, story_id, event_type, scene_id, choice_id, occurred_at FROM analytics_events ${start ? 'WHERE occurred_at >= $1' : ''} ORDER BY occurred_at`, start ? [start] : []);
   const byStory = new Map<string, DbEvent[]>();
   for (const event of result.rows) byStory.set(event.story_id, [...(byStory.get(event.story_id) ?? []), event]);
-  const games = [...byStory.entries()].map(([storyId, events]) => {
+  const games = Object.entries(titles).map(([storyId, title]) => {
+    const events = byStory.get(storyId) ?? [];
     const runs = new Map<string, DbEvent[]>();
     for (const event of events) runs.set(event.run_id, [...(runs.get(event.run_id) ?? []), event]);
     const completedRuns = [...runs.values()].filter((items) => items.some((item) => item.event_type === 'complete'));
@@ -77,9 +97,12 @@ async function report(range: string) {
       return active / 60_000;
     });
     const starts = events.filter((event) => event.event_type === 'start').length;
-    return { storyId, title: titles[storyId] ?? storyId, starts, completed: completedRuns.length, replays: events.filter((event) => event.event_type === 'replay').length, averageMinutes: Number((minutes.reduce((a, b) => a + b, 0) / (minutes.length || 1)).toFixed(1)), completionRate: starts ? Math.round((completedRuns.length / starts) * 100) : 0 };
+    return { storyId, title, starts, completed: completedRuns.length, replays: events.filter((event) => event.event_type === 'replay').length, averageMinutes: Number((minutes.reduce((a, b) => a + b, 0) / (minutes.length || 1)).toFixed(1)), completionRate: starts ? Math.round((completedRuns.length / starts) * 100) : 0 };
   });
   const stageMap = new Map<string, { storyId: string; sceneId: string; entries: number; choices: Record<string, number>; dropoffs: number }>();
+  for (const [storyId, stages] of Object.entries(stageMetadata)) {
+    for (const sceneId of Object.keys(stages)) stageMap.set(`${storyId}:${sceneId}`, { storyId, sceneId, entries: 0, choices: {}, dropoffs: 0 });
+  }
   for (const event of result.rows) {
     if (!event.scene_id) continue;
     const key = `${event.story_id}:${event.scene_id}`;
@@ -99,7 +122,9 @@ async function report(range: string) {
   }
   const stages = [...stageMap.values()].map((row) => {
     const metadata = stageMetadata[row.storyId]?.[row.sceneId];
-    return { ...row, stageTitle: metadata?.title ?? row.sceneId, order: metadata?.order ?? Number.MAX_SAFE_INTEGER };
+    const choiceOptions = (choiceMetadata[row.storyId]?.[row.sceneId] ?? Object.keys(row.choices).map((id) => ({ id, label: id })))
+      .map((option) => ({ ...option, count: row.choices[option.id] ?? 0 }));
+    return { ...row, choiceOptions, stageTitle: metadata?.title ?? row.sceneId, order: metadata?.order ?? Number.MAX_SAFE_INTEGER };
   }).sort((left, right) => left.storyId.localeCompare(right.storyId) || left.order - right.order || left.sceneId.localeCompare(right.sceneId));
   return { generatedAt: new Date().toISOString(), range, games, stages };
 }
@@ -107,7 +132,6 @@ async function report(range: string) {
 const cell = (text: string, bold = false) => new TableCell({ children: [new Paragraph({ bidirectional: true, alignment: AlignmentType.RIGHT, children: [new TextRun({ text, bold })] })] });
 async function reportDocx(data: Awaited<ReturnType<typeof report>>) {
   const gameHeaders = ['بازی', 'شروع', 'تکمیل', 'Replay', 'میانگین زمان', 'نرخ تکمیل'];
-  const stageHeaders = ['مرحله', 'ورود', 'انتخاب‌ها', 'ریزش'];
   const gameRows = data.games.map((row) => [row.title, row.starts, row.completed, row.replays, `${row.averageMinutes} دقیقه`, `${row.completionRate}٪`].map((value) => cell(String(value))));
   const document = new Document({ sections: [{ properties: {}, children: [
     new Paragraph({ bidirectional: true, alignment: AlignmentType.CENTER, heading: HeadingLevel.TITLE, text: 'گزارش مدیریتی بازی‌های متفکر' }),
@@ -115,10 +139,15 @@ async function reportDocx(data: Awaited<ReturnType<typeof report>>) {
     new Paragraph({ bidirectional: true, alignment: AlignmentType.RIGHT, heading: HeadingLevel.HEADING_1, text: 'خلاصه بازی‌ها' }),
     new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [new TableRow({ children: gameHeaders.map((value) => cell(value, true)) }), ...gameRows.map((children) => new TableRow({ children }))] }),
     ...data.games.flatMap((game) => {
-      const rows = data.stages.filter((row) => row.storyId === game.storyId).map((row, index) => {
-        const choices = Object.entries(row.choices);
-        const choiceSummary = choices.length ? choices.map(([key, value]) => `${key}: ${value}`).join('، ') : '—';
-        return new TableRow({ children: [`${index + 1}. ${row.stageTitle}`, row.entries, choiceSummary, row.dropoffs].map((value) => cell(String(value))) });
+      const gameStages = data.stages.filter((row) => row.storyId === game.storyId);
+      const maxChoices = Math.max(0, ...gameStages.map((row) => row.choiceOptions.length));
+      const stageHeaders = ['مرحله', 'ورود', ...Array.from({ length: maxChoices }, (_, index) => `انتخاب ${index + 1}`), 'ریزش'];
+      const rows = gameStages.map((row, index) => {
+        const choices = Array.from({ length: maxChoices }, (_, choiceIndex) => {
+          const option = row.choiceOptions[choiceIndex];
+          return option ? `${option.count} — ${option.label}` : '—';
+        });
+        return new TableRow({ children: [`${index + 1}. ${row.stageTitle}`, row.entries, ...choices, row.dropoffs].map((value) => cell(String(value))) });
       });
       return [new Paragraph({ bidirectional: true, alignment: AlignmentType.RIGHT, heading: HeadingLevel.HEADING_1, text: `جزئیات ${game.title}` }), new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [new TableRow({ children: stageHeaders.map((value) => cell(value, true)) }), ...rows] })];
     }),

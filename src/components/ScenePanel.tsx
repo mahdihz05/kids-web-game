@@ -25,7 +25,7 @@ export function ScenePanel({ story, snapshot, onChoose, onContinue, onContinueSc
     {!progress.pendingConsequence && scene.solutionComparison && <SolutionComparison rows={scene.solutionComparison.rows} />}
     {progress.pendingConsequence ? <button className="primary-button" onClick={onContinue} type="button">ادامه ←</button>
       : scene.type === 'dialogue' ? <button className="primary-button" onClick={onContinueScene} type="button">{scene.actionLabel} ←</button>
-      : scene.type === 'choice' ? <ChoiceGrid choices={scene.choices ?? []} onChoose={onChoose} />
+      : scene.type === 'choice' ? <ChoiceGrid choices={scene.choices ?? []} onChoose={onChoose} interaction={scene.choiceInteraction} />
       : scene.type === 'hotspot' ? <div className="progress-action"><span>{foundCount} از {scene.hotspots?.length} سرنخ</span><button disabled={!hotspotReady} className="primary-button" onClick={onContinueScene} type="button">{hotspotReady ? scene.actionLabel : 'سرنخ‌ها را پیدا کن'}</button></div>
       : scene.type === 'dragDrop' ? <button disabled={!toolReady} className="primary-button" onClick={onContinueTool} type="button">{toolReady ? 'بریم بسازیم ←' : 'ابزارها را پیدا کن'}</button>
       : scene.type === 'craft' ? <button disabled={!craftReady} className="primary-button" onClick={onContinueCraft} type="button">{craftReady ? (scene.craftCompleteLabel ?? 'گردنبند آماده شد! ←') : `${craftCount} از ${scene.requiredCraftCount} ${scene.craftUnitLabel ?? 'بلوط'}`}</button>

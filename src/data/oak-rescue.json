@@ -15,121 +15,113 @@
   "scenes": [
     {
       "id": "oak-intro", "type": "dialogue", "phase": 1, "phaseTitle": "کشف مسئله", "characterName": "کوکی متفکر",
-      "text": "یک روز صبح، باد شدیدی در جنگل وزید و خیلی از بلوط‌ها را داخل رودخانه انداخت. سنجاب‌ها با نگرانی به بلوط‌هایی که با آب دور می‌شدند نگاه کردند و یاد زمستان افتادند.",
-      "prompt": "بیایید مشکل سنجاب‌ها را پیدا کنیم.", "narration": "یک روز صبح، باد شدیدی در جنگل وزید و خیلی از بلوط‌ها را داخل رودخانه انداخت. سنجاب‌ها با نگرانی به بلوط‌ها نگاه کردند و یاد زمستان افتادند.",
-      "bookText": "باد پاییزی و بلوط‌ها", "image": "oak-river-problem", "actionLabel": "مشکل سنجاب‌ها را پیدا کنیم", "nextScene": "oak-problem"
+      "text": "بیایید مشکل سنجاب‌ها را پیدا کنیم.",
+      "prompt": "روی کتاب بالای صفحه بزن و داستان را بخوان.", "narration": "یک روز صبح، باد شدیدی در جنگل وزید و خیلی از بلوط‌ها را داخل رودخانه انداخت. سنجاب‌ها با نگرانی به بلوط‌هایی که با آب رودخانه دور می‌شدند نگاه کردند و یاد زمستان افتادند.",
+      "bookText": "یک روز صبح، باد شدیدی در جنگل وزید و خیلی از بلوط‌ها را داخل رودخانه انداخت. سنجاب‌ها با نگرانی به بلوط‌هایی که با آب رودخانه دور می‌شدند نگاه کردند و یاد زمستان افتادند.", "image": "oak-river-problem", "actionLabel": "مشکل سنجاب‌ها را پیدا کنیم", "nextScene": "oak-problem"
     },
     {
       "id": "oak-problem", "type": "choice", "phase": 1, "phaseTitle": "کشف مسئله", "characterName": "سنجاب‌ها",
-      "text": "مشکل سنجاب‌ها چیست؟", "prompt": "به بلوط‌هایی که با آب رودخانه دور می‌شوند نگاه کن.", "image": "oak-river-problem",
+      "text": "مشکل سنجاب‌ها چیست؟", "prompt": "به بلوط‌هایی که با آب رودخانه دور می‌شوند نگاه کن. مشکل سنجاب‌ها چیست؟", "image": "oak-river-problem", "choiceInteraction": "immediate",
       "choices": [
-        { "id": "not-enough-food", "text": "برای زمستانشان دیگر غذای کافی ندارند", "caption": "غذای زمستان کم شده", "image": "oak-river-problem", "nextScene": "oak-feeling", "score": 2, "skill": "discovery", "summary": "فهمید بلوط‌ها غذای زمستان سنجاب‌ها هستند." },
-        { "id": "cold-weather", "text": "هوا سرد و بارانی شده است", "caption": "هوای سرد", "image": "oak-feelings", "nextScene": "oak-problem", "score": 0, "retry": true, "feedback": "سرد و بارانی شدن هوا مهم است، اما مشکل اصلی چیز دیگری است. دوباره به بلوط‌های داخل رودخانه نگاه کن." },
-        { "id": "broken-nest", "text": "لانه‌شان خراب شده است", "caption": "لانه خراب", "image": "oak-clue-search", "nextScene": "oak-problem", "score": 0, "retry": true, "feedback": "لانه سنجاب‌ها سالم است. چیزی که آن‌ها را نگران کرده، بلوط‌هایی است که با آب دور می‌شوند." }
+        { "id": "not-enough-food", "text": "برای زمستانشان دیگر غذای کافی ندارند", "caption": "غذای زمستان کم شده", "image": "oak-problem-food-v2", "nextScene": "oak-feeling", "score": 2, "skill": "discovery", "consequence": "آفرین! درست فهمیدی. بلوط‌ها غذای زمستان سنجاب‌ها هستند و حالا دیگر غذای کافی ندارند.", "summary": "فهمید بلوط‌ها غذای زمستان سنجاب‌ها هستند." },
+        { "id": "cold-weather", "text": "هوا سرد و بارانی شده است", "caption": "هوای سرد", "image": "oak-problem-weather-v2", "nextScene": "oak-problem", "score": 0, "retry": true, "feedback": "سرد و بارانی شدن هوا مهم است، اما مشکل اصلی سنجاب‌ها چیز دیگری است. دوباره به بلوط‌های داخل رودخانه نگاه کن." },
+        { "id": "broken-nest", "text": "لانه‌شان خراب شده است", "caption": "لانه خراب", "image": "oak-problem-nest-v2", "nextScene": "oak-problem", "score": 0, "retry": true, "feedback": "لانهٔ سنجاب‌ها سالم است. چیزی که آن‌ها را نگران کرده، بلوط‌هایی است که با آب رودخانه دور می‌شوند." }
       ]
     },
     {
       "id": "oak-feeling", "type": "choice", "phase": 2, "phaseTitle": "واکنش و احساس", "characterName": "کوکی متفکر",
-      "text": "سنجاب‌ها چه احساسی دارند؟", "prompt": "هر احساسی را که می‌بینی انتخاب کن؛ انتخابت را به داستان وصل می‌کنیم.", "image": "oak-feelings",
+      "text": "سنجاب‌ها چه احساسی دارند؟", "prompt": "سنجاب‌ها چه احساسی دارند؟", "image": "oak-feelings", "choiceInteraction": "immediate",
       "choices": [
-        { "id": "worried", "text": "آن‌ها نگران بودند، چون بلوط‌ها غذای زمستانشان بودند.", "caption": "خیلی نگران", "image": "feeling-worried", "nextScene": "oak-clues", "score": 1, "skill": "analysis", "summary": "احساس نگرانی سنجاب‌ها را به ماجرا وصل کرد." },
-        { "id": "happy", "text": "شاید دیدن رودخانه برایشان جالب بود، اما بلوط‌هایشان داشتند دور می‌شدند.", "caption": "کمی خوشحال", "image": "feeling-happy", "nextScene": "oak-clues", "score": 1, "skill": "analysis", "summary": "احساس شادی را بدون درست و غلط کردن به داستان وصل کرد." },
-        { "id": "angry", "text": "آن‌ها از دور شدن بلوط‌ها ناراحت و کمی عصبانی بودند.", "caption": "کمی عصبانی", "image": "feeling-confused", "nextScene": "oak-clues", "score": 1, "skill": "analysis", "summary": "احساس عصبانیت را به دور شدن بلوط‌ها وصل کرد." },
-        { "id": "bored", "text": "آن‌ها مدتی کنار رودخانه ایستادند و به بلوط‌های دورشونده نگاه کردند.", "caption": "حوصله‌شان سر رفته", "image": "feeling-sleepy", "nextScene": "oak-clues", "score": 1, "skill": "analysis", "summary": "انتخابش را به صحنه و رفتار سنجاب‌ها وصل کرد." }
+        { "id": "worried", "text": "احساس نگرانی", "caption": "خیلی نگران", "image": "oak-feeling-worried-v2", "nextScene": "oak-clues", "score": 1, "skill": "analysis", "consequence": "درست است؛ سنجاب‌ها نگران بودند، چون بلوط‌ها غذای زمستانشان بودند.", "summary": "احساس نگرانی سنجاب‌ها را به ماجرا وصل کرد." },
+        { "id": "happy", "text": "احساس خوشحالی", "caption": "کمی خوشحال", "image": "oak-feeling-happy-v2", "nextScene": "oak-clues", "score": 1, "skill": "analysis", "consequence": "شاید دیدن رودخانه برایشان جالب باشد، اما بلوط‌هایشان داشتند دور می‌شدند.", "summary": "احساس شادی را به داستان وصل کرد." },
+        { "id": "angry", "text": "احساس عصبانیت", "caption": "کمی عصبانی", "image": "oak-feeling-angry-v2", "nextScene": "oak-clues", "score": 1, "skill": "analysis", "consequence": "ممکن است از دور شدن بلوط‌ها ناراحت و کمی عصبانی شده باشند.", "summary": "احساس عصبانیت را به دور شدن بلوط‌ها وصل کرد." },
+        { "id": "bored", "text": "احساس بی‌حوصلگی", "caption": "حوصله‌شان سر رفته", "image": "oak-feeling-bored-v2", "nextScene": "oak-clues", "score": 1, "skill": "analysis", "consequence": "آن‌ها مدتی کنار رودخانه ایستاده‌اند، اما نگاه نگرانشان بیشتر از بی‌حوصلگی دیده می‌شود.", "summary": "انتخابش را به صحنه و رفتار سنجاب‌ها وصل کرد." }
       ]
     },
     {
       "id": "oak-clues", "type": "hotspot", "phase": 3, "phaseTitle": "پیدا کردن سرنخ‌ها", "characterName": "جغد دانا",
-      "text": "حیوان‌ها تصمیم گرفتند قبل از هر کاری اطراف جنگل را خوب بگردند تا چیزهایی برای برگرداندن بلوط‌ها پیدا کنند.", "prompt": "سنگ‌ها، طناب و تنه درخت را پیدا کن.", "image": "oak-clue-search", "actionLabel": "راه‌حل‌ها را مقایسه کنیم", "nextScene": "oak-compare",
+      "text": "حیوان‌ها تصمیم گرفتند قبل از هر کاری اطراف جنگل را خوب بگردند تا چیزهایی برای برگرداندن بلوط‌ها پیدا کنند.", "prompt": "سرنخ‌ها را پیدا کن.", "image": "oak-clue-search", "actionLabel": "راه‌حل‌ها را مقایسه کنیم", "nextScene": "oak-compare",
       "hotspots": [
-        { "id": "stones", "label": "سنگ‌ها", "icon": "🪨", "x": 18, "y": 79, "clue": "شاید خرگوش بتواند از روی سنگ‌ها بپرد و چند بلوط را برگرداند.", "reward": { "points": 1, "skill": "discovery" } },
-        { "id": "rope", "label": "طناب", "icon": "🪢", "x": 65, "y": 16, "clue": "طناب محکم است و شاید بتوان با آن یک تور ساخت.", "reward": { "points": 1, "skill": "discovery" } },
-        { "id": "trunk", "label": "تنه درخت", "icon": "🪵", "x": 71, "y": 72, "clue": "تنه درخت محکم و بلند است و شاید بتوان با آن پل ساخت.", "reward": { "points": 1, "skill": "discovery" } }
+        { "id": "stones", "label": "سنگ‌ها", "icon": "🪨", "x": 18, "y": 79, "clue": "این سنگ‌ها کنار رودخانه‌اند. شاید بتوانند برای نزدیک شدن به بلوط‌ها کمک کنند.", "reward": { "points": 1, "skill": "discovery" } },
+        { "id": "rope", "label": "طناب", "icon": "🪢", "x": 65, "y": 16, "clue": "این طناب محکم به نظر می‌رسد. شاید بتوان از آن برای ساختن چیزی استفاده کرد.", "reward": { "points": 1, "skill": "discovery" } },
+        { "id": "trunk", "label": "تنه درخت", "icon": "🪵", "x": 71, "y": 72, "clue": "این تنهٔ درخت محکم و بلند است. شاید بتواند راهی برای رسیدن به آن طرف رودخانه باشد.", "reward": { "points": 1, "skill": "discovery" } }
       ]
     },
     {
       "id": "oak-compare", "type": "choice", "phase": 4, "phaseTitle": "تصمیم و مقایسه", "characterName": "دوستان جنگل",
-      "text": "خرس ساختن پل، جغد بافتن تور و خرگوش پریدن از روی سنگ‌ها را پیشنهاد کردند.", "prompt": "کدام راه را اول امتحان کنیم؟", "image": "oak-compare-solutions",
+      "text": "راه‌حل‌های حیوان‌ها را با هم مقایسه کن.", "prompt": "کدام راه برای نجات بلوط‌ها بهتر است؟", "bookText": "حیوان‌ها چیزهایی را که پیدا کرده بودند کنار هم گذاشتند و شروع کردند به فکر کردن. خرس یک تنهٔ درخت پیدا کرد، جغد طناب را برداشت و خرگوش به سنگ‌های کنار رودخانه نگاه کرد. خرس گفت: «می‌توانیم با تنهٔ درخت یک پل بسازیم و به بلوط‌ها برسیم.» جغد گفت: «می‌توانیم با طناب یک تور درست کنیم و بلوط‌ها را از روی آب جمع کنیم.» خرگوش گفت: «می‌توانم از روی سنگ‌ها بپرم و چند بلوط را با خودم برگردانم.»", "image": "oak-compare-solutions",
       "choices": [
-        { "id": "log-bridge", "text": "با تنه درخت یک پل بسازیم", "caption": "ساختن پل", "image": "oak-clue-search", "nextScene": "oak-bridge-result", "score": 1, "skill": "decision", "consequence": "پل محکم است، اما ساختنش زمان زیادی می‌برد و تنه‌های سنگین به‌آرامی جابه‌جا می‌شوند." },
+        { "id": "log-bridge", "text": "با تنه درخت یک پل بسازیم", "caption": "ساختن پل", "image": "oak-bridge-building-v2", "nextScene": "oak-bridge-result", "score": 1, "skill": "decision" },
         { "id": "rope-net", "text": "با طناب یک تور درست کنیم", "caption": "بافتن تور", "image": "oak-net-workshop", "nextScene": "oak-net-result", "score": 3, "skill": "decision", "tone": "recommended", "summary": "راه سریع‌تر برای جمع‌کردن چند بلوط را انتخاب کرد." },
-        { "id": "rabbit-jump", "text": "خرگوش از روی سنگ‌ها بپرد", "caption": "پریدن از سنگ‌ها", "image": "oak-stones-consequence", "nextScene": "oak-rabbit-result", "score": 1, "skill": "decision", "consequence": "خرگوش می‌تواند سریع به چند بلوط برسد، اما هر بار فقط تعداد کمی را برمی‌گرداند." }
+        { "id": "rabbit-jump", "text": "خرگوش از روی سنگ‌ها بپرد", "caption": "پریدن از سنگ‌ها", "image": "oak-rabbit-stones-v2", "nextScene": "oak-rabbit-result", "score": 1, "skill": "decision" }
       ]
     },
     {
       "id": "oak-rabbit-result", "type": "dialogue", "phase": 4, "phaseTitle": "دیدن پیامد", "characterName": "خرگوش",
-      "text": "خرگوش روی سنگ‌های کنار رودخانه پرید، چند بلوط را برداشت و خوشحال برگشت. سنجاب‌ها خوشحال شدند، اما هنوز بلوط‌های زیادی روی آب بود و دور می‌شد.",
-      "prompt": "چند بلوط را نجات دادیم، اما هنوز خیلی‌های دیگر باقی مانده‌اند.", "image": "oak-stones-consequence", "actionLabel": "تصمیم را دوباره بررسی کنیم", "nextScene": "oak-rabbit-repair"
-    },
-    {
-      "id": "oak-rabbit-repair", "type": "choice", "phase": 4, "phaseTitle": "اصلاح تصمیم", "characterName": "کوکی متفکر",
-      "text": "حالا که خرگوش فقط چند بلوط را می‌تواند برگرداند، حیوان‌ها چه تصمیمی بگیرند؟", "prompt": "ادامه بدهیم یا راه دیگری را امتحان کنیم؟", "image": "oak-compare-solutions",
-      "choices": [
-        { "id": "rabbit-again", "text": "خرگوش دوباره چند بلوط را برمی‌گرداند، اما هنوز بلوط‌های زیادی روی آب می‌ماند.", "caption": "همین راه را ادامه بدهند", "image": "oak-stones-consequence", "nextScene": "oak-rabbit-repair", "score": 0, "retry": true, "feedback": "خرگوش چند بلوط دیگر آورد، اما این راه هنوز تعداد کمی را نجات می‌دهد. راه‌ها را دوباره مقایسه کن." },
-        { "id": "try-net", "text": "تور زودتر آماده می‌شود و چند بلوط را با هم جمع می‌کند.", "caption": "تور ببافند", "image": "oak-net-workshop", "nextScene": "oak-net-result", "score": 3, "skill": "reasoning", "summary": "پس از دیدن پیامد، تصمیمش را اصلاح کرد." },
-        { "id": "try-bridge", "text": "پل شاید به بلوط‌های بیشتری برسد، اما ساختنش طول می‌کشد.", "caption": "با کمک هم پل بسازند", "image": "oak-clue-search", "nextScene": "oak-bridge-result", "score": 1, "skill": "reasoning", "consequence": "ساخت پل به همکاری زیادی نیاز دارد، ولی زمان در حال گذشتن است." }
-      ]
+      "text": "نتیجهٔ پریدن خرگوش را ببین.",
+      "prompt": "آیکن کتاب را باز کن و ببین این تصمیم خوبی است؟", "bookText": "خرگوش روی سنگ‌های کنار رودخانه پرید و خودش را به چند بلوط رساند. او چند بلوط را برداشت و با خوشحالی به کنار رودخانه برگشت. سنجاب‌ها خوشحال شدند، اما هنوز تعداد زیادی بلوط روی آب بود و با جریان رودخانه دور می‌شد. خرس گفت: «چند بلوط را نجات دادیم، اما هنوز خیلی‌های دیگر باقی مانده‌اند.»", "image": "oak-rabbit-stones-v2", "actionLabel": "راه‌حل‌ها را دوباره مقایسه کنیم", "nextScene": "oak-compare"
     },
     {
       "id": "oak-bridge-result", "type": "dialogue", "phase": 4, "phaseTitle": "دیدن پیامد", "characterName": "خرس",
-      "text": "همه با هم پل ساختند، اما ساختن آن زمان زیادی برد. تنه‌های چوبی سنگین بودند و حیوان‌ها نمی‌توانستند سریع به بلوط‌ها برسند. در این مدت آب خیلی از بلوط‌ها را با خود برد.",
-      "prompt": "شاید بهتر باشد راه دیگری را امتحان کنیم.", "image": "oak-clue-search", "actionLabel": "تصمیم را دوباره بررسی کنیم", "nextScene": "oak-bridge-repair"
+      "text": "نتیجهٔ ساختن پل را ببین.",
+      "prompt": "آیکن کتاب را باز کن و ببین این تصمیم خوبی است؟", "bookText": "حیوان‌ها تصمیم گرفتند با تنهٔ درخت یک پل بسازند. همه با هم مشغول کار شدند؛ خرس تنهٔ سنگین درخت را جابه‌جا می‌کرد و خرگوش و جغد هم چوب‌ها و طناب‌ها را می‌آوردند. اما ساختن پل زمان زیادی برد. وقتی پل آماده شد، حیوان‌ها با هم به سمت رودخانه رفتند؛ ولی تنه‌های چوبی سنگین بودند و نمی‌توانستند سریع خودشان را به بلوط‌ها برسانند. در همین مدت، جریان آب خیلی از بلوط‌ها را با خودش برد. حیوان‌ها به بلوط‌های باقی‌مانده نگاه کردند و دوباره شروع به فکر کردن کردند: «شاید بهتر باشد راه دیگری را امتحان کنیم.»", "image": "oak-bridge-building-v2", "actionLabel": "راه‌حل‌ها را دوباره مقایسه کنیم", "nextScene": "oak-compare"
     },
     {
-      "id": "oak-bridge-repair", "type": "choice", "phase": 4, "phaseTitle": "اصلاح تصمیم", "characterName": "کوکی متفکر",
-      "text": "حالا که ساخت پل سخت و زمان‌بر است، بهتر است چه کار کنند؟", "prompt": "نتیجه راه‌ها را با هم مقایسه کن.", "image": "oak-compare-solutions",
+      "id": "oak-net-result", "type": "choice", "phase": 4, "phaseTitle": "تحلیل راه‌حل", "characterName": "کوکی متفکر",
+      "text": "حیوان‌ها تصمیم گرفتند با طناب یک تور درست کنند. چند بار طناب‌ها را به هم وصل کردند و خرس و خرگوش هم کمک کردند تا تور زودتر آماده شود.",
+      "prompt": "چرا بافتن تور می‌تواند راه خوبی باشد؟", "bookText": "حیوان‌ها تصمیم گرفتند با طناب یک تور درست کنند. چند بار طناب‌ها را به هم وصل کردند و خرس و خرگوش هم کمک کردند تا تور زودتر آماده شود. وقتی تور آماده شد، همه با هم کنار رودخانه رفتند. آن‌ها تور را روی آب کشیدند و چند بلوط را با هم جمع کردند. این راه سریع‌تر پیش رفت و حیوان‌ها توانستند تعداد زیادی از بلوط‌ها را قبل از اینکه آب آن‌ها را با خودش ببرد نجات دهند.", "image": "oak-net-workshop", "choiceInteraction": "immediate",
       "choices": [
-        { "id": "bridge-again", "text": "ساخت پل زمان بیشتری می‌برد و تا آماده شود بلوط‌های زیادی دور می‌شوند.", "caption": "پل را به سختی بسازند", "image": "oak-clue-search", "nextScene": "oak-bridge-repair", "score": 0, "retry": true, "feedback": "پل هنوز کند و سنگین است. راهی را انتخاب کن که زودتر به بلوط‌های بیشتری برسد." },
-        { "id": "try-net", "text": "تور سریع‌تر آماده می‌شود و چند بلوط را با هم جمع می‌کند.", "caption": "تور را امتحان کنند", "image": "oak-net-workshop", "nextScene": "oak-net-result", "score": 3, "skill": "reasoning", "summary": "پس از مقایسه دوباره، راه مناسب‌تر را انتخاب کرد." },
-        { "id": "try-rabbit", "text": "خرگوش می‌تواند چند بلوط را سریع برگرداند، اما تعدادشان کم است.", "caption": "خرگوش از روی سنگ‌ها بپرد", "image": "oak-stones-consequence", "nextScene": "oak-rabbit-result", "score": 1, "skill": "reasoning", "consequence": "خرگوش سریع است، اما هر بار فقط چند بلوط را می‌تواند بردارد." }
+        { "id": "rabbit-fast", "text": "خرگوش می‌تواند سریع به آن طرف رودخانه بپرد", "caption": "خرگوش سریع است", "image": "oak-rabbit-stones-v2", "nextScene": "oak-net-result", "score": 0, "retry": true, "feedback": "سریع بودن خرگوش دربارهٔ راه پریدن روی سنگ‌هاست. دوباره به ویژگی‌های تور فکر کن." },
+        { "id": "everyone-helps", "text": "همهٔ حیوان‌ها می‌توانند با هم تور را سریع آماده کنند", "caption": "همه کمک می‌کنند", "image": "oak-final-cooperation-v2", "nextScene": "oak-net-result", "score": 0, "retry": true, "feedback": "همکاری کمک می‌کند تور زودتر آماده شود؛ اما مهم‌ترین نتیجهٔ خود تور را هم پیدا کن." },
+        { "id": "collect-many", "text": "با تور می‌توان چند بلوط را با هم جمع کرد", "caption": "چند بلوط با هم", "image": "oak-final-speed-amount-v2", "nextScene": "oak-tools", "score": 2, "skill": "reasoning", "consequence": "آفرین! با تور می‌توان چند بلوط را با هم جمع کرد و بلوط‌های بیشتری را نجات داد.", "summary": "دلیل مناسب بودن تور را با نتیجهٔ آن توضیح داد." },
+        { "id": "needs-rope", "text": "برای درست کردن تور به طناب و کمی زمان نیاز داریم", "caption": "طناب و زمان", "image": "oak-tool-rope", "nextScene": "oak-net-result", "score": 0, "retry": true, "feedback": "این‌ها چیزهایی هستند که برای ساخت تور لازم‌اند؛ سؤال دربارهٔ نتیجه و خوبی این راه است." }
       ]
     },
     {
-      "id": "oak-net-result", "type": "dialogue", "phase": 4, "phaseTitle": "تصمیم و مقایسه", "characterName": "دوستان جنگل",
-      "text": "حیوان‌ها تصمیم گرفتند با طناب یک تور درست کنند. تور سبک بود، همه می‌توانستند در آماده‌کردنش کمک کنند و با آن می‌شد چند بلوط را با هم جمع کرد.",
-      "prompt": "این راه سریع‌تر پیش می‌رود و می‌تواند بلوط‌های بیشتری را نجات دهد.", "image": "oak-net-workshop", "actionLabel": "ابزارهای تور را پیدا کنیم", "nextScene": "oak-tools"
-    },
-    {
       "id": "oak-tools", "type": "dragDrop", "phase": 5, "phaseTitle": "بافتن تور", "characterName": "خرس و جغد",
-      "text": "برای ساخت تور، ابزارهای درست را از میان شش وسیله پیدا کن.", "prompt": "حلقه چوبی، میله بافتنی و طناب را به محل ساخت ببر.", "image": "oak-net-workshop",
+      "text": "برای ساخت تور، ابزارهای درست را از میان شش وسیله پیدا کن.", "prompt": "حیوانات برای ساختن تور به چه چیزهایی نیاز دارند؟", "image": "oak-net-workshop",
       "requiredItemIds": ["wooden-ring", "weaving-stick", "strong-rope"],
       "dropTarget": { "label": "ابزارهای بافتن تور", "icon": "🧺", "nextScene": "oak-weave" },
       "dragItems": [
-        { "id": "small-stone", "label": "سنگ", "icon": "🪨", "image": "tool-scissors", "correct": false, "feedback": "سنگ برای بافتن تور لازم نیست.", "reward": { "points": 0 } },
-        { "id": "dry-leaves", "label": "برگ‌های خشک", "icon": "🍂", "image": "tool-gloves", "correct": false, "feedback": "برگ‌های خشک تور محکمی نمی‌سازند.", "reward": { "points": 0 } },
-        { "id": "thin-sticks", "label": "چوب‌های نازک", "icon": "🪵", "image": "tool-ribbon", "correct": false, "feedback": "چوب‌های نازک جزو سه ابزار اصلی این تور نیستند.", "reward": { "points": 0 } },
+        { "id": "small-stone", "label": "سنگ", "icon": "🪨", "image": "oak-tool-stone-v2", "correct": false, "feedback": "سنگ برای بافتن تور لازم نیست.", "reward": { "points": 0 } },
+        { "id": "dry-leaves", "label": "برگ‌های خشک", "icon": "🍂", "image": "oak-tool-leaves-v2", "correct": false, "feedback": "برگ‌های خشک تور محکمی نمی‌سازند.", "reward": { "points": 0 } },
+        { "id": "thin-sticks", "label": "چوب‌های نازک", "icon": "🪵", "image": "oak-tool-twigs-v2", "correct": false, "feedback": "چوب‌های نازک جزو سه ابزار اصلی این تور نیستند.", "reward": { "points": 0 } },
         { "id": "wooden-ring", "label": "حلقه چوبی", "icon": "⭕", "image": "oak-tool-hoop", "correct": true, "feedback": "حلقه، دهانه تور را باز نگه می‌دارد.", "reward": { "points": 1, "skill": "tool" } },
-        { "id": "weaving-stick", "label": "میله بافتنی", "icon": "🪡", "image": "oak-tool-stick", "correct": true, "feedback": "میله برای رد کردن طناب از حلقه‌ها لازم است.", "reward": { "points": 1, "skill": "tool" } },
+        { "id": "weaving-stick", "label": "دستهٔ چوبی تور", "icon": "🪡", "image": "oak-tool-stick", "correct": true, "feedback": "دستهٔ چوبی به حلقه وصل می‌شود تا حیوان‌ها تور را نگه دارند.", "reward": { "points": 1, "skill": "tool" } },
         { "id": "strong-rope", "label": "طناب", "icon": "🪢", "image": "oak-tool-rope", "correct": true, "feedback": "طناب پایه اصلی تور است.", "reward": { "points": 1, "skill": "tool" } }
       ]
     },
     {
       "id": "oak-weave", "type": "craft", "phase": 5, "phaseTitle": "مرحله بافتن تور", "characterName": "همه دوستان",
-      "text": "مراحل بافتن تور را به ترتیب انجام بده.", "prompt": "اول حلقه را به میله وصل کن.", "image": "oak-net-workshop", "requiredCraftCount": 3, "craftUnitLabel": "مرحله", "craftCompleteLabel": "تور آماده شد! ←", "nextScene": "oak-success",
+      "text": "مراحل ساختن تور را به ترتیب انجام بده.", "prompt": "اول حلقهٔ چوبی را روی سرِ دستهٔ تور بگذار و محکم کن.", "image": "oak-net-workshop", "requiredCraftCount": 3, "craftUnitLabel": "مرحله", "craftCompleteLabel": "تور آماده شد! ←", "nextScene": "oak-success",
       "craftItems": [
-        { "id": "attach-hoop", "label": "وصل کردن حلقه به میله", "icon": "۱", "image": "oak-tool-hoop", "reward": { "points": 1, "skill": "tool" } },
-        { "id": "weave-rope", "label": "رد کردن طناب از حلقه‌ها", "icon": "۲", "image": "oak-tool-rope", "reward": { "points": 1, "skill": "tool" } },
-        { "id": "tighten-net", "label": "محکم کردن گره‌های آخر", "icon": "۳", "image": "oak-tool-stick", "reward": { "points": 1, "skill": "tool" } }
+        { "id": "attach-hoop", "label": "حلقهٔ چوبی را به دستهٔ تور وصل کن", "icon": "۱", "image": "oak-tool-hoop", "reward": { "points": 1, "skill": "tool" } },
+        { "id": "weave-rope", "label": "طناب را از داخل حلقه رد کن و خانه‌های تور را بساز", "icon": "۲", "image": "oak-tool-rope", "reward": { "points": 1, "skill": "tool" } },
+        { "id": "tighten-net", "label": "گره‌های طناب را محکم کن", "icon": "۳", "image": "oak-tool-stick", "reward": { "points": 1, "skill": "tool" } }
       ]
     },
     {
       "id": "oak-success", "type": "dialogue", "phase": 6, "phaseTitle": "جشن پایانی", "characterName": "سنجاب‌ها",
-      "text": "حیوان‌ها با کمک هم تور را روی آب کشیدند و تعداد زیادی از بلوط‌ها را بیرون آوردند. سنجاب‌ها بلوط‌ها را در سبدهایشان گذاشتند و همه خوشحال شدند.",
-      "prompt": "با کمک هم توانستیم بلوط‌های زیادی را نجات بدهیم.", "image": "oak-finale", "actionLabel": "راه‌حل‌ها را دوباره مقایسه کنیم", "nextScene": "oak-final-compare"
+      "text": "جشن نجات بلوط‌ها",
+      "prompt": "حیوان‌ها با کمک هم تور را روی آب کشیدند و تعداد زیادی از بلوط‌ها را بیرون آوردند. سنجاب‌ها با خوشحالی بلوط‌ها را در سبدهایشان گذاشتند. همه خوشحال بودند که با کمک هم توانستند بلوط‌های زیادی را نجات دهند.", "image": "oak-finale", "actionLabel": "ببینیم بهترین راه را چطور انتخاب کردیم", "nextScene": "oak-final-compare"
     },
     {
-      "id": "oak-final-compare", "type": "choice", "phase": 6, "phaseTitle": "مقایسه راه‌حل‌ها", "characterName": "کوکی متفکر",
-      "text": "پل، پرش خرگوش و تور را از نظر سرعت، تعداد بلوط و همکاری مقایسه کن.", "prompt": "برای انتخاب بهترین راه‌حل، حیوان‌ها به چه چیزی توجه کردند؟", "image": "oak-compare-solutions",
+      "id": "oak-final-compare", "type": "dialogue", "phase": 6, "phaseTitle": "مقایسه راه‌حل‌ها", "characterName": "کوکی متفکر",
+      "text": "پل، پرش خرگوش و تور را از نظر سرعت، تعداد بلوط و همکاری مقایسه کن.", "prompt": "جدول را با دقت ببین که ما چطور بهترین راه‌حل را انتخاب کردیم.", "image": "oak-compare-solutions", "actionLabel": "حالا به سؤال جواب بده", "nextScene": "oak-final-question",
       "solutionComparison": { "rows": [
-        { "solution": "پل", "icon": "🪵", "speed": "کم", "amount": "زیاد", "cooperation": "زیاد" },
-        { "solution": "پرش خرگوش", "icon": "🐇", "speed": "زیاد", "amount": "کم", "cooperation": "کم" },
-        { "solution": "تور", "icon": "🕸️", "speed": "زیاد", "amount": "زیاد", "cooperation": "زیاد" }
-      ] },
+        { "solution": "پل", "icon": "🪵", "speed": "کم 🐢", "amount": "زیاد 🌰🌰🌰", "cooperation": "🤝🤝🤝" },
+        { "solution": "پرش خرگوش", "icon": "🐇", "speed": "زیاد ⚡", "amount": "کم 🌰", "cooperation": "🤝" },
+        { "solution": "تور", "icon": "🕸️", "speed": "زیاد ⚡", "amount": "زیاد 🌰🌰🌰", "cooperation": "🤝🤝🤝" }
+      ] }
+    },
+    {
+      "id": "oak-final-question", "type": "choice", "phase": 6, "phaseTitle": "انتخاب بهترین راه‌حل", "characterName": "کوکی متفکر",
+      "text": "از جدول کمک بگیر و پاسخ بده.", "prompt": "برای انتخاب بهترین راه‌حل، حیوان‌ها به چه چیزی توجه کردند؟", "image": "oak-compare-solutions", "choiceInteraction": "immediate",
       "choices": [
-        { "id": "speed-and-amount", "text": "راهی که سریع‌تر باشد و بلوط‌های بیشتری نجات دهد", "caption": "سرعت و تعداد بلوط", "image": "oak-reflection-compare", "nextScene": "oak-reflection", "score": 2, "skill": "reflection", "summary": "راه‌ها را با معیار سرعت و نتیجه مقایسه کرد." },
-        { "id": "fewer-tools", "text": "فقط وسایل کمتری لازم داشته باشد", "caption": "وسایل کمتر", "image": "oak-tool-hoop", "nextScene": "oak-final-compare", "score": 0, "retry": true, "feedback": "تعداد وسایل تنها معیار نیست. به سرعت و تعداد بلوط‌های نجات‌یافته نگاه کن." },
-        { "id": "bigger", "text": "فقط محکم‌تر و بزرگ‌تر باشد", "caption": "بزرگ‌تر بودن", "image": "oak-clue-search", "nextScene": "oak-final-compare", "score": 0, "retry": true, "feedback": "بزرگ‌تر بودن همیشه بهتر نیست؛ پل بزرگ بود اما دیر آماده شد." },
-        { "id": "prettier", "text": "فقط قشنگ‌تر و جالب‌تر باشد", "caption": "قشنگ‌تر بودن", "image": "oak-finale", "nextScene": "oak-final-compare", "score": 0, "retry": true, "feedback": "قشنگ بودن مشکل سنجاب‌ها را حل نمی‌کند. نتیجه راه‌ها را دوباره مقایسه کن." }
+        { "id": "speed-and-amount", "text": "راهی که سریع‌تر باشد و بلوط‌های بیشتری نجات دهد", "caption": "سرعت و تعداد بلوط", "image": "oak-final-speed-amount-v2", "nextScene": "oak-reflection", "score": 2, "skill": "reflection", "consequence": "آفرین! حیوان‌ها به سرعت، تعداد بلوط‌های نجات‌یافته و همکاری توجه کردند.", "summary": "راه‌ها را با معیار سرعت و نتیجه مقایسه کرد." },
+        { "id": "fewer-tools", "text": "فقط وسایل کمتری لازم داشته باشد", "caption": "وسایل کمتر", "image": "oak-final-fewer-tools-v2", "nextScene": "oak-final-question", "score": 0, "retry": true, "feedback": "تعداد وسایل تنها معیار نیست. به سرعت و تعداد بلوط‌های نجات‌یافته نگاه کن." },
+        { "id": "bigger", "text": "فقط محکم‌تر و بزرگ‌تر باشد", "caption": "بزرگ‌تر بودن", "image": "oak-final-bigger-v2", "nextScene": "oak-final-question", "score": 0, "retry": true, "feedback": "بزرگ‌تر بودن همیشه بهتر نیست؛ پل بزرگ بود اما دیر آماده شد." },
+        { "id": "prettier", "text": "فقط قشنگ‌تر و جالب‌تر باشد", "caption": "قشنگ‌تر بودن", "image": "oak-final-prettier-v2", "nextScene": "oak-final-question", "score": 0, "retry": true, "feedback": "قشنگ بودن مشکل سنجاب‌ها را حل نمی‌کند. نتیجهٔ راه‌ها را دوباره مقایسه کن." }
       ]
     },
     {

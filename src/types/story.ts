@@ -92,6 +92,7 @@ export interface StoryScene {
   character?: string;
   characterName?: string;
   actionLabel?: string;
+  choiceInteraction?: 'confirm' | 'immediate';
   choices?: StoryChoice[];
   hotspots?: HotspotItem[];
   dragItems?: DragItem[];

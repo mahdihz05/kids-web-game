@@ -17,6 +17,8 @@ check(server.includes("timeZone: 'Asia/Tehran'"), 'Tehran reporting timezone is 
 check(server.includes('30 * 60_000'), 'Thirty-minute activity/dropout threshold is missing.');
 check(server.includes('httpOnly: true') && server.includes("sameSite: 'strict'"), 'Secure admin cookie flags are missing.');
 check(server.includes('report.docx') && server.includes('bidirectional: true'), 'RTL Word report endpoint is missing.');
+check(server.includes('choiceOptions') && server.includes('انتخاب ${index + 1}'), 'Dynamic choice columns are missing from the admin API or DOCX report.');
+check(server.includes("'oak-final-question'") && !server.includes("'oak-rabbit-repair', 'اصلاح"), 'Oak admin stage metadata is not aligned with the revised story.');
 
 if (failures.length) { console.error(failures.map((failure) => `✗ ${failure}`).join('\n')); process.exit(1); }
 console.log('✓ Analytics contract passed: anonymous events, deduplication, Tehran filters, dropout, admin security and RTL DOCX.');

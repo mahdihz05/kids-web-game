@@ -421,7 +421,10 @@ img { max-inline-size: 100%; }
 .admin-login label { margin-block: 22px; font-weight: 800; }
 .admin-table-wrap { max-inline-size: 100%; overflow-x: auto; }
 .admin-scene-id { display: block; margin-top: 3px; direction: ltr; color: #87928d; font-size: 10px; font-weight: 500; }
-.admin-choice-summary { min-width: 260px; line-height: 1.9; }
+.admin-choice-cell { min-inline-size: 130px; }
+.admin-choice-cell strong, .admin-choice-cell small { display: block; }
+.admin-choice-cell strong { color: #4d377f; font-size: 18px; }
+.admin-choice-cell small { margin-block-start: 3px; color: #6d7180; line-height: 1.5; }
 .admin-page table { inline-size: 100%; min-inline-size: 720px; border-collapse: collapse; }
 .admin-page th, .admin-page td { padding: 12px; border-block-end: 1px solid #ece6f1; text-align: right; }
 .admin-page th { color: #5f468f; background: #f5f0fb; }
