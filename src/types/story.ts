@@ -12,6 +12,7 @@ export interface StoryChoice {
   caption: string;
   icon?: string;
   image: string;
+  imageCrop?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
   audio?: string;
   nextScene: string;
   score: number;
@@ -117,6 +118,7 @@ export interface Story {
   coverImage: string;
   startScene: string;
   totalPhases: number;
+  phaseJourney?: { title: string; icon: string }[];
   theme: { primary: string; secondary: string; accent: string };
   bookContent?: { title: string; paragraphs: string[] }[];
   scenes: StoryScene[];

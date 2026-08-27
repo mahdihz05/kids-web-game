@@ -1,0 +1,155 @@
+{
+  "id": "wet-fox-house",
+  "title": "خانه خیس روباه",
+  "subtitle": "اندازه بگیر و مهم‌ترین مشکل را اول حل کن",
+  "description": "وقتی چند مشکل هم‌زمان داریم، مقدارها را مقایسه و اولویت را انتخاب می‌کنیم.",
+  "badgeTitle": "اولویت‌ساز دقیق",
+  "coverImage": "wet-fox-intro",
+  "startScene": "fox-intro",
+  "totalPhases": 6,
+  "phaseJourney": [
+    { "title": "کشف مسئله", "icon": "🔎" },
+    { "title": "احساس‌ها", "icon": "💛" },
+    { "title": "اندازه‌گیری", "icon": "📏" },
+    { "title": "انتخاب اولویت", "icon": "🔢" },
+    { "title": "ساخت و بررسی", "icon": "🛠️" },
+    { "title": "بازاندیشی", "icon": "⭐" }
+  ],
+  "theme": { "primary": "#b85d38", "secondary": "#efc56b", "accent": "#4d8292" },
+  "scenes": [
+    {
+      "id": "fox-intro", "type": "dialogue", "phase": 1, "phaseTitle": "کشف مسئله", "characterName": "روبی",
+      "text": "به روبی کمک کنیم.", "prompt": "روی آیکن کتاب بزن و متن داستان را بخوان.",
+      "bookText": "صبح زود، صدای باران شدید روبی را از خواب بیدار کرد. روبی پتو را کنار زد و با عجله از تخت پایین آمد؛ اما همین که پایش را روی زمین گذاشت: چِک! یک قطرهٔ سرد روی سرش افتاد. روبی به اطراف نگاه کرد. از زیر در آب باریکی وارد می‌شد. روی پنجره قطره‌های زیادی جمع شده بود. از سقف هم هر چند لحظه یک قطره پایین می‌افتاد. همه‌جا خیس شده بود و آب کم‌کم داشت خانه‌شان را خراب می‌کرد. پدر و مادرش خانه نبودند و باران هم آن‌قدر شدید بود که روبی نمی‌توانست بیرون برود.",
+      "image": "wet-fox-intro", "actionLabel": "مشکل اصلی روبی را پیدا کنیم", "nextScene": "fox-problem"
+    },
+    {
+      "id": "fox-problem", "type": "choice", "phase": 1, "phaseTitle": "کشف مسئله", "characterName": "روبی",
+      "text": "مشکل اصلی روبی چیست؟", "prompt": "مشکل اصلی روبی چیست؟", "image": "wet-fox-intro", "choiceInteraction": "immediate",
+      "choices": [
+        { "id": "cannot-go-out", "text": "روبی نمی‌تواند از خانه بیرون برود.", "caption": "نمی‌تواند بیرون برود", "icon": "🌧️", "image": "fox-problem-outside", "nextScene": "fox-problem", "score": 0, "retry": true, "feedback": "درسته او نمی‌تواند بیرون برود و از کسی کمک بگیرد، اما این مشکل اصلی او نیست." },
+        { "id": "wet-window", "text": "روبی فقط با یک پنجرهٔ خیس روبه‌رو شده است.", "caption": "فقط پنجره", "icon": "🪟", "image": "fox-problem-window", "nextScene": "fox-problem", "score": 0, "retry": true, "feedback": "پنجره یکی از مشکل‌هاست، اما آب فقط از یک جا وارد نمی‌شود." },
+        { "id": "many-leaks", "text": "آب از چند جا وارد خانه شده و ممکن است همه‌جا را خیس و خراب کند.", "caption": "چند راه ورود آب", "icon": "🏠", "image": "fox-problem-many-leaks", "nextScene": "fox-feeling", "score": 2, "skill": "discovery", "consequence": "درسته! چند راه برای ورود آب وجود دارد و اگر کاری نکنیم، اوضاع بدتر می‌شود.", "summary": "فهمید آب از چند جا وارد خانه می‌شود." }
+      ]
+    },
+    {
+      "id": "fox-feeling", "type": "choice", "phase": 2, "phaseTitle": "واکنش و احساس", "characterName": "روبی",
+      "text": "روبی الان چه احساسی دارد؟", "prompt": "روبی الان چه احساسی دارد؟", "image": "wet-fox-intro", "choiceInteraction": "immediate",
+      "choices": [
+        { "id": "worried", "text": "نگران است.", "caption": "نگران", "image": "fox-feeling-worried", "imageCrop": "top-right", "nextScene": "fox-clues", "score": 1, "skill": "analysis", "consequence": "درسته. روبی می‌داند اگر زود تصمیم نگیرد، ممکن است مشکل بزرگ‌تر شود." },
+        { "id": "sad", "text": "ناراحت است.", "caption": "ناراحت", "image": "fox-feeling-sad", "imageCrop": "top-left", "nextScene": "fox-clues", "score": 1, "skill": "analysis", "consequence": "روبی از خیس شدن خانه ناراحت است، اما هنوز می‌تواند کاری انجام دهد." },
+        { "id": "angry", "text": "عصبانی است.", "caption": "عصبانی", "image": "fox-feeling-angry", "imageCrop": "bottom-right", "nextScene": "fox-clues", "score": 1, "skill": "analysis", "consequence": "روبی از دردسر پیش‌آمده عصبانی شده، اما حالا باید آرام بماند و فکر کند." },
+        { "id": "happy", "text": "خوشحال است.", "caption": "خوشحال", "image": "fox-feeling-happy", "imageCrop": "bottom-left", "nextScene": "fox-clues", "score": 1, "skill": "analysis", "consequence": "روبی می‌داند هنوز می‌تواند خانه‌اش را نجات دهد، اما باید خیلی زود تصمیم بگیرد." }
+      ]
+    },
+    {
+      "id": "fox-clues", "type": "hotspot", "phase": 3, "phaseTitle": "پیدا کردن سرنخ‌ها", "characterName": "روبی",
+      "text": "روبی جلوی آب ایستاد و سه نقطهٔ مختلف را دید.", "prompt": "هر سه راه ورود آب را پیدا کن.",
+      "bookText": "روبی جلوی آب ایستاد. سه نقطهٔ مختلف را دید. «فقط می‌دونم سه جا آب وارد می‌شه... اما از کجا می‌فهمم کدومش خطرناک‌تره؟» روبی شروع کرد به بررسی دقیق.",
+      "image": "wet-fox-intro", "actionLabel": "راه مقایسه را پیدا کنیم", "nextScene": "fox-measure-method",
+      "hotspots": [
+        { "id": "door", "label": "زیر در", "icon": "🚪", "x": 70, "y": 64, "clue": "یک جریان باریک اما پیوستهٔ آب از زیر در وارد می‌شود.", "reward": { "points": 1, "skill": "discovery" } },
+        { "id": "window", "label": "پنجره", "icon": "🪟", "x": 27, "y": 39, "clue": "قطره‌ها مرتب روی زمین می‌افتند.", "reward": { "points": 1, "skill": "discovery" } },
+        { "id": "roof", "label": "سقف", "icon": "🏠", "x": 84, "y": 14, "clue": "قطره‌ها با فاصله می‌افتند، اما هر بار یک لکهٔ جدید روی زمین درست می‌کنند.", "reward": { "points": 1, "skill": "discovery" } }
+      ]
+    },
+    {
+      "id": "fox-measure-method", "type": "choice", "phase": 3, "phaseTitle": "اندازه‌گیری", "characterName": "روبی",
+      "text": "روبی فهمید برای مقایسه باید مقدار آب را اندازه بگیرد.", "prompt": "چطور مقدار آب هر سه جا را درست مقایسه کنیم؟",
+      "bookText": "روبی به سه نقطه نگاه کرد. «هر سه جا مشکل دارند... اما کدام‌یک بیشتر به خانه آسیب می‌زند؟ این یکی بزرگ‌تر به نظر میاد... ولی شاید اشتباه کنم.» بعد چشمش به سه ظرف یکسان و یک پیمانه افتاد. «فهمیدم! اگر مقدار آب هر سه جا را با یک ظرف اندازه بگیرم، می‌توانم درست مقایسه‌شان کنم.»",
+      "image": "wet-fox-measurement", "choiceInteraction": "immediate",
+      "choices": [
+        { "id": "same-measure", "text": "هر سه را با ظرف و پیمانهٔ یکسان اندازه بگیریم.", "caption": "ظرف و پیمانهٔ یکسان", "icon": "🥛", "image": "fox-measure-same", "nextScene": "fox-measurement", "score": 2, "skill": "reasoning", "consequence": "آفرین! حالا عددها را می‌توانیم با هم مقایسه کنیم." },
+        { "id": "just-look", "text": "فقط نگاه کنیم کدام‌جا خیس‌تر دیده می‌شود.", "caption": "فقط نگاه کردن", "icon": "👀", "image": "fox-measure-look", "nextScene": "fox-measure-method", "score": 0, "retry": true, "feedback": "ممکن است چیزی بیشتر به نظر برسد، اما واقعاً بیشتر نباشد. باید اندازه بگیریم." },
+        { "id": "different-containers", "text": "برای هرجا یک ظرف با اندازهٔ متفاوت بگذاریم.", "caption": "ظرف‌های متفاوت", "icon": "🪣", "image": "fox-measure-different", "nextScene": "fox-measure-method", "score": 0, "retry": true, "feedback": "وقتی ظرف‌ها اندازه‌های متفاوت داشته باشند، مقایسه دقیق نیست." }
+      ]
+    },
+    {
+      "id": "fox-measurement", "type": "dialogue", "phase": 3, "phaseTitle": "مینی‌گیم اندازه‌گیری", "characterName": "روبی",
+      "text": "نتیجهٔ اندازه‌گیری را ببین.", "prompt": "زیر در: ۵ پیمانه — پنجره: ۳ پیمانه — سقف: ۱ پیمانه", "image": "wet-fox-measurement", "actionLabel": "مهم‌ترین مشکل را انتخاب کنیم", "nextScene": "fox-first-priority"
+    },
+    {
+      "id": "fox-first-priority", "type": "choice", "phase": 4, "phaseTitle": "انتخاب اولویت", "characterName": "روبی",
+      "text": "روبی سه مقدار را کنار هم گذاشت: ۵ — ۳ — ۱.", "prompt": "اول سراغ کدام مشکل برویم؟",
+      "bookText": "روبی سه مقدار را کنار هم می‌گذارد: ۵ — ۳ — ۱. اما هنوز باران شدید می‌بارد. «اگر وقت کمی داشته باشم، نمی‌تونم همه‌چیز رو با هم درست کنم... باید اول مهم‌ترینش رو انتخاب کنم.»",
+      "image": "wet-fox-measurement", "choiceInteraction": "immediate",
+      "choices": [
+        { "id": "door", "text": "زیر در — ۵ پیمانه", "caption": "زیر در", "icon": "🚪", "image": "fox-priority-door", "nextScene": "fox-tools", "score": 2, "skill": "decision", "consequence": "درسته! اینجا بیشترین آب وارد می‌شود، پس فعلاً مهم‌ترین مشکل همین است." },
+        { "id": "window", "text": "پنجره — ۳ پیمانه", "caption": "پنجره", "icon": "🪟", "image": "fox-priority-window", "nextScene": "fox-first-priority", "score": 0, "retry": true, "feedback": "پنجره هم مهم است، اما آب کمتری از آن وارد می‌شود. فعلاً مشکل بزرگ‌تر جای دیگری است." },
+        { "id": "roof", "text": "سقف — ۱ پیمانه", "caption": "سقف", "icon": "🏠", "image": "fox-priority-roof", "nextScene": "fox-first-priority", "score": 0, "retry": true, "feedback": "سقف چکه می‌کند، اما مقدار آبش از دو جای دیگر کمتر است." }
+      ]
+    },
+    {
+      "id": "fox-tools", "type": "dragDrop", "phase": 5, "phaseTitle": "انتخاب ابزار", "characterName": "روبی",
+      "text": "روبی حالا باید سریع جلوی بیشترین آب را بگیرد.", "prompt": "برای این کار به چه وسایلی نیاز دارد؟", "image": "wet-fox-craft",
+      "requiredItemIds": ["towel", "plastic-bag", "yarn"], "dropTarget": { "label": "وسایل ساخت مانع", "icon": "🧰", "nextScene": "fox-craft" },
+      "dragItems": [
+        { "id": "towel", "label": "حوله", "icon": "🧻", "image": "fox-tool-towel", "correct": true, "feedback": "حوله برای ساخت مانع لازم است.", "reward": { "points": 1, "skill": "tool" } },
+        { "id": "plastic-bag", "label": "کیسهٔ پلاستیکی", "icon": "🛍️", "image": "fox-tool-bag", "correct": true, "feedback": "کیسهٔ پلاستیکی برای ساخت مانع لازم است.", "reward": { "points": 1, "skill": "tool" } },
+        { "id": "yarn", "label": "کاموا", "icon": "🧶", "image": "fox-tool-yarn", "correct": true, "feedback": "کاموا برای محکم کردن مانع لازم است.", "reward": { "points": 1, "skill": "tool" } },
+        { "id": "brick", "label": "آجر", "icon": "🧱", "image": "fox-tool-brick", "correct": false, "feedback": "آجر جزو سه وسیلهٔ این مانع نیست.", "reward": { "points": 0 } },
+        { "id": "pot", "label": "قابلمه", "icon": "🍲", "image": "fox-tool-pot", "correct": false, "feedback": "قابلمه جزو سه وسیلهٔ این مانع نیست.", "reward": { "points": 0 } },
+        { "id": "chair", "label": "صندلی", "icon": "🪑", "image": "fox-tool-chair", "correct": false, "feedback": "صندلی جزو سه وسیلهٔ این مانع نیست.", "reward": { "points": 0 } }
+      ]
+    },
+    {
+      "id": "fox-craft", "type": "craft", "phase": 5, "phaseTitle": "مرحلهٔ ساختن", "characterName": "روبی",
+      "text": "مانع جلوی آب را به ترتیب بساز.", "prompt": "اول حوله را لوله کن.", "image": "wet-fox-craft", "requiredCraftCount": 3, "craftUnitLabel": "مرحله", "craftCompleteLabel": "مانع آماده شد! ←", "nextScene": "fox-after-barrier",
+      "craftItems": [
+        { "id": "roll-towel", "label": "حوله را لوله کن", "icon": "۱", "image": "fox-tool-towel", "reward": { "points": 1, "skill": "tool" } },
+        { "id": "bag-towel", "label": "آن را داخل کیسهٔ پلاستیکی بگذار", "icon": "۲", "image": "fox-tool-bag", "reward": { "points": 1, "skill": "tool" } },
+        { "id": "tie-yarn", "label": "کاموا را محکم دور آن‌ها بپیچ", "icon": "۳", "image": "fox-tool-yarn", "reward": { "points": 1, "skill": "tool" } }
+      ]
+    },
+    {
+      "id": "fox-after-barrier", "type": "dialogue", "phase": 5, "phaseTitle": "اندازه‌گیری دوباره", "characterName": "روبی",
+      "text": "روبی دوباره اندازه می‌گیرد.", "prompt": "زیر در: ۱ پیمانه — پنجره: ۳ پیمانه — سقف: ۱ پیمانه",
+      "bookText": "روبی مانع را جلوی در قرار می‌دهد. چند لحظه می‌گذرد... آب کمتری وارد خانه می‌شود. اما باران هنوز شدید است. روبی دوباره به پنجره و سقف نگاه می‌کند. «خانه خیلی کمتر خیس می‌شود! اما هنوز چند قطره آب وارد می‌شود.»",
+      "image": "wet-fox-measurement-after", "actionLabel": "اولویت تازه را پیدا کنیم", "nextScene": "fox-second-priority"
+    },
+    {
+      "id": "fox-second-priority", "type": "choice", "phase": 5, "phaseTitle": "تغییر اولویت", "characterName": "روبی",
+      "text": "حالا روبی می‌فهمد که اولویت تغییر کرده است.", "prompt": "حالا روبی باید سراغ کدام مشکل برود؟",
+      "bookText": "روبی می‌گوید: «اول زیر در بیشترین آب را می‌آورد، اما حالا پنجره بیشتر از بقیه آب وارد می‌کند.»", "image": "wet-fox-measurement-after", "choiceInteraction": "immediate",
+      "choices": [
+        { "id": "window", "text": "پنجره", "caption": "پنجره", "icon": "🪟", "image": "fox-priority-window", "nextScene": "fox-success", "score": 2, "skill": "decision", "consequence": "درسته! حالا پنجره بیشترین آب را وارد می‌کند." },
+        { "id": "door", "text": "زیر در", "caption": "زیر در", "icon": "🚪", "image": "fox-priority-door", "nextScene": "fox-second-priority", "score": 0, "retry": true, "feedback": "چون آب کمتری از اینجا وارد می‌شود، لازم نیست اول جلوی آب آن را بگیریم." },
+        { "id": "roof", "text": "سقف", "caption": "سقف", "icon": "🏠", "image": "fox-priority-roof", "nextScene": "fox-second-priority", "score": 0, "retry": true, "feedback": "چون آب کمتری از اینجا وارد می‌شود، لازم نیست اول جلوی آب آن را بگیریم." }
+      ]
+    },
+    {
+      "id": "fox-success", "type": "dialogue", "phase": 6, "phaseTitle": "جشن پایانی", "characterName": "روبی",
+      "text": "خانهٔ روبی نجات پیدا کرد!", "prompt": "روی آیکن کتاب بزن و داستان پایانی را بخوان.",
+      "bookText": "روبی یک مانع کوچک درست می‌کند و شکاف پنجره را می‌پوشاند. کم‌کم آب ورودی قطع می‌شود. روبی نفس راحتی می‌کشد: «خانه‌ام را نجات دادم!» بعد برای خودش شیر داغ و کیک می‌آورد و در حالی که باران را تماشا می‌کند، جشن می‌گیرد. کمی بعد باران بند می‌آید و پدر و مادرش به خانه برمی‌گردند. آن‌ها با دیدن خانهٔ نجات‌یافته، به روبی افتخار می‌کنند.",
+      "image": "wet-fox-finale", "actionLabel": "ببینیم چرا اولویت عوض شد", "nextScene": "fox-final-question"
+    },
+    {
+      "id": "fox-final-question", "type": "choice", "phase": 6, "phaseTitle": "بازاندیشی", "characterName": "کوکی متفکر",
+      "text": "روبی چرا اول زیر در را انتخاب کرد و بعد سراغ پنجره رفت؟", "prompt": "روبی چرا اول زیر در را انتخاب کرد و بعد سراغ پنجره رفت؟", "image": "wet-fox-finale", "choiceInteraction": "immediate",
+      "choices": [
+        { "id": "measure-priority", "text": "چون اندازه گرفت و اول جایی را انتخاب کرد که آب بیشتری وارد می‌کرد.", "caption": "اندازه‌گیری", "icon": "📏", "image": "fox-reflect-measure", "nextScene": "fox-reflection", "score": 2, "skill": "reasoning", "consequence": "درسته! روبی اندازه گرفت، مهم‌ترین مشکل را پیدا کرد و بعد از تغییر شرایط دوباره اندازه گرفت." },
+        { "id": "easiest-first", "text": "چون اول می‌خواست آسان‌ترین کار را انجام دهد.", "caption": "آسان‌ترین کار", "icon": "🏃", "image": "fox-reflect-easy", "nextScene": "fox-final-question", "score": 0, "retry": true, "feedback": "آسان بودن می‌تواند مهم باشد، اما اینجا مقدار آب مهم‌تر بود." },
+        { "id": "looked-wetter", "text": "چون زیر در بیشتر خیس به نظر می‌رسید.", "caption": "فقط نگاه کردن", "icon": "👀", "image": "fox-reflect-look", "nextScene": "fox-final-question", "score": 0, "retry": true, "feedback": "فقط با نگاه کردن نمی‌توانیم مطمئن شویم. روبی اندازه گرفت." }
+      ]
+    },
+    {
+      "id": "fox-reflection", "type": "reflection", "phase": 6, "phaseTitle": "بازاندیشی", "characterName": "دو ستاره و یک آرزو", "text": "دو چیز که یاد گرفتی و یک آرزو را انتخاب کن.", "prompt": "کارت‌های خودت را کامل کن.", "image": "wet-fox-finale", "nextScene": "fox-result",
+      "reflectionPrompts": [
+        { "id": "learned", "title": "⭐ من یاد گرفتم که...", "icon": "⭐", "options": [
+          { "id": "measure-first", "text": "قبل از تصمیم گرفتن، اندازه بگیرم.", "icon": "📏", "image": "fox-reflect-measure", "score": 1, "skill": "reflection" },
+          { "id": "important-first", "text": "اول مشکل مهم‌تر را حل کنم.", "icon": "🪜", "image": "fox-priority-door", "score": 1, "skill": "reflection" }
+        ] },
+        { "id": "better", "title": "⭐ من می‌توانم بهتر مشکل را حل کنم اگر...", "icon": "⭐", "options": [
+          { "id": "larger", "text": "ببینم کدام مشکل بزرگ‌تر است.", "icon": "🔢", "image": "wet-fox-measurement", "score": 1, "skill": "reflection" },
+          { "id": "check-again", "text": "بعد از هر کاری دوباره بررسی کنم.", "icon": "🔄", "image": "fox-reflect-measure", "score": 1, "skill": "reflection" }
+        ] },
+        { "id": "wish", "title": "🌙 آرزو دارم دفعه بعد...", "icon": "🌙", "options": [
+          { "id": "hard-problem", "text": "خودم راه‌حل یک مشکل سخت را پیدا کنم.", "icon": "🧠", "image": "wet-fox-finale", "score": 1, "skill": "reflection" },
+          { "id": "measure-more", "text": "چیزهای بیشتری را اندازه بگیرم.", "icon": "📏", "image": "wet-fox-measurement", "score": 1, "skill": "reflection" },
+          { "id": "simple-tool", "text": "با یک وسیلهٔ ساده، یک مشکل بزرگ را حل کنم.", "icon": "🛠️", "image": "wet-fox-craft", "score": 1, "skill": "reflection" }
+        ] }
+      ]
+    },
+    { "id": "fox-result", "type": "result", "phase": 6, "phaseTitle": "پایان", "text": "خانهٔ روبی نجات پیدا کرد.", "image": "wet-fox-finale", "learningSummary": "روبی مقدار آب را با ظرف‌های یکسان اندازه گرفت، مشکل مهم‌تر را اول حل کرد و پس از تغییر شرایط دوباره اندازه گرفت." }
+  ]
+}

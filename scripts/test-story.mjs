@@ -4,6 +4,8 @@ import { resolve } from 'node:path';
 const root = resolve(import.meta.dirname, '..');
 const story = JSON.parse(await readFile(resolve(root, 'src/data/story.json'), 'utf8'));
 const oakStory = JSON.parse(await readFile(resolve(root, 'src/data/oak-rescue.json'), 'utf8'));
+const missingEggStory = JSON.parse(await readFile(resolve(root, 'src/data/missing-egg.json'), 'utf8'));
+const wetFoxStory = JSON.parse(await readFile(resolve(root, 'src/data/wet-fox-house.json'), 'utf8'));
 const scenes = new Map(story.scenes.map((scene) => [scene.id, scene]));
 const failures = [];
 const check = (condition, message) => { if (!condition) failures.push(message); };
@@ -92,6 +94,8 @@ function validateStoryGraph(candidate) {
 }
 
 validateStoryGraph(oakStory);
+validateStoryGraph(missingEggStory);
+validateStoryGraph(wetFoxStory);
 const oakScenes = new Map(oakStory.scenes.map((scene) => [scene.id, scene]));
 check(oakScenes.get('oak-clues')?.hotspots?.length === 3, 'Oak rescue must include three responsive clues.');
 check(oakScenes.get('oak-tools')?.requiredItemIds?.length === 3, 'Oak rescue must require three net tools.');
@@ -136,3 +140,29 @@ check(oakRoutes.bridge.route.includes('oak-bridge-result') && oakRoutes.bridge.r
 for (const run of Object.values(oakRoutes)) check(run.route.includes('oak-net-result') && run.route.includes('oak-final-compare') && run.route.includes('oak-final-question') && run.route.includes('oak-reflection'), 'Every oak route must include net analysis, the separate comparison table, question and reflection.');
 if (failures.length) { console.error(failures.map((failure) => `✗ ${failure}`).join('\n')); process.exit(1); }
 console.log(`✓ Oak rescue graph passed: ${oakStory.scenes.length} scenes, deck-aligned net/rabbit/bridge routes complete.`);
+
+const missingScenes = new Map(missingEggStory.scenes.map((scene) => [scene.id, scene]));
+check(missingScenes.get('missing-clues')?.hotspots?.length === 3, 'Missing egg must contain the three client clues.');
+check(missingScenes.get('missing-clue-results')?.hotspots?.length === 3, 'Missing egg must show all three clue results.');
+check(missingScenes.get('missing-tools')?.requiredItemIds?.join(',') === 'wheel,mirrors,long-stick,rope', 'Missing egg mirror-stick tools must match slide 9.');
+check(missingScenes.get('missing-tools')?.dragItems?.length === 6, 'Missing egg tool selection must show all six slide items.');
+check(missingScenes.get('missing-craft')?.requiredCraftCount === 4, 'Missing egg mirror stick must include four ordered operations.');
+check(missingScenes.get('missing-feeling')?.choices?.every((choice) => choice.image.startsWith('turtle-feeling-')), 'Missing egg feelings must use the turtle face.');
+check(missingScenes.get('missing-choose-path')?.choices?.find((choice) => choice.id === 'rolling')?.nextScene === 'missing-tools', 'The continuing rolling trail must lead to mirror-stick tools.');
+check(JSON.stringify(missingScenes.get('missing-reflection')?.reflectionPrompts?.map((prompt) => prompt.options.length)) === '[2,2,3]', 'Missing egg reflection must preserve the 2/2/3 slide structure.');
+check(missingEggStory.phaseJourney?.map((phase) => phase.title).join(',') === 'کشف مسئله,احساس‌ها,بررسی سرنخ‌ها,تصمیم و مقایسه,ساخت ابزار,بازاندیشی', 'Missing egg phase labels must match its flow.');
+
+const foxScenes = new Map(wetFoxStory.scenes.map((scene) => [scene.id, scene]));
+check(foxScenes.get('fox-clues')?.hotspots?.length === 3, 'Wet fox must expose door, window and roof leaks.');
+check(foxScenes.get('fox-measurement')?.prompt === 'زیر در: ۵ پیمانه — پنجره: ۳ پیمانه — سقف: ۱ پیمانه', 'Wet fox first measurement must be 5/3/1.');
+check(foxScenes.get('fox-after-barrier')?.prompt === 'زیر در: ۱ پیمانه — پنجره: ۳ پیمانه — سقف: ۱ پیمانه', 'Wet fox second measurement must be 1/3/1.');
+check(foxScenes.get('fox-first-priority')?.choices?.find((choice) => choice.id === 'door')?.nextScene === 'fox-tools', 'Wet fox first priority must be the door.');
+check(foxScenes.get('fox-second-priority')?.choices?.find((choice) => choice.id === 'window')?.nextScene === 'fox-success', 'Wet fox second priority must be the window.');
+check(foxScenes.get('fox-tools')?.requiredItemIds?.join(',') === 'towel,plastic-bag,yarn', 'Wet fox tools must be towel, plastic bag and yarn.');
+check(foxScenes.get('fox-craft')?.requiredCraftCount === 3, 'Wet fox barrier must use the three client construction steps.');
+check(JSON.stringify(foxScenes.get('fox-reflection')?.reflectionPrompts?.map((prompt) => prompt.options.length)) === '[2,2,3]', 'Wet fox reflection must preserve the 2/2/3 slide structure.');
+check(wetFoxStory.phaseJourney?.map((phase) => phase.title).join(',') === 'کشف مسئله,احساس‌ها,اندازه‌گیری,انتخاب اولویت,ساخت و بررسی,بازاندیشی', 'Wet fox phase labels must match its flow.');
+
+if (failures.length) { console.error(failures.map((failure) => `✗ ${failure}`).join('\n')); process.exit(1); }
+console.log(`✓ Missing egg graph passed: ${missingEggStory.scenes.length} deck-aligned scenes.`);
+console.log(`✓ Wet fox graph passed: ${wetFoxStory.scenes.length} deck-aligned scenes.`);

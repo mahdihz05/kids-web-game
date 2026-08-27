@@ -1,0 +1,147 @@
+{
+  "id": "missing-egg",
+  "title": "جست‌وجوی تخم گمشده",
+  "subtitle": "سرنخ‌ها را دنبال کن و ببین به کجا می‌رسند",
+  "description": "سرنخ‌ها را پیدا و بررسی کن تا تخم گمشده را پیدا کنیم.",
+  "badgeTitle": "سرنخ‌یاب دقیق",
+  "coverImage": "missing-egg-intro",
+  "startScene": "missing-intro",
+  "totalPhases": 6,
+  "phaseJourney": [
+    { "title": "کشف مسئله", "icon": "🔎" },
+    { "title": "احساس‌ها", "icon": "💛" },
+    { "title": "بررسی سرنخ‌ها", "icon": "👣" },
+    { "title": "تصمیم و مقایسه", "icon": "⚖️" },
+    { "title": "ساخت ابزار", "icon": "🪞" },
+    { "title": "بازاندیشی", "icon": "⭐" }
+  ],
+  "theme": { "primary": "#638b45", "secondary": "#f1c66b", "accent": "#a86472" },
+  "scenes": [
+    {
+      "id": "missing-intro", "type": "dialogue", "phase": 1, "phaseTitle": "کشف مسئله", "characterName": "خانم لاک‌پشت",
+      "text": "به خانم لاک‌پشت کمک کنیم.", "prompt": "روی آیکن کتاب بزن و متن داستان را بخوان.",
+      "bookText": "صبح زود، خانم لاک‌پشت به لانه‌اش برگشت تا تخم‌هایش را ببیند. دو تخم سر جایشان بودند، اما جای تخم سوم خالی بود. خانم لاک‌پشت با نگرانی گفت: «تخمم نیست! کجا رفته؟» مادربزرگ جغد، سنجاب، جوجه‌تیغی و خرگوش برای کمک آمدند.",
+      "image": "missing-egg-intro", "actionLabel": "مشکل خانم لاک‌پشت را پیدا کنیم", "nextScene": "missing-problem"
+    },
+    {
+      "id": "missing-problem", "type": "choice", "phase": 1, "phaseTitle": "کشف مسئله", "characterName": "خانم لاک‌پشت",
+      "text": "مشکل خانم لاک‌پشت چیست؟", "prompt": "مشکل خانم لاک‌پشت چیست؟", "image": "missing-egg-intro", "choiceInteraction": "immediate",
+      "choices": [
+        { "id": "egg-missing", "text": "یکی از تخم‌هایش گم شده است.", "caption": "تخم گم شده", "icon": "🥚", "image": "missing-problem-egg", "nextScene": "missing-feeling", "score": 2, "skill": "discovery", "consequence": "درسته! یکی از تخم‌ها نیست. حالا باید ببینیم کجا رفته.", "summary": "فهمید یکی از تخم‌های خانم لاک‌پشت گم شده است." },
+        { "id": "fallen-leaves", "text": "برگ‌های اطراف لانه ریخته‌اند.", "caption": "برگ‌ها ریخته‌اند", "icon": "🌿", "image": "missing-problem-leaves", "nextScene": "missing-problem", "score": 0, "retry": true, "feedback": "برگ‌ها اینجا هستند، اما یک چیز کم شده. دوباره به لانه نگاه کنیم." },
+        { "id": "nest-moved", "text": "لانه‌اش جایش عوض شده است.", "caption": "لانه جابه‌جا شده", "icon": "🏡", "image": "missing-problem-nest", "nextScene": "missing-problem", "score": 0, "retry": true, "feedback": "لانه هنوز سر جایش است. چیزی که پیدا نمی‌شود، یکی از تخم‌هاست." }
+      ]
+    },
+    {
+      "id": "missing-feeling", "type": "choice", "phase": 2, "phaseTitle": "واکنش و احساس", "characterName": "خانم لاک‌پشت",
+      "text": "خانم لاک‌پشت الان چه احساسی دارد؟", "prompt": "خانم لاک‌پشت الان چه احساسی دارد؟", "image": "missing-egg-intro", "choiceInteraction": "immediate",
+      "choices": [
+        { "id": "worried", "text": "خیلی نگران است.", "caption": "خیلی نگران", "image": "turtle-feeling-worried", "imageCrop": "top-right", "nextScene": "missing-clues", "score": 1, "skill": "analysis", "consequence": "خانم لاک‌پشت خیلی نگران تخمش است. باید هرچه زودتر دنبالش بگردند." },
+        { "id": "sad", "text": "ناراحت است.", "caption": "ناراحت", "image": "turtle-feeling-sad", "imageCrop": "top-left", "nextScene": "missing-clues", "score": 1, "skill": "analysis", "consequence": "خانم لاک‌پشت از گم شدن تخمش ناراحت است. شاید بتوانند با هم پیدایش کنند." },
+        { "id": "angry", "text": "کمی عصبانی است.", "caption": "کمی عصبانی", "image": "turtle-feeling-angry", "imageCrop": "bottom-right", "nextScene": "missing-clues", "score": 1, "skill": "analysis", "consequence": "خانم لاک‌پشت از این اتفاق کمی عصبانی است. دلش می‌خواهد بفهمد تخم کجا رفته." },
+        { "id": "happy", "text": "کمی خوشحال است.", "caption": "کمی خوشحال", "image": "turtle-feeling-happy", "imageCrop": "bottom-left", "nextScene": "missing-clues", "score": 1, "skill": "analysis", "consequence": "شاید از اینکه دوستانش برای کمک آمده‌اند کمی خوشحال باشد، اما هنوز باید تخمش را پیدا کنند." }
+      ]
+    },
+    {
+      "id": "missing-clues", "type": "hotspot", "phase": 3, "phaseTitle": "پیدا کردن سرنخ‌ها", "characterName": "مادربزرگ جغد",
+      "text": "قبل از اینکه دنبال تخم بدویم، باید اطراف لانه را خوب نگاه کنیم. شاید نشانه‌ای پیدا کنیم که بگوید تخم از کدام طرف رفته است.", "prompt": "سه سرنخ اصلی را پیدا کن.",
+      "bookText": "مادربزرگ جغد گفت: «قبل از اینکه دنبال تخم بدویم، باید اطراف لانه را خوب نگاه کنیم. شاید نشانه‌ای پیدا کنیم که بگوید تخم از کدام طرف رفته است.»",
+      "image": "missing-egg-clues", "actionLabel": "چرا هر سه را بررسی کنیم؟", "nextScene": "missing-why-all",
+      "hotspots": [
+        { "id": "footprints", "label": "ردپا", "icon": "👣", "x": 30, "y": 78, "clue": "این ردپاها از کنار لانه به سمت رودخانه می‌روند.", "reward": { "points": 1, "skill": "discovery" } },
+        { "id": "bent-leaves", "label": "برگ‌های خم‌شده", "icon": "🍃", "x": 52, "y": 77, "clue": "این برگ‌ها انگار چیزی از رویشان رد شده است.", "reward": { "points": 1, "skill": "discovery" } },
+        { "id": "rolling-trail", "label": "جای قل خوردن", "icon": "〰️", "x": 72, "y": 82, "clue": "این رد نشان می‌دهد شاید یک چیز گرد از اینجا قل خورده باشد.", "reward": { "points": 1, "skill": "discovery" } }
+      ]
+    },
+    {
+      "id": "missing-why-all", "type": "choice", "phase": 3, "phaseTitle": "تحلیل سرنخ‌ها", "characterName": "مادربزرگ جغد",
+      "text": "حیوان‌ها با هم تصمیم گرفتند هرکدام یک سرنخ را دنبال کنند.", "prompt": "چرا حیوانات باید هر سه سرنخ را دنبال کنند؟", "bookText": "مادربزرگ جغد گفت: «سه سرنخ داریم. باید همه‌ی آن‌ها را بررسی کنیم چون سرنخ‌ها مهم هستند و ما نمی‌توانیم فقط یکی از آن‌ها را دنبال کنیم.» حیوان‌ها با هم تصمیم گرفتند هرکدام یک سرنخ را دنبال کنند.", "image": "missing-egg-clues", "choiceInteraction": "immediate",
+      "choices": [
+        { "id": "unknown-path", "text": "چون هنوز نمی‌دانند کدام سرنخ آن‌ها را به تخم می‌رساند.", "caption": "هنوز نمی‌دانند", "icon": "🔎", "image": "missing-why-unknown", "nextScene": "missing-clue-results", "score": 1, "skill": "reasoning", "consequence": "دقیقاً! هنوز نمی‌دانند کدام سرنخ به تخم می‌رسد. پس بهتر است هر سه را بررسی کنند." },
+        { "id": "new-fact", "text": "چون شاید هر سرنخ یک چیز تازه درباره‌ی تخم به آن‌ها نشان بدهد.", "caption": "چیز تازه", "icon": "👀", "image": "missing-why-new", "nextScene": "missing-clue-results", "score": 1, "skill": "reasoning", "consequence": "آره، ممکنه! هر سرنخ می‌تواند یک چیز تازه نشان دهد. باید دید هرکدام آن‌ها را به کجا می‌رسانند." },
+        { "id": "combine-clues", "text": "چون وقتی سرنخ‌ها را کنار هم می‌گذارند، بهتر می‌فهمند چه اتفاقی افتاده.", "caption": "کنار هم گذاشتن", "icon": "🧩", "image": "missing-why-combine", "nextScene": "missing-clue-results", "score": 1, "skill": "reasoning", "consequence": "درسته! وقتی سرنخ‌ها را کنار هم می‌گذارند، راحت‌تر می‌فهمند چه اتفاقی افتاده. پس هر سه را بررسی می‌کنند." },
+        { "id": "run-more", "text": "چون هرچه بیشتر بدوند، زودتر تخم را پیدا می‌کنند.", "caption": "بیشتر دویدن", "icon": "🏃", "image": "missing-why-run", "nextScene": "missing-why-all", "score": 0, "retry": true, "feedback": "دویدن شاید سرگرم‌کننده باشد، اما هنوز نمی‌دانند تخم کجاست. بهتره اول سرنخ‌ها را دنبال کنند." }
+      ]
+    },
+    {
+      "id": "missing-clue-results", "type": "hotspot", "phase": 4, "phaseTitle": "تصمیم و مقایسه", "characterName": "مادربزرگ جغد",
+      "text": "مادربزرگ جغد از بالا مراقب هر سه بود تا ببینند هر سرنخ آن‌ها را به کجا می‌رساند.", "prompt": "حالا ببینیم هر سرنخ ما را به کجا رساند.",
+      "bookText": "مادربزرگ جغد گفت: «سنجاب، تو ردپاها را دنبال کن و ببین به کجا می‌رسند. جوجه‌تیغی، تو برگ‌های خم‌شده را دنبال کن و ببین چه چیزی از اینجا گذشته است. خرگوش، تو رد قل خوردن را دنبال کن و ببین به کجا می‌رود.» مادربزرگ جغد از بالا مراقب هر سه بود تا ببینند هر سرنخ آن‌ها را به کجا می‌رساند.",
+      "image": "missing-egg-clues", "actionLabel": "نشانهٔ ادامه‌دار را انتخاب کنیم", "nextScene": "missing-choose-path",
+      "hotspots": [
+        { "id": "footprints-result", "label": "ردپا", "icon": "👣", "x": 30, "y": 78, "clue": "تا رودخانه رفت و بعد ناپدید شد.", "reward": { "points": 1, "skill": "analysis" } },
+        { "id": "leaves-result", "label": "برگ‌های خم‌شده", "icon": "🍃", "x": 52, "y": 77, "clue": "تا بوته رفت، اما چیزی زیر برگ‌ها پیدا نکرد.", "reward": { "points": 1, "skill": "analysis" } },
+        { "id": "roll-result", "label": "جای قل خوردن", "icon": "〰️", "x": 72, "y": 82, "clue": "از کنار بوته گذشت و هنوز ادامه دارد.", "reward": { "points": 1, "skill": "analysis" } }
+      ]
+    },
+    {
+      "id": "missing-choose-path", "type": "choice", "phase": 4, "phaseTitle": "انتخاب سرنخ", "characterName": "دوستان جست‌وجوگر",
+      "text": "کدام نشانه را دنبال کنیم تا شانس بیشتری برای پیدا کردن تخم داشته باشیم؟", "prompt": "کدام نشانه را دنبال کنیم تا شانس بیشتری برای پیدا کردن تخم داشته باشیم؟", "image": "missing-egg-clues", "choiceInteraction": "immediate",
+      "choices": [
+        { "id": "footprints", "text": "ردپاهایی که کنار رودخانه تمام شدند.", "caption": "ردپا", "icon": "👣", "image": "missing-path-footprints", "nextScene": "missing-choose-path", "score": 0, "retry": true, "feedback": "تا رودخانه رفتیم، اما دیگر نشانه‌ای از آنجا نداریم. شاید این ردپا مربوط به چیز دیگری باشد." },
+        { "id": "leaves", "text": "برگ‌های خم‌شده که کنار بوته تمام شدند.", "caption": "برگ‌های خم‌شده", "icon": "🍃", "image": "missing-path-leaves", "nextScene": "missing-choose-path", "score": 0, "retry": true, "feedback": "این مسیر تا بوته آمد، اما بعد ناپدید شد. هنوز نمی‌دانیم تخم کجا رفته است." },
+        { "id": "rolling", "text": "رد قل خوردن که هنوز ادامه دارد.", "caption": "رد قل خوردن", "icon": "〰️", "image": "missing-path-roll", "nextScene": "missing-tools", "score": 2, "skill": "decision", "consequence": "این نشانه هنوز ادامه دارد! بیایید آن را دنبال کنیم.", "summary": "رد قل خوردن ادامه‌دار را انتخاب کرد." }
+      ]
+    },
+    {
+      "id": "missing-tools", "type": "dragDrop", "phase": 5, "phaseTitle": "انتخاب ابزار", "characterName": "مادربزرگ جغد",
+      "text": "به حیوانات کمک کن با این ابزارها یک چوب آینه‌ای بسازند.", "prompt": "برای ساختن چوب آینه‌ای، چهار وسیلهٔ درست را انتخاب کن.",
+      "bookText": "مادربزرگ جغد گفت: «برای اینکه همه‌ی مسیرهای قل خوردن را با دقت ببینیم، باید یک چوب آینه‌ای بلند بسازیم که هم زیر برگ‌ها و هم جاهای دور را ببینیم.»",
+      "image": "missing-egg-workshop", "requiredItemIds": ["wheel", "mirrors", "long-stick", "rope"],
+      "dropTarget": { "label": "وسایل چوب آینه‌ای", "icon": "🪞", "nextScene": "missing-craft" },
+      "dragItems": [
+        { "id": "wheel", "label": "چرخ", "icon": "🛞", "image": "missing-tool-wheel", "correct": true, "feedback": "چرخ برای راحت حرکت کردن چوب است.", "reward": { "points": 1, "skill": "tool" } },
+        { "id": "mirrors", "label": "دو آینه", "icon": "🪞", "image": "missing-tool-mirrors", "correct": true, "feedback": "دو آینه را دو طرف چرخ می‌گذاریم.", "reward": { "points": 1, "skill": "tool" } },
+        { "id": "long-stick", "label": "چوب بلند", "icon": "🪵", "image": "missing-tool-stick", "correct": true, "feedback": "چوب بلند برای راحت گشتن است.", "reward": { "points": 1, "skill": "tool" } },
+        { "id": "rope", "label": "طناب", "icon": "🪢", "image": "missing-tool-rope", "correct": true, "feedback": "طناب برای بستن چرخ و آینه‌هاست.", "reward": { "points": 1, "skill": "tool" } },
+        { "id": "leaf", "label": "برگ", "icon": "🍃", "image": "missing-tool-leaf", "correct": false, "feedback": "برگ جزو وسایل ساخت چوب آینه‌ای نیست.", "reward": { "points": 0 } },
+        { "id": "stone", "label": "سنگ", "icon": "🪨", "image": "missing-tool-stone", "correct": false, "feedback": "سنگ جزو وسایل ساخت چوب آینه‌ای نیست.", "reward": { "points": 0 } }
+      ]
+    },
+    {
+      "id": "missing-craft", "type": "craft", "phase": 5, "phaseTitle": "مرحلهٔ ساختن چوب آینه‌ای", "characterName": "دوستان جنگل",
+      "text": "چوب آینه‌ای را مرحله‌به‌مرحله بساز.", "prompt": "وسایل انتخاب‌شده را به ترتیب آماده کن.", "image": "missing-egg-workshop", "requiredCraftCount": 4, "craftUnitLabel": "مرحله", "craftCompleteLabel": "چوب آینه‌ای آماده شد! ←", "nextScene": "missing-success",
+      "craftItems": [
+        { "id": "attach-wheel", "label": "چرخ را به چوب بلند وصل کن", "icon": "۱", "image": "missing-tool-wheel", "reward": { "points": 1, "skill": "tool" } },
+        { "id": "attach-mirrors", "label": "دو آینه را دو طرف چرخ بگذار", "icon": "۲", "image": "missing-tool-mirrors", "reward": { "points": 1, "skill": "tool" } },
+        { "id": "tie-rope", "label": "چرخ و آینه‌ها را با طناب محکم کن", "icon": "۳", "image": "missing-tool-rope", "reward": { "points": 1, "skill": "tool" } },
+        { "id": "ready-stick", "label": "چوب بلند را برای جست‌وجو آماده کن", "icon": "۴", "image": "missing-tool-stick", "reward": { "points": 1, "skill": "tool" } }
+      ]
+    },
+    {
+      "id": "missing-success", "type": "dialogue", "phase": 6, "phaseTitle": "جشن پایانی", "characterName": "دوستان جنگل",
+      "text": "تخم گمشده پیدا شد!", "prompt": "روی آیکن کتاب بزن و داستان پیدا شدن تخم را بخوان.",
+      "bookText": "خرگوش رد قل‌خوردن را دنبال کرد، اما بعد از بوته، رد دیگر از روی زمین دیده نمی‌شد. او چوب آینه‌ای را جلو برد و از داخل آینه پشت برگ‌های بزرگ را نگاه کرد. چیزی ندید اما کمی جلوتر رفت. این بار در آینه، نوک یک تخم سفید دیده شد! خرگوش با هیجان گفت: «پیداش کردم! تخم پشت این برگ‌هاست!» سنجاب، جوجه‌تیغی و مادربزرگ جغد هم به کمکش آمدند. برگ‌ها را آرام کنار زدند و تخم گمشده را بیرون آوردند. خانم لاک‌پشت با خوشحالی گفت: «آخ جون، دوباره پیشم برگشتی!» مادربزرگ جغد لبخند زد و گفت: «رد قل‌خوردن ما را تا اینجا آورد و آینه کمک کرد جایی را ببینیم که چشممان نمی‌دید.»",
+      "image": "missing-egg-finale", "actionLabel": "ببینیم چطور به تخم رسیدیم", "nextScene": "missing-final-question"
+    },
+    {
+      "id": "missing-final-question", "type": "choice", "phase": 6, "phaseTitle": "یادگیری", "characterName": "کوکی متفکر",
+      "text": "در جست‌وجوی تخم گمشده، چه کار کردیم تا به آن رسیدیم؟", "prompt": "در جست‌وجوی تخم گمشده، چه کار کردیم تا به آن رسیدیم؟", "image": "missing-egg-finale", "choiceInteraction": "immediate",
+      "choices": [
+        { "id": "follow-and-check", "text": "همه‌ی سرنخ‌ها را دنبال کردیم و جاهای پنهان را با ابزارمان بررسی کردیم.", "caption": "سرنخ و ابزار", "icon": "👣", "image": "missing-final-clues", "nextScene": "missing-reflection", "score": 2, "skill": "reasoning", "consequence": "درسته! سرنخ‌ها را دنبال کردیم و با ابزار جاهای پنهان را دیدیم." },
+        { "id": "run-around", "text": "فقط سریع چند جا دور لانه گشتیم.", "caption": "فقط دویدن", "icon": "🏃", "image": "missing-final-run", "nextScene": "missing-final-question", "score": 0, "retry": true, "feedback": "فقط سریع گشتن کافی نبود؛ سرنخ‌ها و ابزار به ما کمک کردند." },
+        { "id": "guess-first", "text": "همان اول حدس زدیم تخم کجا پنهان شده است.", "caption": "حدس زدن", "icon": "🥚", "image": "missing-final-guess", "nextScene": "missing-final-question", "score": 0, "retry": true, "feedback": "ما همان اول حدس نزدیم؛ سرنخ‌ها را بررسی کردیم." },
+        { "id": "random-search", "text": "هرجا را که دوست داشتیم نگاه کردیم تا اتفاقی پیدایش کنیم.", "caption": "جست‌وجوی اتفاقی", "icon": "🍀", "image": "missing-final-random", "nextScene": "missing-final-question", "score": 0, "retry": true, "feedback": "جست‌وجوی ما اتفاقی نبود؛ رد سرنخ ادامه‌دار را دنبال کردیم." }
+      ]
+    },
+    {
+      "id": "missing-reflection", "type": "reflection", "phase": 6, "phaseTitle": "بازاندیشی", "characterName": "دو ستاره و یک آرزو", "text": "دو چیز که یاد گرفتی و یک آرزو را انتخاب کن.", "prompt": "کارت‌های خودت را کامل کن.", "image": "missing-egg-finale", "nextScene": "missing-result",
+      "reflectionPrompts": [
+        { "id": "learned", "title": "⭐ من یاد گرفتم که...", "icon": "⭐", "options": [
+          { "id": "find-clues", "text": "برای پیدا کردن جواب، دنبال سرنخ بگردم.", "icon": "🔎", "image": "missing-final-clues", "score": 1, "skill": "reflection" },
+          { "id": "follow-clues", "text": "ببینم هر سرنخ مرا به کجا می‌برد.", "icon": "👣", "image": "missing-path-footprints", "score": 1, "skill": "reflection" }
+        ] },
+        { "id": "better", "title": "⭐ من می‌توانم بهتر دنبال جواب بگردم اگر...", "icon": "⭐", "options": [
+          { "id": "small-things", "text": "به چیزهای کوچک هم دقت کنم.", "icon": "👀", "image": "missing-why-new", "score": 1, "skill": "reflection" },
+          { "id": "use-tools", "text": "برای پیدا کردن چیزهای پنهان، از ابزار کمک بگیرم.", "icon": "🪞", "image": "missing-tool-mirrors", "score": 1, "skill": "reflection" }
+        ] },
+        { "id": "wish", "title": "🌙 آرزو دارم دفعه بعد...", "icon": "🌙", "options": [
+          { "id": "new-secret", "text": "یک راز تازه را خودم کشف کنم.", "icon": "🕵️", "image": "missing-final-clues", "score": 1, "skill": "reflection" },
+          { "id": "new-clue", "text": "سرنخ تازه‌ای پیدا کنم و ببینم به کجا می‌رسد.", "icon": "🔎", "image": "missing-path-roll", "score": 1, "skill": "reflection" },
+          { "id": "build-tool", "text": "برای پیدا کردن یک چیز گمشده، ابزار خودم را بسازم.", "icon": "🛠️", "image": "missing-egg-workshop", "score": 1, "skill": "reflection" }
+        ] }
+      ]
+    },
+    { "id": "missing-result", "type": "result", "phase": 6, "phaseTitle": "پایان", "text": "تخم گمشده پیدا شد.", "image": "missing-egg-finale", "learningSummary": "برای پیدا کردن جواب، سرنخ‌ها را دنبال کردیم، نتیجهٔ هرکدام را دیدیم و برای دیدن جای پنهان ابزار ساختیم." }
+  ]
+}

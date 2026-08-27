@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { DEFAULT_STORY_ID, getStory, storyRegistry } from './data/storyRegistry';
+import { missions } from './data/missions';
 import { GameEngine, type GameSnapshot } from './engine/GameEngine';
 import { ProfileSystem } from './engine/ProfileSystem';
 import { ScoreSystem } from './engine/ScoreSystem';
@@ -28,6 +29,7 @@ export function App() {
   const [storyId, setStoryId] = useState(initialStoryId);
   const engines = useMemo(() => Object.fromEntries(Object.entries(storyRegistry).map(([id, registeredStory]) => [id, new GameEngine(registeredStory)])), []);
   const story = getStory(storyId);
+  const mission = missions.find((item) => item.id === story.id);
   const engine = engines[storyId];
   const [snapshot, setSnapshot] = useState<GameSnapshot>(() => engine.snapshot());
   const [profile, setProfile] = useState(() => {
@@ -63,10 +65,20 @@ export function App() {
     const target = preloadImage ? { image: preloadImage } : nextSceneId ? story.scenes.find((candidate) => candidate.id === nextSceneId) : undefined;
     const ready = target ? new Promise<void>((resolve) => {
       const preload = new Image();
-      preload.onload = () => resolve();
-      preload.onerror = () => resolve();
+      let settled = false;
+      const finishPreload = () => {
+        if (settled) return;
+        settled = true;
+        window.clearTimeout(fallback);
+        preload.onload = null;
+        preload.onerror = null;
+        resolve();
+      };
+      const fallback = window.setTimeout(finishPreload, 2_000);
+      preload.onload = finishPreload;
+      preload.onerror = finishPreload;
       preload.src = assetPath(target.image);
-      if (preload.complete) resolve();
+      if (preload.complete) finishPreload();
     }) : Promise.resolve();
     pendingAction.current = { run: action, ready };
     setTurnPhase('covering');
@@ -118,7 +130,7 @@ export function App() {
   return <div className={`view-shell ${turnPhase !== 'idle' ? 'view-shell--turning' : ''}`}><main className="game-app" aria-busy={turnPhase !== 'idle'} style={{ '--theme-primary': story.theme.primary, '--theme-accent': story.theme.accent } as React.CSSProperties}>
     <header className="game-topbar">
       <button className="round-button" onClick={goHome} type="button" aria-label="بازگشت به دهکده">⌂</button>
-      <div className="game-title"><small>مأموریت {story.id === DEFAULT_STORY_ID ? '۱' : '۲'} از ۱۰</small><strong>{story.id === DEFAULT_STORY_ID ? '🎁' : '🌰'} {story.title}</strong></div>
+      <div className="game-title"><small>مأموریت {mission?.number ?? 1} از ۱۰</small><strong>{mission?.icon ?? '📖'} {story.title}</strong></div>
       <div className="phase-progress"><div><span>مسیر حل مسئله</span><b>{scene.phase}/{story.totalPhases}</b></div><i><b style={{ width: `${phasePercent}%` }} /></i></div>
       {scene.bookText && <button className="round-button story-reader" onClick={() => setBookOpen(true)} type="button" aria-label="داستان این بخش">📖</button>}
       {scene.id === story.startScene && <NarrationButton iconOnly text={scene.narration ?? scene.text} audio={scene.audio} />}
@@ -143,6 +155,6 @@ export function App() {
         onRestart={() => transition(() => engine.restart(), story.startScene)} onHome={goHome} />
       <div className="ambient-particles" aria-hidden="true"><i>✦</i><i>✧</i><i>•</i></div>
     </section>
-    <PhaseJourney currentPhase={scene.phase} />
+    <PhaseJourney currentPhase={scene.phase} phases={story.phaseJourney} />
   </main>{bookOpen && <StoryBook story={story} text={scene.bookText} onClose={() => setBookOpen(false)} />}{pageTurn}</div>;
 }

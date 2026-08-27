@@ -447,3 +447,26 @@
   .game-app .reflection-option { min-height: 48px; grid-template-columns: 48px minmax(0, 1fr); }
   .game-app .reflection-option img { inline-size: 48px; block-size: 48px; }
 }
+
+/* Emotion sheets keep each character portrait in its own choice-card crop. */
+.game-app .story-panel--choice .choice-card > .choice-card__crop {
+  grid-column: 1;
+  grid-row: 1;
+  width: 100%;
+  height: 100%;
+  min-height: 82px;
+  align-self: stretch;
+  padding: 0;
+  border-radius: 0 20px 20px 0;
+  background-repeat: no-repeat;
+  background-size: 200% 200%;
+}
+
+@media (max-width: 767px) and (orientation: portrait), (max-width: 900px) and (max-height: 600px) and (orientation: landscape) {
+  .game-app .story-panel--choice .choice-card > .choice-card__crop {
+    grid-column: 1;
+    grid-row: 1;
+    min-height: 0;
+    border-radius: 10px 10px 0 0;
+  }
+}

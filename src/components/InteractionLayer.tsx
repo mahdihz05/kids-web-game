@@ -46,7 +46,7 @@ export function InteractionLayer({ scene, progress, onDiscover, onTool, onCraft 
     return <div className="tool-playground"><div className="tool-shelf" aria-label="ابزارها">{scene.dragItems?.map((item) => <button
       className={`drag-item ${selected.includes(item.id) ? 'drag-item--selected' : ''}`} draggable={!selected.includes(item.id)}
       onDragStart={(event) => event.dataTransfer.setData('toolId', item.id)} onClick={() => onTool(item)} type="button" key={item.id}
-    ><img src={assetPath(item.image)} alt="" /><small>{item.label}</small><i>⋮⋮</i></button>)}</div>
+    ><img src={assetPath(item.image)} alt="" /><span className="drag-item__icon" aria-hidden="true">{item.icon}</span><small>{item.label}</small><i>⋮⋮</i></button>)}</div>
       <div className={`drop-zone ${ready ? 'drop-zone--success' : ''}`} onDragOver={(event) => event.preventDefault()}
         onDrop={(event) => { event.preventDefault(); const item = scene.dragItems?.find((candidate) => candidate.id === event.dataTransfer.getData('toolId')); if (item) onTool(item); }}>
         <span>{ready ? '✓' : scene.dropTarget?.icon}</span><strong>{ready ? 'همه آماده‌اند!' : scene.dropTarget?.label}</strong><small>{`${selected.length} از ${required.length}`}</small>

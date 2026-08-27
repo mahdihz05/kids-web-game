@@ -14,6 +14,7 @@ const brandFriends = ['friend-frog', 'friend-orange', 'friend-purple', 'friend-b
 
 export function MissionHub({ profile, onStart, onParent, onStory }: MissionHubProps) {
   const [parentGateOpen, setParentGateOpen] = useState(false);
+  const unlockedCount = missions.filter((mission) => mission.unlocked).length;
   return (
     <main className="hub">
       <header className="hub-header">
@@ -24,7 +25,7 @@ export function MissionHub({ profile, onStart, onParent, onStory }: MissionHubPr
 
       <section className="hub-hero">
         <div className="hub-hero__copy">
-          <span className="tiny-label">دو کتاب برای ماجراجویی بیدار شده‌اند!</span>
+          <span className="tiny-label">{unlockedCount} کتاب برای ماجراجویی بیدار شده‌اند!</span>
           <h1>فکر کن، کمک کن<br />و قصه‌ها را زنده کن</h1>
           <p>پشمالو منتظر توست؛ وارد کتابش شو و برای انتخاب یک هدیه ماندگار کمکش کن.</p>
         </div>
@@ -32,7 +33,7 @@ export function MissionHub({ profile, onStart, onParent, onStory }: MissionHubPr
       </section>
 
       <section className="mission-section">
-        <div className="section-title"><div><span>۱۰ قصه آموزشی</span><h2>قفسه کتاب‌های سحرآمیز</h2></div><p>۲ از ۱۰ کتاب بیدار شده</p></div>
+        <div className="section-title"><div><span>۱۰ قصه آموزشی</span><h2>قفسه کتاب‌های سحرآمیز</h2></div><p>{unlockedCount} از ۱۰ کتاب بیدار شده</p></div>
         <div className="mission-grid">
           {missions.map((mission) => {
             const complete = profile.completedMissions.includes(mission.id);

@@ -19,7 +19,7 @@ npm run check
 4. فایل نمونه `nginx.conf.example` را با دامنه واقعی و مسیر بالا فعال کنید.
 5. با `nginx -t` تنظیمات را کنترل و Nginx را reload کنید.
 6. سرویس‌های API و PostgreSQL را با `docker compose up --build -d` اجرا کنید و `http://127.0.0.1:3001/api/health` را کنترل کنید.
-7. صفحه اصلی، `?play=1`، `?play=oak-rescue`، `/admin`، همه assets و refresh مسیرها را smoke test کنید.
+7. صفحه اصلی، `?play=1`، `?play=oak-rescue`، `?play=missing-egg`، `?play=wet-fox-house`، `/admin`، همه assets و refresh مسیرها را smoke test کنید.
 8. برای HTTPS از گواهی موجود سرور یا Certbot استفاده کنید.
 
 ## سرور فعلی Demo
@@ -34,7 +34,7 @@ npm run check
 4. کانتینر `kids-web-game-demo` را restart کنید تا Bind Mount دوباره resolve شود.
 5. سرویس API را با `docker compose up -d --build api` به‌روزرسانی کنید.
 6. برای کانتینر demo روی پورت `8397`، فایل `deploy/nginx.demo.conf` را به `/etc/nginx/conf.d/default.conf` mount کنید تا `/api/` به سرویس `api` پراکسی شود.
-7. آدرس `http://SERVER_IP:8397/`، `?library=1`، `?play=1`، `?play=oak-rescue` و `/admin` را Smoke Test کنید.
+7. آدرس `http://SERVER_IP:8397/`، `?library=1`، `?play=1`، `?play=oak-rescue`، `?play=missing-egg`، `?play=wet-fox-house` و `/admin` را Smoke Test کنید.
 
 ## Rollback
 
@@ -44,4 +44,4 @@ npm run check
 
 پیشرفت مأموریت در LocalStorage حفظ می‌شود. رخدادهای گزارش مدیریت با شناسه‌های ناشناس در PostgreSQL ذخیره می‌شوند. فایل `.env` شامل رمز دیتابیس، هش رمز مدیر و Cookie Secret است و نباید وارد مخزن شود.
 
-برای smoke test مستقیم قفسه کتاب‌ها، بدون تغییر LocalStorage، می‌توان از `?library=1` استفاده کرد. مسیرهای `?play=1` و `?play=oak-rescue` به‌ترتیب بازی اول و دوم را مستقیم باز می‌کنند.
+برای smoke test مستقیم قفسه کتاب‌ها، بدون تغییر LocalStorage، می‌توان از `?library=1` استفاده کرد. مسیرهای `?play=1`، `?play=oak-rescue`، `?play=missing-egg` و `?play=wet-fox-house` بازی‌های اول تا چهارم را مستقیم باز می‌کنند.

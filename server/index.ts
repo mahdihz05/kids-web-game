@@ -22,7 +22,12 @@ const eventSchema = z.object({
   sceneId: z.string().max(100).optional(), choiceId: z.string().max(100).optional(), occurredAt: z.string().datetime(),
 });
 const bodySchema = z.object({ events: z.array(eventSchema).min(1).max(100) });
-const titles: Record<string, string> = { 'grandmas-birthday-gift': 'هدیه تولد مادربزرگ', 'oak-rescue': 'راه نجات بلوط‌ها' };
+const titles: Record<string, string> = {
+  'grandmas-birthday-gift': 'هدیه تولد مادربزرگ',
+  'oak-rescue': 'راه نجات بلوط‌ها',
+  'missing-egg': 'جست‌وجوی تخم گمشده',
+  'wet-fox-house': 'خانه خیس روباه',
+};
 const stageMetadata: Record<string, Record<string, { title: string; order: number }>> = {
   'grandmas-birthday-gift': Object.fromEntries([
     ['birthday-intro', 'آغاز داستان'], ['identify-problem', 'کشف مسئله'], ['feelings', 'احساس و واکنش'], ['garden-clues', 'پیدا کردن سرنخ‌ها'],
@@ -35,6 +40,17 @@ const stageMetadata: Record<string, Record<string, { title: string; order: numbe
     ['oak-compare', 'انتخاب راه‌حل'], ['oak-rabbit-result', 'پیامد پرش خرگوش'], ['oak-bridge-result', 'پیامد ساخت پل'], ['oak-net-result', 'تحلیل راه‌حل تور'],
     ['oak-tools', 'انتخاب ابزار تور'], ['oak-weave', 'بافتن تور'], ['oak-success', 'نجات بلوط‌ها'], ['oak-final-compare', 'مقایسه نهایی راه‌ها'],
     ['oak-final-question', 'انتخاب بهترین راه‌حل'], ['oak-reflection', 'بازاندیشی'], ['oak-result', 'جشن موفقیت'],
+  ].map(([id, title], index) => [id, { title, order: index + 1 }])),
+  'missing-egg': Object.fromEntries([
+    ['missing-intro', 'آغاز داستان'], ['missing-problem', 'کشف مسئله'], ['missing-feeling', 'واکنش و احساس'], ['missing-clues', 'پیدا کردن سرنخ‌ها'],
+    ['missing-why-all', 'دلیل بررسی هر سه سرنخ'], ['missing-clue-results', 'نتیجهٔ سرنخ‌ها'], ['missing-choose-path', 'انتخاب سرنخ ادامه‌دار'], ['missing-tools', 'انتخاب ابزار چوب آینه‌ای'],
+    ['missing-craft', 'ساخت چوب آینه‌ای'], ['missing-success', 'پیدا شدن تخم'], ['missing-final-question', 'سؤال یادگیری'], ['missing-reflection', 'بازاندیشی'], ['missing-result', 'جشن موفقیت'],
+  ].map(([id, title], index) => [id, { title, order: index + 1 }])),
+  'wet-fox-house': Object.fromEntries([
+    ['fox-intro', 'آغاز داستان'], ['fox-problem', 'کشف مسئله'], ['fox-feeling', 'واکنش و احساس'], ['fox-clues', 'پیدا کردن راه‌های ورود آب'],
+    ['fox-measure-method', 'انتخاب روش اندازه‌گیری'], ['fox-measurement', 'اندازه‌گیری اول'], ['fox-first-priority', 'اولویت اول'], ['fox-tools', 'انتخاب ابزار مانع'],
+    ['fox-craft', 'ساخت مانع'], ['fox-after-barrier', 'اندازه‌گیری دوباره'], ['fox-second-priority', 'تغییر اولویت'], ['fox-success', 'نجات خانه'],
+    ['fox-final-question', 'سؤال بازاندیشی'], ['fox-reflection', 'دو ستاره و یک آرزو'], ['fox-result', 'جشن موفقیت'],
   ].map(([id, title], index) => [id, { title, order: index + 1 }])),
 };
 
@@ -55,6 +71,21 @@ const choiceMetadata: Record<string, Record<string, ChoiceMeta[]>> = {
     'oak-compare': [['log-bridge', 'ساختن پل'], ['rope-net', 'بافتن تور'], ['rabbit-jump', 'پریدن از سنگ‌ها']].map(([id, label]) => ({ id, label })),
     'oak-net-result': [['rabbit-fast', 'خرگوش سریع است'], ['everyone-helps', 'همه کمک می‌کنند'], ['collect-many', 'چند بلوط با هم'], ['needs-rope', 'طناب و زمان']].map(([id, label]) => ({ id, label })),
     'oak-final-question': [['speed-and-amount', 'سرعت و تعداد بلوط'], ['fewer-tools', 'وسایل کمتر'], ['bigger', 'بزرگ‌تر بودن'], ['prettier', 'قشنگ‌تر بودن']].map(([id, label]) => ({ id, label })),
+  },
+  'missing-egg': {
+    'missing-problem': [['egg-missing', 'تخم گم شده'], ['fallen-leaves', 'برگ‌ها ریخته‌اند'], ['nest-moved', 'لانه جابه‌جا شده']].map(([id, label]) => ({ id, label })),
+    'missing-feeling': [['worried', 'خیلی نگران'], ['sad', 'ناراحت'], ['angry', 'کمی عصبانی'], ['happy', 'کمی خوشحال']].map(([id, label]) => ({ id, label })),
+    'missing-why-all': [['unknown-path', 'هنوز نمی‌دانند'], ['new-fact', 'چیز تازه'], ['combine-clues', 'کنار هم گذاشتن'], ['run-more', 'بیشتر دویدن']].map(([id, label]) => ({ id, label })),
+    'missing-choose-path': [['footprints', 'ردپا'], ['leaves', 'برگ‌های خم‌شده'], ['rolling', 'رد قل خوردن']].map(([id, label]) => ({ id, label })),
+    'missing-final-question': [['follow-and-check', 'سرنخ و ابزار'], ['run-around', 'فقط دویدن'], ['guess-first', 'حدس زدن'], ['random-search', 'جست‌وجوی اتفاقی']].map(([id, label]) => ({ id, label })),
+  },
+  'wet-fox-house': {
+    'fox-problem': [['cannot-go-out', 'نمی‌تواند بیرون برود'], ['wet-window', 'فقط پنجره'], ['many-leaks', 'چند راه ورود آب']].map(([id, label]) => ({ id, label })),
+    'fox-feeling': [['worried', 'نگران'], ['sad', 'ناراحت'], ['angry', 'عصبانی'], ['happy', 'خوشحال']].map(([id, label]) => ({ id, label })),
+    'fox-measure-method': [['same-measure', 'ظرف و پیمانهٔ یکسان'], ['just-look', 'فقط نگاه کردن'], ['different-containers', 'ظرف‌های متفاوت']].map(([id, label]) => ({ id, label })),
+    'fox-first-priority': [['door', 'زیر در'], ['window', 'پنجره'], ['roof', 'سقف']].map(([id, label]) => ({ id, label })),
+    'fox-second-priority': [['window', 'پنجره'], ['door', 'زیر در'], ['roof', 'سقف']].map(([id, label]) => ({ id, label })),
+    'fox-final-question': [['measure-priority', 'اندازه‌گیری'], ['easiest-first', 'آسان‌ترین کار'], ['looked-wetter', 'فقط نگاه کردن']].map(([id, label]) => ({ id, label })),
   },
 };
 

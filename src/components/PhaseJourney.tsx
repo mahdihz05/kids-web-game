@@ -1,4 +1,4 @@
-const phases = [
+const defaultPhases = [
   { title: 'کشف مسئله', icon: '🔎' },
   { title: 'احساس‌ها', icon: '💛' },
   { title: 'تحلیل انتخاب‌ها', icon: '⚖️' },
@@ -7,7 +7,7 @@ const phases = [
   { title: 'بازاندیشی', icon: '⭐' },
 ];
 
-export function PhaseJourney({ currentPhase }: { currentPhase: number }) {
+export function PhaseJourney({ currentPhase, phases = defaultPhases }: { currentPhase: number; phases?: { title: string; icon: string }[] }) {
   const currentStep = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
