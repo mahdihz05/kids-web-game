@@ -48,19 +48,25 @@ with sync_playwright() as p:
     click_text(page, "خیلی نگران")
     assert "خیلی نگران تخمش" in page.locator(".scene-prompt").inner_text()
     click_text(page, "ادامه ←")
+    page.screenshot(path=str(OUT / "missing-egg-clues-v2.png"), full_page=True)
     for label in ["ردپا", "برگ‌های خم‌شده", "جای قل خوردن"]:
         page.get_by_role("button", name=label, exact=True).click()
     click_text(page, "چرا هر سه را بررسی کنیم؟")
+    page.screenshot(path=str(OUT / "missing-egg-why-all-v2.png"), full_page=True)
     click_text(page, "هنوز نمی‌دانند")
     click_text(page, "ادامه ←")
+    page.screenshot(path=str(OUT / "missing-egg-clue-results-v2.png"), full_page=True)
     for label in ["ردپا", "برگ‌های خم‌شده", "جای قل خوردن"]:
         page.get_by_role("button", name=label, exact=True).click()
     click_text(page, "نشانهٔ ادامه‌دار را انتخاب کنیم")
+    page.screenshot(path=str(OUT / "missing-egg-paths-v2.png"), full_page=True)
     click_text(page, "رد قل خوردن")
     click_text(page, "ادامه ←")
+    page.screenshot(path=str(OUT / "missing-egg-tools-v2.png"), full_page=True)
     for label in ["چرخ", "دو آینه", "چوب بلند", "طناب"]:
         page.locator(".drag-item", has_text=label).click()
     click_text(page, "بریم بسازیم ←")
+    page.screenshot(path=str(OUT / "missing-egg-craft-v2.png"), full_page=True)
     for index in range(4):
         item = page.locator(".craft-item").nth(index)
         item.wait_for(state="visible")
@@ -68,8 +74,18 @@ with sync_playwright() as p:
         item.evaluate("element => element.click()")
         page.wait_for_function("expected => document.querySelector('.craft-counter')?.textContent?.includes(expected)", arg=str(index + 1))
     click_text(page, "چوب آینه‌ای آماده شد! ←")
+    if "تخم را از پشت برگ‌ها بیرون بیاوریم" not in page.locator(".story-panel").inner_text():
+        raise AssertionError(page.locator(".story-panel").inner_text())
+    page.screenshot(path=str(OUT / "missing-egg-discovery-v2.png"), full_page=True)
+    click_text(page, "تخم را از پشت برگ‌ها بیرون بیاوریم ←")
     if "ببینیم چطور به تخم رسیدیم" not in page.locator(".story-panel").inner_text():
         raise AssertionError(page.locator(".story-panel").inner_text())
+    page.screenshot(path=str(OUT / "missing-egg-celebration-v2.png"), full_page=True)
+    click_text(page, "ببینیم چطور به تخم رسیدیم ←")
+    page.screenshot(path=str(OUT / "missing-egg-final-question-v2.png"), full_page=True)
+    click_text(page, "سرنخ و ابزار")
+    click_text(page, "ادامه ←")
+    page.screenshot(path=str(OUT / "missing-egg-reflection-v2.png"), full_page=True)
 
     page.goto(f"{BASE_URL}/?play=wet-fox-house", wait_until="domcontentloaded")
     page.wait_for_load_state("domcontentloaded")
@@ -87,15 +103,19 @@ with sync_playwright() as p:
     click_text(page, "ادامه ←")
     for label in ["زیر در", "پنجره", "سقف"]:
         page.get_by_role("button", name=label, exact=True).click()
+    page.screenshot(path=str(OUT / "wet-fox-clues-v2.png"), full_page=True)
     click_text(page, "راه مقایسه را پیدا کنیم")
+    page.screenshot(path=str(OUT / "wet-fox-measure-method-v2.png"), full_page=True)
     click_text(page, "ظرف و پیمانهٔ یکسان")
     click_text(page, "ادامه ←")
-    assert "۵ پیمانه" in page.locator(".scene-prompt").inner_text()
+    assert "۶ قسمت پیمانه" in page.locator(".scene-prompt").inner_text()
+    page.screenshot(path=str(OUT / "wet-fox-measurement-v3.png"), full_page=True)
     click_text(page, "مهم‌ترین مشکل را انتخاب کنیم ←")
     click_text(page, "زیر در")
     click_text(page, "ادامه ←")
     for label in ["حوله", "کیسهٔ پلاستیکی", "کاموا"]:
         page.locator(".drag-item", has_text=label).click()
+    page.screenshot(path=str(OUT / "wet-fox-tools-v2.png"), full_page=True)
     click_text(page, "بریم بسازیم ←")
     for index in range(3):
         item = page.locator(".craft-item").nth(index)
@@ -104,10 +124,13 @@ with sync_playwright() as p:
         item.evaluate("element => element.click()")
         page.wait_for_function("expected => document.querySelector('.craft-counter')?.textContent?.includes(expected)", arg=str(index + 1))
     click_text(page, "مانع آماده شد! ←")
-    assert "۱ پیمانه" in page.locator(".scene-prompt").inner_text()
+    assert "هنوز آب وارد خانه می‌شود" in page.locator(".scene-prompt").inner_text()
+    page.screenshot(path=str(OUT / "wet-fox-after-barrier-v3.png"), full_page=True)
     click_text(page, "اولویت تازه را پیدا کنیم ←")
     click_text(page, "پنجره")
     click_text(page, "ادامه ←")
+    page.screenshot(path=str(OUT / "wet-fox-relief-v1.png"), full_page=True)
+    click_text(page, "حالا جشن بگیریم ←")
     assert "ببینیم چرا اولویت عوض شد" in page.locator(".story-panel").inner_text()
 
     for story_id, width, height, name in [

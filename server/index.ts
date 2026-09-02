@@ -44,12 +44,12 @@ const stageMetadata: Record<string, Record<string, { title: string; order: numbe
   'missing-egg': Object.fromEntries([
     ['missing-intro', 'آغاز داستان'], ['missing-problem', 'کشف مسئله'], ['missing-feeling', 'واکنش و احساس'], ['missing-clues', 'پیدا کردن سرنخ‌ها'],
     ['missing-why-all', 'دلیل بررسی هر سه سرنخ'], ['missing-clue-results', 'نتیجهٔ سرنخ‌ها'], ['missing-choose-path', 'انتخاب سرنخ ادامه‌دار'], ['missing-tools', 'انتخاب ابزار چوب آینه‌ای'],
-    ['missing-craft', 'ساخت چوب آینه‌ای'], ['missing-success', 'پیدا شدن تخم'], ['missing-final-question', 'سؤال یادگیری'], ['missing-reflection', 'بازاندیشی'], ['missing-result', 'جشن موفقیت'],
+    ['missing-craft', 'ساخت چوب آینه‌ای'], ['missing-discovery', 'دیدن تخم در آینه'], ['missing-success', 'پیدا شدن تخم'], ['missing-final-question', 'سؤال یادگیری'], ['missing-reflection', 'بازاندیشی'], ['missing-result', 'جشن موفقیت'],
   ].map(([id, title], index) => [id, { title, order: index + 1 }])),
   'wet-fox-house': Object.fromEntries([
     ['fox-intro', 'آغاز داستان'], ['fox-problem', 'کشف مسئله'], ['fox-feeling', 'واکنش و احساس'], ['fox-clues', 'پیدا کردن راه‌های ورود آب'],
     ['fox-measure-method', 'انتخاب روش اندازه‌گیری'], ['fox-measurement', 'اندازه‌گیری اول'], ['fox-first-priority', 'اولویت اول'], ['fox-tools', 'انتخاب ابزار مانع'],
-    ['fox-craft', 'ساخت مانع'], ['fox-after-barrier', 'اندازه‌گیری دوباره'], ['fox-second-priority', 'تغییر اولویت'], ['fox-success', 'نجات خانه'],
+    ['fox-craft', 'ساخت مانع'], ['fox-after-barrier', 'اندازه‌گیری دوباره'], ['fox-second-priority', 'تغییر اولویت'], ['fox-relief', 'آرامش پس از نجات'], ['fox-success', 'جشن نجات خانه'],
     ['fox-final-question', 'سؤال بازاندیشی'], ['fox-reflection', 'دو ستاره و یک آرزو'], ['fox-result', 'جشن موفقیت'],
   ].map(([id, title], index) => [id, { title, order: index + 1 }])),
 };

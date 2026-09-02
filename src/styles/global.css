@@ -118,6 +118,7 @@ button:focus-visible { outline: 4px solid #ffd763; outline-offset: 3px; }
   .game-app { width: 100vw; max-width: 100vw; min-height: 100svh; padding: 5px; overflow: hidden; }.game-topbar { width: 100%; min-width: 0; height: 56px; gap: 7px; padding: 0 5px; }.game-title { min-width: 0; flex: 1; }.game-title strong { max-width: 140px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 11px; }.game-topbar .round-button:last-child { display: none; }.phase-progress { display: none; }.round-button { width: 38px; height: 38px; }.live-score { height: 35px; padding: 0 8px; }.game-stage, .phase-journey { width: calc(100vw - 10px); max-width: calc(100vw - 10px); }.game-stage { height: calc(100svh - 166px); min-height: 420px; border-radius: 22px; }.phase-journey { height: 98px; margin-top: 5px; border-radius: 17px; }.phase-journey__track { min-width: 690px; padding: 6px 9px; }.journey-step { height: 80px; padding: 4px 8px; }.journey-step b { font-size: 27px; }.character { right: 50%; bottom: 32%; width: min(66vw, 300px); height: 58%; transform: translateX(50%); }.game-stage--result .character { right: 52%; bottom: 37%; height: 54%; }.story-panel, .game-stage--hotspot .story-panel, .game-stage--dragDrop .story-panel, .story-panel--result { right: 9px; bottom: 9px; left: 9px; width: auto; max-height: 56%; overflow-y: auto; transform: none; padding: 16px; border-radius: 19px; }.story-panel h2 { font-size: 16px; }.dialogue-text { font-size: 12px; line-height: 1.8; }.choice-card { min-height: 78px; font-size: 10px; }.choice-card__icon { font-size: 24px; }.choice-grid--compact { grid-template-columns: repeat(3, 1fr); }.hotspot > span { width: 54px; height: 54px; font-size: 25px; }.hotspot small { font-size: 8px; }.tool-playground { inset: 10% 3% auto; display: block; }.tool-shelf { justify-content: center; gap: 6px; }.drag-item { width: 83px; height: 82px; border-radius: 15px; }.drag-item > span { font-size: 27px; }.drag-item small { font-size: 8px; }.drop-zone { width: 150px; height: 105px; margin: 12px auto; }.drop-zone > span { font-size: 30px; }.game-stage--dragDrop .story-panel { max-height: 38%; }.result-panel { font-size: 10px; }.result-stars { font-size: 30px; }.mini-skills { display: none; }.learning-card { margin: 6px 0; }.result-actions { grid-template-columns: 1fr 1fr; }
   .dashboard { padding: 20px 14px; }.stats-row { grid-template-columns: 1fr; }.dashboard > header { margin: 20px 0; }.skill-row { grid-template-columns: 80px 1fr 20px; }.parent-note { align-items: start; }
 }
+@media (max-width: 720px) { .hub-brand > img { width: 48px; height: 74px; } }
 @media (max-width: 390px) { .mission-grid { grid-template-columns: 1fr; }.mission-card { display: grid; grid-template-columns: 110px 1fr; }.mission-card__art { height: 100%; }.choice-grid--compact { grid-template-columns: 1fr; }.choice-grid--compact .choice-card { min-height: 55px; display: flex; align-items: center; gap: 8px; }.choice-grid--compact .choice-card__icon { display: inline; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }.page-turn { transform: none; opacity: 0; }.page-turn--active { animation-name: reducedFade; } } @keyframes reducedFade { 50% { opacity: .75; } }
 
@@ -145,12 +146,12 @@ button:focus-visible { outline: 4px solid #ffd763; outline-offset: 3px; }
 @keyframes pageCover { from { transform: perspective(1800px) rotateY(-101deg) translateZ(0); } to { transform: perspective(1800px) rotateY(0deg) translateZ(0); } }
 @keyframes pageReveal { from { transform: perspective(1800px) rotateY(0deg) translateZ(0); } to { transform: perspective(1800px) rotateY(101deg) translateZ(0); } }
 
-.intro-logo { width: 68px; height: 68px; margin-bottom: 8px; border-radius: 20px; box-shadow: 0 8px 20px #1652e826; }
+.intro-logo { width: 86px; height: 132px; margin-bottom: 8px; object-fit: contain; }
 .intro-page h1, .hub-brand strong, .section-title h2 { color: var(--brand-deep); }
 .intro-text strong, .intro-name { color: var(--brand-deep); }
 .intro-start, .primary-button { background: linear-gradient(135deg, var(--brand-blue), var(--brand-deep)); box-shadow: 0 6px 0 #0d39ad, 0 10px 20px #1652e838; }
 .story-intro { background: radial-gradient(circle at 50% -10%, #2c99ef, transparent 43%), linear-gradient(145deg, #102d68, #1652e8 56%, #071a44); }
-.hub-brand > img { width: 54px; height: 54px; flex: none; border-radius: 17px; box-shadow: 0 9px 22px #1652e82f; }
+.hub-brand > img { width: 60px; height: 92px; flex: none; object-fit: contain; }
 .hub { background: radial-gradient(circle at 5% 4%, #ffd36b 0 2px, transparent 3px), radial-gradient(circle at 93% 15%, #8ee7ff 0 3px, transparent 4px), linear-gradient(155deg, #fbfeff 0%, #eaf8ff 100%); }
 .hub-hero { background: linear-gradient(120deg, #1247cf 0%, #167bea 48%, #47ccef 100%); box-shadow: 0 25px 60px #1652e836; }
 .hero-friends { width: min(55%, 650px); }
@@ -272,7 +273,7 @@ button:focus-visible { outline: 4px solid #ffd763; outline-offset: 3px; }
   .craft-thread { top: 69px; }
   .reflection-prompt { grid-template-columns: 1fr; }.reflection-prompt h3 { font-size: 11px; }.reflection-option { min-height: 42px; }
   .hero-friends { width: 100%; height: 49%; left: -8%; }.hero-friends img { width: 16%; }
-  .intro-logo { width: 48px; height: 48px; position: absolute; top: 12px; left: 14px; }
+  .intro-logo { width: 58px; height: 90px; position: absolute; top: 10px; left: 12px; }
 }
 
 @media (max-height: 600px) and (orientation: landscape) {
@@ -441,6 +442,12 @@ img { max-inline-size: 100%; }
 .choice-card__crop--top-right { background-position: right top; }
 .choice-card__crop--bottom-left { background-position: left bottom; }
 .choice-card__crop--bottom-right { background-position: right bottom; }
+.choice-card__crop--third-left,
+.choice-card__crop--third-center,
+.choice-card__crop--third-right { background-size: 300% 100%; }
+.choice-card__crop--third-left { background-position: left center; }
+.choice-card__crop--third-center { background-position: center; }
+.choice-card__crop--third-right { background-position: right center; }
 .choice-card__icon { position: absolute; top: 8px; right: 8px; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,.9); font-size: 22px; box-shadow: 0 3px 10px rgba(40,27,18,.2); }
 .drag-item { position: relative; }
 .drag-item__icon { position: absolute; top: 6px; right: 6px; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,.9); font-size: 19px; }

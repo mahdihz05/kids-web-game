@@ -67,7 +67,7 @@
       "id": "missing-clue-results", "type": "hotspot", "phase": 4, "phaseTitle": "تصمیم و مقایسه", "characterName": "مادربزرگ جغد",
       "text": "مادربزرگ جغد از بالا مراقب هر سه بود تا ببینند هر سرنخ آن‌ها را به کجا می‌رساند.", "prompt": "حالا ببینیم هر سرنخ ما را به کجا رساند.",
       "bookText": "مادربزرگ جغد گفت: «سنجاب، تو ردپاها را دنبال کن و ببین به کجا می‌رسند. جوجه‌تیغی، تو برگ‌های خم‌شده را دنبال کن و ببین چه چیزی از اینجا گذشته است. خرگوش، تو رد قل خوردن را دنبال کن و ببین به کجا می‌رود.» مادربزرگ جغد از بالا مراقب هر سه بود تا ببینند هر سرنخ آن‌ها را به کجا می‌رساند.",
-      "image": "missing-egg-clues", "actionLabel": "نشانهٔ ادامه‌دار را انتخاب کنیم", "nextScene": "missing-choose-path",
+      "image": "missing-clue-results", "actionLabel": "نشانهٔ ادامه‌دار را انتخاب کنیم", "nextScene": "missing-choose-path",
       "hotspots": [
         { "id": "footprints-result", "label": "ردپا", "icon": "👣", "x": 30, "y": 78, "clue": "تا رودخانه رفت و بعد ناپدید شد.", "reward": { "points": 1, "skill": "analysis" } },
         { "id": "leaves-result", "label": "برگ‌های خم‌شده", "icon": "🍃", "x": 52, "y": 77, "clue": "تا بوته رفت، اما چیزی زیر برگ‌ها پیدا نکرد.", "reward": { "points": 1, "skill": "analysis" } },
@@ -85,8 +85,8 @@
     },
     {
       "id": "missing-tools", "type": "dragDrop", "phase": 5, "phaseTitle": "انتخاب ابزار", "characterName": "مادربزرگ جغد",
-      "text": "به حیوانات کمک کن با این ابزارها یک چوب آینه‌ای بسازند.", "prompt": "برای ساختن چوب آینه‌ای، چهار وسیلهٔ درست را انتخاب کن.",
-      "bookText": "مادربزرگ جغد گفت: «برای اینکه همه‌ی مسیرهای قل خوردن را با دقت ببینیم، باید یک چوب آینه‌ای بلند بسازیم که هم زیر برگ‌ها و هم جاهای دور را ببینیم.»",
+      "text": "همه حیوانات تصمیم گرفتند برای اینکه مسیر قل خوردن را به دقت ببینند، به یک چوب بلند آینه وصل کنند. چهار وسیله‌ی درست برای ساختش انتخاب کن.", "prompt": "چهار وسیله‌ی درست برای ساختن چوب آینه‌ای انتخاب کن.",
+      "bookText": "همه حیوانات تصمیم گرفتند برای اینکه مسیر قل خوردن را به دقت ببینند، به یک چوب بلند آینه وصل کنند.",
       "image": "missing-egg-workshop", "requiredItemIds": ["wheel", "mirrors", "long-stick", "rope"],
       "dropTarget": { "label": "وسایل چوب آینه‌ای", "icon": "🪞", "nextScene": "missing-craft" },
       "dragItems": [
@@ -100,7 +100,7 @@
     },
     {
       "id": "missing-craft", "type": "craft", "phase": 5, "phaseTitle": "مرحلهٔ ساختن چوب آینه‌ای", "characterName": "دوستان جنگل",
-      "text": "چوب آینه‌ای را مرحله‌به‌مرحله بساز.", "prompt": "وسایل انتخاب‌شده را به ترتیب آماده کن.", "image": "missing-egg-workshop", "requiredCraftCount": 4, "craftUnitLabel": "مرحله", "craftCompleteLabel": "چوب آینه‌ای آماده شد! ←", "nextScene": "missing-success",
+      "text": "چوب آینه‌ای را مرحله‌به‌مرحله بساز.", "prompt": "وسایل انتخاب‌شده را به ترتیب آماده کن.", "image": "missing-mirror-stick-complete", "requiredCraftCount": 4, "craftUnitLabel": "مرحله", "craftCompleteLabel": "چوب آینه‌ای آماده شد! ←", "nextScene": "missing-discovery",
       "craftItems": [
         { "id": "attach-wheel", "label": "چرخ را به چوب بلند وصل کن", "icon": "۱", "image": "missing-tool-wheel", "reward": { "points": 1, "skill": "tool" } },
         { "id": "attach-mirrors", "label": "دو آینه را دو طرف چرخ بگذار", "icon": "۲", "image": "missing-tool-mirrors", "reward": { "points": 1, "skill": "tool" } },
@@ -109,9 +109,15 @@
       ]
     },
     {
+      "id": "missing-discovery", "type": "dialogue", "phase": 6, "phaseTitle": "کشف تخم", "characterName": "خرگوش",
+      "text": "خرگوش با چوب آینه‌ای پشت برگ‌های بزرگ را نگاه کرد.", "prompt": "روی آیکن کتاب بزن و داستان پیدا شدن تخم را بخوان.",
+      "bookText": "خرگوش ردّ قل‌خوردن را دنبال کرد، اما بعد از بوته، رد دیگر از روی زمین دیده نمی‌شد. او چوب آینه‌ای را جلو برد و از داخل آینه پشت برگ‌های بزرگ را نگاه کرد. چیزی ندید اما کمی جلوتر رفت. این بار در آینه، نوک یک تخم سفید دیده شد! خرگوش با هیجان گفت: «پیداش کردم! تخم پشت این برگ‌هاست!»",
+      "image": "missing-mirror-discovery", "actionLabel": "تخم را از پشت برگ‌ها بیرون بیاوریم", "nextScene": "missing-success"
+    },
+    {
       "id": "missing-success", "type": "dialogue", "phase": 6, "phaseTitle": "جشن پایانی", "characterName": "دوستان جنگل",
-      "text": "تخم گمشده پیدا شد!", "prompt": "روی آیکن کتاب بزن و داستان پیدا شدن تخم را بخوان.",
-      "bookText": "خرگوش رد قل‌خوردن را دنبال کرد، اما بعد از بوته، رد دیگر از روی زمین دیده نمی‌شد. او چوب آینه‌ای را جلو برد و از داخل آینه پشت برگ‌های بزرگ را نگاه کرد. چیزی ندید اما کمی جلوتر رفت. این بار در آینه، نوک یک تخم سفید دیده شد! خرگوش با هیجان گفت: «پیداش کردم! تخم پشت این برگ‌هاست!» سنجاب، جوجه‌تیغی و مادربزرگ جغد هم به کمکش آمدند. برگ‌ها را آرام کنار زدند و تخم گمشده را بیرون آوردند. خانم لاک‌پشت با خوشحالی گفت: «آخ جون، دوباره پیشم برگشتی!» مادربزرگ جغد لبخند زد و گفت: «رد قل‌خوردن ما را تا اینجا آورد و آینه کمک کرد جایی را ببینیم که چشممان نمی‌دید.»",
+      "text": "تخم گمشده پیدا شد!", "prompt": "روی آیکن کتاب بزن و جشن پیدا شدن تخم را بخوان.",
+      "bookText": "سنجاب، جوجه‌تیغی و مادربزرگ جغد هم به کمک خرگوش آمدند. برگ‌ها را آرام کنار زدند و تخم گمشده را بیرون آوردند. خانم لاک‌پشت با خوشحالی گفت: «آخ جون، دوباره پیشم برگشتی!» مادربزرگ جغد لبخند زد و گفت: «رد قل‌خوردن ما را تا اینجا آورد و آینه کمک کرد جایی را ببینیم که چشممان نمی‌دید.»",
       "image": "missing-egg-finale", "actionLabel": "ببینیم چطور به تخم رسیدیم", "nextScene": "missing-final-question"
     },
     {
@@ -128,17 +134,17 @@
       "id": "missing-reflection", "type": "reflection", "phase": 6, "phaseTitle": "بازاندیشی", "characterName": "دو ستاره و یک آرزو", "text": "دو چیز که یاد گرفتی و یک آرزو را انتخاب کن.", "prompt": "کارت‌های خودت را کامل کن.", "image": "missing-egg-finale", "nextScene": "missing-result",
       "reflectionPrompts": [
         { "id": "learned", "title": "⭐ من یاد گرفتم که...", "icon": "⭐", "options": [
-          { "id": "find-clues", "text": "برای پیدا کردن جواب، دنبال سرنخ بگردم.", "icon": "🔎", "image": "missing-final-clues", "score": 1, "skill": "reflection" },
-          { "id": "follow-clues", "text": "ببینم هر سرنخ مرا به کجا می‌برد.", "icon": "👣", "image": "missing-path-footprints", "score": 1, "skill": "reflection" }
+          { "id": "find-clues", "text": "برای پیدا کردن جواب، دنبال سرنخ بگردم.", "icon": "🔎", "image": "missing-reflection-find-clues", "score": 1, "skill": "reflection" },
+          { "id": "follow-clues", "text": "ببینم هر سرنخ مرا به کجا می‌برد.", "icon": "👣", "image": "missing-reflection-follow-clues", "score": 1, "skill": "reflection" }
         ] },
         { "id": "better", "title": "⭐ من می‌توانم بهتر دنبال جواب بگردم اگر...", "icon": "⭐", "options": [
-          { "id": "small-things", "text": "به چیزهای کوچک هم دقت کنم.", "icon": "👀", "image": "missing-why-new", "score": 1, "skill": "reflection" },
-          { "id": "use-tools", "text": "برای پیدا کردن چیزهای پنهان، از ابزار کمک بگیرم.", "icon": "🪞", "image": "missing-tool-mirrors", "score": 1, "skill": "reflection" }
+          { "id": "small-things", "text": "به چیزهای کوچک هم دقت کنم.", "icon": "👀", "image": "missing-reflection-small-things", "score": 1, "skill": "reflection" },
+          { "id": "use-tools", "text": "برای پیدا کردن چیزهای پنهان، از ابزار کمک بگیرم.", "icon": "🪞", "image": "missing-reflection-use-tools", "score": 1, "skill": "reflection" }
         ] },
         { "id": "wish", "title": "🌙 آرزو دارم دفعه بعد...", "icon": "🌙", "options": [
-          { "id": "new-secret", "text": "یک راز تازه را خودم کشف کنم.", "icon": "🕵️", "image": "missing-final-clues", "score": 1, "skill": "reflection" },
-          { "id": "new-clue", "text": "سرنخ تازه‌ای پیدا کنم و ببینم به کجا می‌رسد.", "icon": "🔎", "image": "missing-path-roll", "score": 1, "skill": "reflection" },
-          { "id": "build-tool", "text": "برای پیدا کردن یک چیز گمشده، ابزار خودم را بسازم.", "icon": "🛠️", "image": "missing-egg-workshop", "score": 1, "skill": "reflection" }
+          { "id": "new-secret", "text": "یک راز تازه را خودم کشف کنم.", "icon": "🕵️", "image": "missing-reflection-new-secret", "score": 1, "skill": "reflection" },
+          { "id": "new-clue", "text": "سرنخ تازه‌ای پیدا کنم و ببینم به کجا می‌رسد.", "icon": "🔎", "image": "missing-reflection-new-clue", "score": 1, "skill": "reflection" },
+          { "id": "build-tool", "text": "برای پیدا کردن یک چیز گمشده، ابزار خودم را بسازم.", "icon": "🛠️", "image": "missing-reflection-build-tool", "score": 1, "skill": "reflection" }
         ] }
       ]
     },

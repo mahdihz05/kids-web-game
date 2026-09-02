@@ -12,7 +12,7 @@ export interface StoryChoice {
   caption: string;
   icon?: string;
   image: string;
-  imageCrop?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+  imageCrop?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'third-left' | 'third-center' | 'third-right';
   audio?: string;
   nextScene: string;
   score: number;

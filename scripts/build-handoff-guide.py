@@ -90,7 +90,7 @@ story = []
 
 # Cover
 cover_img = ROOT / "public/assets/scenes-v3/grandma-gift-v3.png"
-logo = ROOT / "public/assets/brand/motefaker-mark.svg"
+logo = ROOT / "public/assets/brand/client-logo.png"
 story.append(Spacer(1, 7*mm))
 story.append(Table([[P("راهنمای کامل انتشار آنلاین و تحویل", "title")], [P("بازی آموزشی هدیه تولد مادربزرگ", "subtitle")]],
                    colWidths=[174*mm], style=TableStyle([("BACKGROUND", (0,0), (-1,-1), BLUE), ("BOX", (0,0), (-1,-1), 0, BLUE),
