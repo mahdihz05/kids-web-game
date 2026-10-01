@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { writeFile, mkdir } from 'node:fs/promises';
 import ExcelJS from 'exceljs';
-import { stories, GameEngine, ScoreSystem } from '../server/catalog';
+import { stories, GameEngine } from '../server/catalog';
 import { ChoiceSystem } from '../src/engine/ChoiceSystem';
 import type { GameAction, Child, RunState } from '../src/types/account';
 
