@@ -25,6 +25,11 @@ type EventRow = {
   };
 };
 type Cohort = {
+  id: string;
+  storyId: string;
+  scoringVersion: string;
+  balanced: { percent: number | null; children: number };
+  skills: Record<string, { percent: number | null; children: number }>;
   name: string;
   children: number;
   runs: number;
@@ -41,6 +46,7 @@ type Research = {
   events: EventRow[];
   ages: Cohort[];
   schools: Cohort[];
+  scoring: { storyId: string; title: string; total: number; version: string; skills: Record<string, number> }[];
 };
 const empty: Research = {
   children: [],
@@ -48,6 +54,7 @@ const empty: Research = {
   events: [],
   ages: [],
   schools: [],
+  scoring: [],
 };
 const eventLabels: Record<string, string> = {
   choice: 'انتخاب پاسخ',
@@ -63,6 +70,11 @@ const eventLabels: Record<string, string> = {
   heartbeat: 'فعالیت',
   pause: 'توقف',
   resume: 'ادامه بازی',
+  preview: 'پیش‌انتخاب پاسخ',
+  narration_start: 'درخواست پخش صوت',
+  narration_stop: 'توقف صوت',
+  book_open: 'بازکردن کتاب',
+  book_close: 'بستن کتاب',
 };
 
 export function AdminResearch() {
@@ -154,23 +166,27 @@ export function AdminResearch() {
         <table className="report-table">
           <thead>
             <tr>
-              <th>گروه</th>
+              <th>گروه / بازی / نسخه</th>
               <th>کودک</th>
               <th>نوبت</th>
               <th>تکمیل</th>
-              <th>میانگین عملکرد</th>
+              <th>میانگین نوبت‌ها</th>
+              <th>میانگین کودکان</th>
+              {Object.values(skillLabels).map((label) => <th key={label}>{label}</th>)}
             </tr>
           </thead>
           <tbody>
             {rows.map((r) => (
-              <tr key={r.name}>
-                <td>{r.name}</td>
+              <tr key={r.id}>
+                <td>{r.name}<small>{getStory(r.storyId).title} · نسخه {r.scoringVersion}</small></td>
                 <td>{r.children}</td>
                 <td>{r.runs}</td>
                 <td>{r.completed}</td>
                 <td>
                   {r.averagePercent === null ? '—' : `${r.averagePercent}٪`}
                 </td>
+                <td>{r.balanced.percent === null ? '—' : `${r.balanced.percent}٪`}<small>{r.balanced.children} کودک با نتیجه کامل</small></td>
+                {Object.keys(skillLabels).map((skill) => <td key={skill}>{r.skills[skill]?.percent == null ? '—' : `${r.skills[skill].percent}٪`}<small>{r.skills[skill]?.children ?? 0} کودک سنجیده‌شده</small></td>)}
               </tr>
             ))}
           </tbody>
@@ -298,8 +314,8 @@ export function AdminResearch() {
           </div>
           <p className="muted">
             سن و مدرسهٔ گزارش بازی‌ها مربوط به زمان انجام بازی است. میانگین‌ها
-            فقط از بازی‌های کامل محاسبه می‌شوند؛ تعداد کودکان و نوبت‌ها کنار هر
-            گروه نمایش داده می‌شود.
+            فقط از بازی‌های کامل و به تفکیک بازی و نسخهٔ قواعد محاسبه می‌شوند.
+            میانگین کودکان به هر کودک وزن برابر می‌دهد؛ تکرار بیشتر بازی وزن او را بیشتر نمی‌کند.
           </p>
           {error && (
             <p className="account-error" role="alert">
@@ -581,6 +597,15 @@ export function AdminResearch() {
               </section>
             </>
           )}
+          <section className="account-card">
+            <details><summary>قواعد امتیاز، نشان و مدال هر بازی</summary>
+              <p>امتیاز پاسخ‌ها از قرارداد همان بازی محاسبه می‌شود. تکرار پاسخ امتیاز اضافه ندارد. درصد نتیجهٔ کامل از ظرفیت مسیر طی‌شده محاسبه می‌شود و ممکن است با ظرفیت کل داستان تفاوت داشته باشد.</p>
+              <p>ستاره: زیر ۵۰٪ یک، از ۵۰٪ دو، از ۸۰٪ سه. مدال: زیر ۶۵٪ برنز، از ۶۵٪ نقره، از ۸۵٪ طلا. نشان با تکمیل بازی دریافت می‌شود.</p>
+              <div className="admin-table-wrap"><table className="report-table"><thead><tr><th>بازی</th><th>نسخه</th><th>ظرفیت کل داستان</th>{Object.values(skillLabels).map((label) => <th key={label}>{label}</th>)}</tr></thead><tbody>
+                {data.scoring.map((rule) => <tr key={rule.storyId}><td>{rule.title}</td><td>{rule.version}</td><td>{rule.total}</td>{Object.keys(skillLabels).map((skill) => <td key={skill}>{rule.skills[skill]}</td>)}</tr>)}
+              </tbody></table></div>
+            </details>
+          </section>
           <div className="cohort-grid">
             {cohortTable('مقایسه گروه‌های سنی', data.ages)}
             {cohortTable('مقایسه مدارس', data.schools)}

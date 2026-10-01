@@ -17,7 +17,8 @@ export function ParentReport({
   const [childId, setChildId] = useState(
     initialChildId ?? children[0]?.id ?? '',
   );
-  const [storyId, setStoryId] = useState(Object.keys(storyRegistry)[0]);
+  const [storyId, setStoryId] = useState('');
+  const [metric, setMetric] = useState('percent');
   const [runs, setRuns] = useState<RunReport[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
@@ -51,11 +52,15 @@ export function ParentReport({
   }, [childId]);
   const child = children.find((c) => c.id === childId);
   const completed = runs.filter((r) => r.completedAt);
-  const storyRuns = completed.filter((r) => r.storyId === storyId);
-  const points = storyRuns.filter(
+  const selectedStoryId = storyId || completed.at(-1)?.storyId || Object.keys(storyRegistry)[0];
+  const storyRuns = completed.filter((r) => r.storyId === selectedStoryId);
+  const comparable = storyRuns.filter(
     (r) => r.scoringVersion === storyRuns.at(-1)?.scoringVersion,
   );
-  const latest = points.at(-1);
+  const value = (run: RunReport) => metric === 'percent' ? run.percent : run.skills[metric] ?? null;
+  const points = comparable.filter((r) => value(r) !== null);
+  const pointX = (index: number) => points.length === 1 ? 300 : 50 + index * 500 / (points.length - 1);
+  const latest = comparable.at(-1);
   const skills = Object.entries(skillLabels);
   const best = Object.keys(storyRegistry).map((id) =>
     Math.max(
@@ -88,7 +93,7 @@ export function ParentReport({
         </label>
         <label>
           بازی نمودار
-          <select value={storyId} onChange={(e) => setStoryId(e.target.value)}>
+          <select value={selectedStoryId} onChange={(e) => setStoryId(e.target.value)}>
             {Object.values(storyRegistry).map((s) => (
               <option key={s.id} value={s.id}>
                 {s.title}
@@ -96,6 +101,7 @@ export function ParentReport({
             ))}
           </select>
         </label>
+        <label>شاخص نمودار<select value={metric} onChange={(e) => setMetric(e.target.value)}><option value="percent">امتیاز کل</option>{Object.entries(skillLabels).map(([id, label]) => <option key={id} value={id}>{label}</option>)}</select></label>
       </div>
       {error && (
         <p className="account-error" role="alert">
@@ -121,17 +127,17 @@ export function ParentReport({
             </article>
           </section>
           <section className="account-card growth-report">
-            <h2>نمودار رشد در {getStory(storyId).title}</h2>
+            <h2>نمودار رشد در {getStory(selectedStoryId).title}</h2>
             <p>
               مقایسهٔ نوبت‌های همین بازی و نسخهٔ یکسان قواعد امتیازدهی؛ نوبت‌های
               ناقص وارد نمودار نمی‌شوند.
             </p>
-            {points.length >= 2 ? (
+            {points.length > 0 ? (
               <>
                 <div
                   className="growth-plot"
                   role="img"
-                  aria-label={`درصد عملکرد در ${points.length} نوبت: ${points.map((r) => r.percent).join('، ')}`}
+                  aria-label={`درصد عملکرد در ${points.length} نوبت: ${points.map((r) => value(r)).join('، ')}`}
                 >
                   <svg
                     viewBox="0 0 600 220"
@@ -156,7 +162,7 @@ export function ParentReport({
                       points={points
                         .map(
                           (r, i) =>
-                            `${50 + (i * 500) / (points.length - 1)},${190 - r.percent * 1.6}`,
+                            `${pointX(i)},${190 - (value(r) ?? 0) * 1.6}`,
                         )
                         .join(' ')}
                       fill="none"
@@ -166,13 +172,13 @@ export function ParentReport({
                     {points.map((r, i) => (
                       <g key={r.id}>
                         <circle
-                          cx={50 + (i * 500) / (points.length - 1)}
-                          cy={190 - r.percent * 1.6}
+                          cx={pointX(i)}
+                          cy={190 - (value(r) ?? 0) * 1.6}
                           r="5"
                           fill="#7251ac"
-                        />
+                        ><title>{new Date(r.completedAt!).toLocaleString('fa-IR')} · {value(r)}٪</title></circle>
                         <text
-                          x={50 + (i * 500) / (points.length - 1)}
+                          x={pointX(i)}
                           y="213"
                           textAnchor="middle"
                           fontSize="11"
@@ -184,14 +190,13 @@ export function ParentReport({
                   </svg>
                 </div>
                 <p className="muted">
-                  محور افقی: شماره نوبت · محور عمودی: درصد امتیاز قابل کسب
+                  محور افقی: ترتیب نوبت‌های کامل · محور عمودی: درصد شاخص انتخاب‌شده
+                  {points.length === 1 && ' · این نقطه نتیجهٔ اولیه است؛ برای مشاهدهٔ روند، بازی را دوباره کامل کنید.'}
                 </p>
               </>
             ) : (
               <p className="empty-note">
-                {points.length
-                  ? 'اولین نتیجه ثبت شده است. پس از تکمیل دوبارهٔ این بازی، نمودار رشد نمایش داده می‌شود.'
-                  : 'هنوز نتیجهٔ کاملی برای این بازی ثبت نشده است.'}
+                {comparable.length ? 'در این بازی فرصتی برای سنجش شاخص انتخاب‌شده وجود ندارد.' : 'هنوز نتیجهٔ کاملی برای این بازی ثبت نشده است.'}
               </p>
             )}
             {latest && (

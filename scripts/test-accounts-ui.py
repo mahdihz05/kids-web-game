@@ -96,7 +96,17 @@ with sync_playwright() as p:
         page.set_viewport_size({'width':1440,'height':1000})
         page.locator('.result-actions .primary-button').click()
         expect(page.locator('.mission-card')).to_have_count(10)
-    # A second complete attempt is necessary for a growth line.
+    # One result must already show a point; default to the last completed game.
+    page.get_by_role('button',name='گزارش رشد',exact=True).click()
+    expect(page.locator('.growth-plot')).to_be_visible(timeout=15000)
+    expect(page.get_by_label('بازی نمودار')).to_have_value(stories[-1]['id'])
+    expect(page.locator('.growth-plot circle')).to_have_count(1)
+    page.get_by_label('شاخص نمودار').select_option('tool')
+    expect(page.locator('.growth-plot circle')).to_have_count(1)
+    assert page.locator('.growth-plot circle').get_attribute('cx')=='300'
+    page.get_by_role('button',name='بازگشت به کودکان').click()
+    page.get_by_role('button',name='ورود به کتاب‌ها').click()
+    # A second complete attempt adds a growth line.
     page.locator('.mission-card').first.locator('.wake-book').click();play_story(page,stories[0],child['id'])
     page.locator('.result-actions .primary-button').click()
     page.get_by_role('button',name='گزارش رشد',exact=True).click()
@@ -111,6 +121,8 @@ with sync_playwright() as p:
     expect(page.get_by_role('button',name='مشاهده عملکرد')).to_have_count(1)
     page.get_by_role('button',name='مشاهده عملکرد').click()
     expect(page.get_by_role('heading',name='عملکرد در هر مرحله')).to_be_visible()
+    page.get_by_text('قواعد امتیاز، نشان و مدال هر بازی',exact=True).click()
+    expect(page.get_by_role('columnheader',name='میانگین کودکان',exact=True)).to_have_count(2)
     page.screenshot(path=str(OUT/'admin-user-mobile.png'),full_page=True)
     page.set_viewport_size({'width':1440,'height':1000});page.screenshot(path=str(OUT/'admin-user-desktop.png'),full_page=True)
     with page.expect_download() as download:page.get_by_role('link',name='دریافت Excel با همین فیلترها').click()

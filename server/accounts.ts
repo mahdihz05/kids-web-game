@@ -9,6 +9,7 @@ import {
 } from 'node:crypto';
 import { z } from 'zod';
 import ExcelJS from 'exceljs';
+import { summarizeCohorts } from './cohorts.js';
 import {
   GameEngine,
   ScoreSystem,
@@ -229,6 +230,7 @@ export async function researchReport(
     storyId: r.story_id,
     age: r.age_at_play,
     schoolName: r.school_name_at_play,
+    schoolId: r.school_id_at_play,
     startedAt: r.started_at.toISOString(),
     completedAt: r.completed_at?.toISOString() ?? null,
     activeMinutes: Number((Number(r.active_ms) / 60000).toFixed(2)),
@@ -272,22 +274,6 @@ export async function researchReport(
           : null,
       };
     });
-  const cohorts = (key: 'age' | 'schoolName') =>
-    [...new Set(runs.map((r) => String(r[key])))].map((name) => {
-      const items = runs.filter((r) => String(r[key]) === name);
-      const complete = items.filter((r) => r.completedAt);
-      return {
-        name,
-        children: new Set(items.map((r) => r.childId)).size,
-        runs: items.length,
-        completed: complete.length,
-        averagePercent: complete.length
-          ? Math.round(
-              complete.reduce((sum, r) => sum + r.percent, 0) / complete.length,
-            )
-          : null,
-      };
-    });
   let events: Record<string, unknown>[] = [];
   if (includeEvents && runs.length) {
     const result = await pool.query(
@@ -320,8 +306,8 @@ export async function researchReport(
     children,
     runs,
     events,
-    ages: cohorts('age'),
-    schools: cohorts('schoolName'),
+    ages: summarizeCohorts(runs, 'age'),
+    schools: summarizeCohorts(runs, 'schoolName'),
     scoring: Object.values(stories).map((story) => ({
       storyId: story.id,
       title: story.title,
@@ -375,6 +361,7 @@ async function workbook(data: Awaited<ReturnType<typeof researchReport>>) {
         'سن و مدرسه هنگام بازی؛ میانگین فقط بازی‌های کامل؛ زمان فعال بر پایه فعالیت قابل مشاهده',
       ],
       ['نسخه امتیاز', SCORING_VERSION],
+      ['میانگین با وزن برابر کودک', 'ابتدا میانگین نوبت‌های کامل هر کودک، سپس میانگین کودکان؛ گروه‌ها به تفکیک بازی و نسخه قواعد هستند؛ مهارت بدون فرصت سنجش خالی است.'],
     ],
   );
   sheet(
@@ -484,28 +471,13 @@ async function workbook(data: Awaited<ReturnType<typeof researchReport>>) {
       String(e.receivedAt),
     ]),
   );
-  sheet(
-    'گروه‌های سنی',
-    ['سن', 'تعداد کودک', 'نوبت بازی', 'تکمیل', 'میانگین درصد'],
-    data.ages.map((c) => [
-      c.name,
-      c.children,
-      c.runs,
-      c.completed,
-      c.averagePercent,
-    ]),
-  );
-  sheet(
-    'مدارس',
-    ['مدرسه', 'تعداد کودک', 'نوبت بازی', 'تکمیل', 'میانگین درصد'],
-    data.schools.map((c) => [
-      c.name,
-      c.children,
-      c.runs,
-      c.completed,
-      c.averagePercent,
-    ]),
-  );
+  for (const [title, cohorts] of [['گروه‌های سنی', data.ages], ['مدارس', data.schools]] as const) {
+    const skills = Object.keys(ScoreSystem.capacity(Object.values(stories)[0]).skills);
+    sheet(title, ['گروه', 'بازی', 'نسخه قواعد', 'تعداد کودک', 'نوبت بازی', 'تکمیل', 'میانگین نوبت‌ها', 'میانگین با وزن برابر کودک', 'کودک با نتیجه کامل', ...skills.flatMap((skill) => [skill + ' درصد', skill + ' تعداد کودک'])],
+      cohorts.map((c) => [c.name, stories[c.storyId].title, c.scoringVersion, c.children, c.runs, c.completed, c.averagePercent, c.balanced.percent, c.balanced.children,
+        ...skills.flatMap((skill) => [c.skills[skill]?.percent ?? null, c.skills[skill]?.children ?? 0])]),
+    );
+  }
   return book.xlsx.writeBuffer();
 }
 

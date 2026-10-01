@@ -6,6 +6,20 @@ import ExcelJS from 'exceljs';
 import { stories, GameEngine } from '../server/catalog';
 import { ChoiceSystem } from '../src/engine/ChoiceSystem';
 import type { GameAction, Child, RunState } from '../src/types/account';
+import { summarizeCohorts } from '../server/cohorts';
+
+const cohortRun = { childId: 'a', storyId: 'one', scoringVersion: '2.0', age: 7, schoolId: 'school', schoolName: 'school', completedAt: '2026-10-01', percent: 100, skills: { tool: 100, reasoning: null } };
+const cohorts = summarizeCohorts([
+  cohortRun, cohortRun, { ...cohortRun, childId: 'b', percent: 0, skills: { tool: 0, reasoning: null } },
+  { ...cohortRun, completedAt: null, percent: 0 },
+  { ...cohortRun, storyId: 'two' }, { ...cohortRun, scoringVersion: '3.0' },
+], 'age');
+assert.equal(cohorts.length, 3, 'Different games and scoring versions must remain separate');
+assert.equal(cohorts[0].averagePercent, 67);
+assert.deepEqual(cohorts[0].balanced, { percent: 50, children: 2 });
+assert.deepEqual(cohorts[0].skills.tool, { percent: 50, children: 2 });
+assert.deepEqual(cohorts[0].skills.reasoning, { percent: null, children: 0 });
+assert.equal(summarizeCohorts([cohortRun, { ...cohortRun, schoolId: 'other' }], 'schoolName').length, 2, 'Schools with equal names are distinct');
 
 const base = process.env.PLATFORM_TEST_URL ?? 'http://127.0.0.1:3301';
 assert(
@@ -310,6 +324,8 @@ const historical = await admin.request(
   `/api/admin/research?childId=${child.id}&age=7&schoolId=${school.id}&range=all`,
 );
 assert.equal(historical.runs.length, 5);
+assert.equal(historical.ages.length, 4);
+assert(historical.ages.every((c: { balanced: { children: number; percent: number } }) => c.balanced.children === 1 && c.balanced.percent === 100));
 assert(
   historical.runs.every(
     (r: { age: number; schoolName: string }) =>
@@ -336,6 +352,8 @@ assert.equal(
   historical.runs.length + 1,
 );
 assert(book.getWorksheet('رویدادهای مراحل')!.rowCount > 100);
+assert.equal(book.getWorksheet('گروه‌های سنی')!.rowCount, historical.ages.length + 1);
+assert.equal(book.getWorksheet('گروه‌های سنی')!.getCell('H2').value, historical.ages[0].balanced.percent);
 await mkdir('tmp/platform-tests', { recursive: true });
 await writeFile('tmp/platform-tests/report.xlsx', bytes);
 await parent.request('/api/auth/password', {
