@@ -31,7 +31,8 @@ export type Child = {
   avatar: string;
 };
 export type Session = {
-  role: 'parent' | 'admin';
+  role: 'parent' | 'player' | 'admin';
+  child?: Child;
   parent?: { id: string; username: string; fullName: string };
 };
 export type School = { id: string; name: string };

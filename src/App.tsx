@@ -38,7 +38,7 @@ export function App({
   child: Child;
   initialRuns: RunState[];
   history: RunReport[];
-  onParent: () => void;
+  onParent?: () => void;
 }) {
   const initialStoryId = useMemo(() => {
     const requested = new URLSearchParams(window.location.search).get('play');

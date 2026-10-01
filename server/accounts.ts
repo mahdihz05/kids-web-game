@@ -30,7 +30,7 @@ const passwordMatches = (password: string, saved: string) => {
   const actual = scryptSync(password, salt, 64);
   return expected.length === actual.length && timingSafeEqual(expected, actual);
 };
-export type Account = { role: 'parent' | 'admin'; parent_id: string | null };
+export type Account = { role: 'parent' | 'player' | 'admin'; parent_id: string | null; child_id?: string | null };
 export async function accountFor(
   pool: Pool,
   request: FastifyRequest,
@@ -38,7 +38,7 @@ export async function accountFor(
   const cookie = request.cookies.account_session;
   if (!cookie) return null;
   const result = await pool.query<Account>(
-    `SELECT s.role,s.parent_id FROM account_sessions s LEFT JOIN parent_accounts p ON p.id=s.parent_id LEFT JOIN admin_accounts a ON a.id=s.admin_id WHERE token_hash=$1 AND expires_at>now() AND ((s.role='admin' AND (s.admin_id IS NULL OR a.enabled=true)) OR (s.role='parent' AND p.enabled=true))`,
+    `SELECT CASE WHEN s.role='parent' THEN p.access_role ELSE s.role END AS role,s.parent_id,p.player_child_id AS child_id FROM account_sessions s LEFT JOIN parent_accounts p ON p.id=s.parent_id LEFT JOIN admin_accounts a ON a.id=s.admin_id WHERE token_hash=$1 AND expires_at>now() AND ((s.role='admin' AND (s.admin_id IS NULL OR a.enabled=true)) OR (s.role='parent' AND p.enabled=true))`,
     [hash(cookie)],
   );
   return result.rows[0] ?? null;
@@ -61,8 +61,8 @@ async function ownChild(
   account: Account,
 ) {
   const result = await pool.query(
-    `SELECT c.*,s.name AS school_name FROM child_profiles c JOIN schools s ON s.id=c.school_id WHERE c.id=$1 AND ($2::text='admin' OR c.parent_id=$3::uuid)`,
-    [childId, account.role, account.parent_id],
+    `SELECT c.*,s.name AS school_name FROM child_profiles c JOIN schools s ON s.id=c.school_id WHERE c.id=$1 AND ($2::text='admin' OR ($2='parent' AND c.parent_id=$3::uuid) OR ($2='player' AND c.id=$4::uuid))`,
+    [childId, account.role, account.parent_id, account.child_id ?? null],
   );
   if (!result.rows[0]) throw error('child_not_found', 404);
   return result.rows[0];
@@ -539,6 +539,7 @@ export async function registerAccounts(
   app.get('/api/session', async (request) => {
     const account = await requireAccount(pool, request);
     if (account.role === 'admin') return { role: 'admin' };
+    if (account.role === 'player') return { role: 'player', child: childJson(await ownChild(pool, account.child_id!, account)) };
     const r = await pool.query(
       'SELECT id,username,full_name FROM parent_accounts WHERE id=$1',
       [account.parent_id],
@@ -679,7 +680,8 @@ export async function registerAccounts(
     return { ok: true };
   });
   app.get('/api/schools', async (request) => {
-    await requireAccount(pool, request);
+    const a = await requireAccount(pool, request);
+    if (a.role === 'player') throw error('forbidden', 403);
     return (
       await pool.query(
         'SELECT id,name FROM schools WHERE enabled=true ORDER BY name',
@@ -699,6 +701,7 @@ export async function registerAccounts(
   });
   app.get('/api/children', async (request) => {
     const a = await requireAccount(pool, request);
+    if (a.role === 'player') return [childJson(await ownChild(pool, a.child_id!, a))];
     const r = await pool.query(
       'SELECT c.*,s.name AS school_name FROM child_profiles c JOIN schools s ON s.id=c.school_id WHERE parent_id=$1 ORDER BY c.created_at',
       [a.parent_id],
@@ -738,6 +741,7 @@ export async function registerAccounts(
   });
   app.patch('/api/children/:id', async (request) => {
     const a = await requireAccount(pool, request);
+    if (a.role !== 'parent') throw error('forbidden', 403);
     const { id } = z.object({ id: z.string().uuid() }).parse(request.params);
     await ownChild(pool, id, a);
     const input = childSchema.parse(request.body);
@@ -763,6 +767,21 @@ export async function registerAccounts(
     );
     return { ok: true };
   });
+  app.post('/api/children/:id/player-account', async (request) => {
+    const a = await requireAccount(pool, request);
+    if (a.role !== 'parent') throw error('forbidden', 403);
+    const { id } = z.object({ id: z.string().uuid() }).parse(request.params);
+    const child = await ownChild(pool, id, a);
+    const input = credentials.parse(request.body);
+    try {
+      await pool.query("INSERT INTO parent_accounts(id,username,full_name,password_hash,access_role,player_child_id) VALUES($1,$2,$3,$4,'player',$5)",
+        [randomUUID(), input.username, `${child.first_name} ${child.last_name}`, passwordHash(input.password), id]);
+    } catch (e) {
+      if ((e as { code?: string }).code === '23505') throw error('username_unavailable', 409);
+      throw e;
+    }
+    return { ok: true };
+  });
   app.get('/api/children/:id/state', async (request) => {
     const a = await requireAccount(pool, request);
     const { id } = z.object({ id: z.string().uuid() }).parse(request.params);
@@ -780,7 +799,7 @@ export async function registerAccounts(
   });
   app.post('/api/children/:id/runs', async (request) => {
     const a = await requireAccount(pool, request);
-    if (a.role !== 'parent') throw error('forbidden', 403);
+    if (a.role !== 'parent' && a.role !== 'player') throw error('forbidden', 403);
     const { id } = z.object({ id: z.string().uuid() }).parse(request.params);
     const input = z
       .object({ storyId: z.string(), replay: z.boolean().default(false) })
@@ -862,7 +881,7 @@ export async function registerAccounts(
     },
     async (request) => {
       const a = await requireAccount(pool, request);
-      if (a.role !== 'parent') throw error('forbidden', 403);
+      if (a.role !== 'parent' && a.role !== 'player') throw error('forbidden', 403);
       const input = z
         .object({ events: z.array(actionSchema).min(1).max(100) })
         .parse(request.body);
@@ -872,8 +891,8 @@ export async function registerAccounts(
         const states: Record<string, unknown> = {};
         for (const event of input.events) {
           const r = await client.query(
-            'SELECT r.* FROM game_runs r JOIN child_profiles c ON c.id=r.child_id WHERE r.id=$1 AND c.parent_id=$2 FOR UPDATE OF r',
-            [event.runId, a.parent_id],
+            "SELECT r.* FROM game_runs r JOIN child_profiles c ON c.id=r.child_id WHERE r.id=$1 AND (($3='parent' AND c.parent_id=$2) OR ($3='player' AND c.id=$4::uuid)) FOR UPDATE OF r",
+            [event.runId, a.parent_id, a.role, a.child_id ?? null],
           );
           const run = r.rows[0];
           if (!run) throw error('run_not_found', 404);
@@ -1007,6 +1026,13 @@ export async function registerAccounts(
     const a = await requireAccount(pool, request);
     if (a.role !== 'parent') throw error('forbidden', 403);
     return researchReport(pool, a, filterSchema.parse(request.query), true);
+  });
+  app.get('/api/player/history', async (request) => {
+    const a = await requireAccount(pool, request);
+    if (a.role !== 'player') throw error('forbidden', 403);
+    const child = await ownChild(pool, a.child_id!, a);
+    const report = await researchReport(pool, { role: 'parent', parent_id: String(child.parent_id) }, filterSchema.parse({ range: 'all', childId: a.child_id }), false);
+    return { runs: report.runs };
   });
   app.get('/api/admin/research', async (request) => {
     const a = await requireAccount(pool, request, true);

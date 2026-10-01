@@ -115,6 +115,22 @@ await other.request(
   404,
 );
 await parent.request('/api/admin/research', undefined, 401);
+const player = new Client();
+await parent.request(`/api/children/${child.id}/player-account`, { username: `player_${suffix}`, password: 'player-test-password-123' });
+await player.request('/api/auth/login', { username: `player_${suffix}`, password: 'player-test-password-123' });
+assert.equal((await player.request('/api/session')).role, 'player');
+assert.deepEqual((await player.request('/api/children')).map((c: Child) => c.id), [child.id]);
+await player.request('/api/parent/report', undefined, 403);
+await player.request('/api/parent/profile', { fullName: 'Blocked' }, 403, 'PATCH');
+await player.request('/api/auth/password', { currentPassword: 'player-test-password-123', password: 'changed-password-123' }, 403);
+await player.request('/api/schools', undefined, 403);
+await player.request('/api/children', {}, 403);
+await player.request(`/api/children/${child.id}`, {}, 403, 'PATCH');
+await player.request(`/api/children/${child.id}/player-account`, {}, 403);
+await player.request(`/api/children/${sibling.id}/state`, undefined, 404);
+await player.request(`/api/children/${sibling.id}/runs`, { storyId: Object.keys(stories)[0] }, 404);
+await player.request('/api/admin/research', undefined, 401);
+assert.equal((await player.request('/api/player/history')).runs.length, 0);
 assert.equal(
   (await other.request('/api/parent/report?range=all')).runs.length,
   0,
@@ -165,7 +181,7 @@ const chooseAction = (engine: GameEngine): GameAction => {
   return { kind: 'continue', sceneId: scene.id };
 };
 for (const story of Object.values(stories)) {
-  const run: RunState = await parent.request(`/api/children/${child.id}/runs`, {
+  const run: RunState = await player.request(`/api/children/${child.id}/runs`, {
     storyId: story.id,
   });
   assert.equal(
@@ -193,7 +209,7 @@ for (const story of Object.values(stories)) {
     },
     score: 999999,
   };
-  await parent.request('/api/play/events', { events: [invalid] }, 409);
+  await player.request('/api/play/events', { events: [invalid] }, 409);
   while (!engine.snapshot().progress.completed) {
     assert(++steps < 150, `${story.id} must reach the result`);
     const action = chooseAction(engine);
@@ -207,7 +223,7 @@ for (const story of Object.values(stories)) {
       score: 999999,
     };
     engine.applyAction(action);
-    const result = await parent.request('/api/play/events', {
+    const result = await player.request('/api/play/events', {
       events: [event],
     });
     assert.deepEqual(
@@ -217,7 +233,7 @@ for (const story of Object.values(stories)) {
       ),
     );
     if (steps === 1) {
-      await parent.request('/api/play/events', { events: [event] });
+      await player.request('/api/play/events', { events: [event] });
       await other.request('/api/play/events', { events: [event] }, 404);
     }
   }
@@ -225,6 +241,7 @@ for (const story of Object.values(stories)) {
     `/api/parent/report?childId=${child.id}&range=all`,
   );
   const saved = report.runs.find((r: RunState) => r.id === run.id);
+  assert((await player.request('/api/player/history')).runs.some((r: RunState) => r.id === run.id));
   assert(saved.completedAt);
   assert.equal(saved.progress.score, engine.snapshot().progress.score);
   assert(saved.percent <= 100);

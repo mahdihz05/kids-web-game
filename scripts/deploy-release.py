@@ -27,10 +27,13 @@ def sha(path):
     return digest.hexdigest()
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--host',default='141.11.1.223');parser.add_argument('--revision',required=True);args=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('--host',default='141.11.1.223');parser.add_argument('--revision',required=True)
+    parser.add_argument('--image-archive',default='tmp/kids-game-api-v2.tar.gz')
+    parser.add_argument('--image-tag',default='kids-web-game-api:accounts-v2')
+    args=parser.parse_args()
     assert len(args.revision)==40 and all(c in '0123456789abcdef' for c in args.revision)
     assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()==args.revision
-    image=ROOT/'tmp'/'kids-game-api-v2.tar.gz';assert image.is_file()
+    image=ROOT/args.image_archive;assert image.is_file()
     assert (ROOT/'dist'/'index.html').is_file()
     client=paramiko.SSHClient();client.set_missing_host_key_policy(VerifyHost())
     client.connect(args.host,port=22,username='root',password=os.environ['GAME_SSH_PASSWORD'],timeout=20,allow_agent=False,look_for_keys=False)
@@ -88,7 +91,7 @@ def main():
     print('Verified image and static files uploaded',flush=True)
     run('docker load -i '+remote_archive)
     tag='kids-web-game-api:release-'+args.revision[:8]
-    run('docker tag kids-web-game-api:accounts-v2 '+tag)
+    run('docker tag '+shlex.quote(args.image_tag)+' '+tag)
     # The archive is our generated staging file, outside all active volumes.
     assert remote_archive.startswith(APP+'/releases/') and remote_archive.endswith('/api-image.tar.gz')
     sftp.remove(remote_archive)

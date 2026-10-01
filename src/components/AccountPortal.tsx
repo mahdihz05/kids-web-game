@@ -33,6 +33,7 @@ export function AccountPortal() {
   );
   const [register, setRegister] = useState(false);
   const [editing, setEditing] = useState<Child | null>(null);
+  const [playerLoginChild, setPlayerLoginChild] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [sync, setSync] = useState('');
   const [busy, setBusy] = useState(false);
@@ -43,6 +44,14 @@ export function AccountPortal() {
     try {
       const current = await api<Session>('/api/session');
       setSession(current);
+      if (current.role === 'player' && current.child) {
+        const [states, report] = await Promise.all([
+          loadChildStates(current.child.id),
+          api<{ runs: RunReport[] }>('/api/player/history'),
+        ]);
+        setSelected({ child: current.child, states, history: report.runs });
+        setMode('children');
+      }
       if (current.role === 'parent') {
         const [c, s] = await Promise.all([
           api<Child[]>('/api/children'),
@@ -174,7 +183,7 @@ export function AccountPortal() {
             alt="متفکر"
           />
           <span className="tiny-label">کتابفروشی سحرآمیز متفکر</span>
-          <h1>{register ? 'ساخت حساب والد' : 'ورود به حساب والد'}</h1>
+          <h1>{register ? 'ساخت حساب والد' : 'ورود به حساب'}</h1>
           <p>هر کودک، قصه و مسیر رشد خودش را دارد.</p>
           <form onSubmit={(e) => void submitAuth(e)} className="account-form">
             {register && (
@@ -277,6 +286,19 @@ export function AccountPortal() {
         </section>
       </main>
     );
+  if (session.role === 'player') return (
+    <div className="account-shell" dir="rtl">
+      <nav className="account-nav" aria-label="حساب بازیکن">
+        <strong>{session.child?.firstName} {session.child?.lastName}</strong>
+        <button type="button" disabled={busy} onClick={() => void logout()}>خروج</button>
+      </nav>
+      {(error || sync) && <p className="sync-banner" role="status">{error || sync}
+        {syncProblem() === 401 && <button onClick={() => window.location.reload()}>ورود دوباره</button>}
+        {(syncProblem() === 409 || syncProblem() === 404) && <button onClick={() => void recoverSyncConflict().then(load).catch(e => setError(e.message))}>بازیابی پیشرفت سرور</button>}
+      </p>}
+      {selected ? <App key={selected.child.id} child={selected.child} initialRuns={selected.states} history={selected.history} /> : <p role="status">در حال دریافت بازی‌های شما…</p>}
+    </div>
+  );
   return (
     <div className="account-shell" dir="rtl">
       <nav className="account-nav" aria-label="حساب والد">
@@ -444,6 +466,21 @@ export function AccountPortal() {
                 >
                   ویرایش پروفایل
                 </button>
+                <button className="text-button" type="button" onClick={() => setPlayerLoginChild(playerLoginChild === child.id ? null : child.id)}>ساخت ورود مستقل بازیکن</button>
+                {playerLoginChild === child.id && <form className="account-form" onSubmit={event => {
+                  event.preventDefault();
+                  const form = event.currentTarget;
+                  const values = Object.fromEntries(new FormData(form));
+                  setBusy(true); setError('');
+                  void post(`/api/children/${child.id}/player-account`, values).then(() => {
+                    form.reset(); setPlayerLoginChild(null);
+                    window.alert('حساب بازیکن ساخته شد. با نام کاربری و رمز انتخاب‌شده فقط به بازی‌های این کودک وارد می‌شود.');
+                  }).catch(e => setError(e.message)).finally(() => setBusy(false));
+                }}>
+                  <label>نام کاربری بازیکن<input name="username" dir="ltr" pattern="[a-z0-9_.-]{4,40}" minLength={4} maxLength={40} autoComplete="off" required /></label>
+                  <label>رمز بازیکن (حداقل ۱۰ کاراکتر)<input name="password" type="password" dir="ltr" minLength={10} maxLength={128} autoComplete="new-password" required /></label>
+                  <button className="primary-button" disabled={busy}>ساخت حساب بازیکن</button>
+                </form>}
               </article>
             ))}
           </section>

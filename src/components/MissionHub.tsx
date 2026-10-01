@@ -6,7 +6,7 @@ import { ParentGate } from './ParentGate';
 interface MissionHubProps {
   profile: ChildProfile;
   onStart: (missionId: string) => void;
-  onParent: () => void;
+  onParent?: () => void;
   onStory: () => void;
 }
 
@@ -20,7 +20,7 @@ export function MissionHub({ profile, onStart, onParent, onStory }: MissionHubPr
       <header className="hub-header">
         <div className="hub-brand"><img src="/assets/brand/client-logo.png" alt="لوگوی مجموعه" /><div><strong>کتابفروشی سحرآمیز متفکر</strong><small>هر فکر، یک کتاب را بیدار می‌کند</small></div></div>
         <div className="profile-pill"><span className="profile-avatar">{profile.avatar}</span><div><strong>{profile.name}</strong><small>⭐ {profile.totalStars} ستاره</small></div></div>
-        <div className="hub-actions"><button className="icon-button story-button" type="button" onClick={onStory}>✨ داستان کوکی</button><button className="icon-button parent-button" type="button" onClick={() => setParentGateOpen(true)} aria-label="بخش والدین">📊 <span>گزارش من</span></button></div>
+        <div className="hub-actions"><button className="icon-button story-button" type="button" onClick={onStory}>✨ داستان کوکی</button>{onParent && <button className="icon-button parent-button" type="button" onClick={() => setParentGateOpen(true)} aria-label="بخش والدین">📊 <span>گزارش من</span></button>}</div>
       </header>
 
       <section className="hub-hero">
@@ -52,7 +52,7 @@ export function MissionHub({ profile, onStart, onParent, onStory }: MissionHubPr
           })}
         </div>
       </section>
-      {parentGateOpen && <ParentGate onClose={() => setParentGateOpen(false)} onPass={() => { setParentGateOpen(false); onParent(); }} />}
+      {onParent && parentGateOpen && <ParentGate onClose={() => setParentGateOpen(false)} onPass={() => { setParentGateOpen(false); onParent(); }} />}
     </main>
   );
 }
