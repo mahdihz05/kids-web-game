@@ -38,7 +38,7 @@ export async function accountFor(
   const cookie = request.cookies.account_session;
   if (!cookie) return null;
   const result = await pool.query<Account>(
-    `SELECT s.role,s.parent_id FROM account_sessions s LEFT JOIN parent_accounts p ON p.id=s.parent_id WHERE token_hash=$1 AND expires_at>now() AND (s.role='admin' OR p.enabled=true)`,
+    `SELECT s.role,s.parent_id FROM account_sessions s LEFT JOIN parent_accounts p ON p.id=s.parent_id LEFT JOIN admin_accounts a ON a.id=s.admin_id WHERE token_hash=$1 AND expires_at>now() AND ((s.role='admin' AND (s.admin_id IS NULL OR a.enabled=true)) OR (s.role='parent' AND p.enabled=true))`,
     [hash(cookie)],
   );
   return result.rows[0] ?? null;
@@ -84,11 +84,12 @@ async function startSession(
   reply: FastifyReply,
   role: 'parent' | 'admin',
   parentId: string | null,
+  adminId: string | null = null,
 ) {
   const token = randomBytes(32).toString('hex');
   await pool.query(
-    "INSERT INTO account_sessions(token_hash,parent_id,role,expires_at) VALUES($1,$2,$3,now()+interval '8 hours')",
-    [hash(token), parentId, role],
+    "INSERT INTO account_sessions(token_hash,parent_id,role,admin_id,expires_at) VALUES($1,$2,$3,$4,now()+interval '8 hours')",
+    [hash(token), parentId, role, adminId],
   );
   const secure =
     process.env.COOKIE_SECURE === 'true' ||
@@ -618,12 +619,17 @@ export async function registerAccounts(
         .parse(request.body);
       const expected = Buffer.from(adminHash, 'hex');
       const actual = Buffer.from(hash(input.password), 'hex');
-      if (
-        expected.length !== actual.length ||
-        !timingSafeEqual(expected, actual)
-      )
-        throw error('unauthorized', 401);
-      await startSession(pool, reply, 'admin', null);
+      const legacyValid = expected.length === actual.length && timingSafeEqual(expected, actual);
+      let adminId: string | null = null;
+      if (!legacyValid) {
+        const accounts = await pool.query<{ id: string; password_hash: string }>(
+          'SELECT id,password_hash FROM admin_accounts WHERE enabled=true',
+        );
+        const account = accounts.rows.find((a) => passwordMatches(input.password, a.password_hash));
+        if (!account) throw error('unauthorized', 401);
+        adminId = account.id;
+      }
+      await startSession(pool, reply, 'admin', null, adminId);
       return { ok: true };
     },
   );

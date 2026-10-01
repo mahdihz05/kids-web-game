@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import { randomUUID } from 'node:crypto';
+import { randomUUID, randomBytes, scryptSync } from 'node:crypto';
+import { Pool } from 'pg';
 import { writeFile, mkdir } from 'node:fs/promises';
 import ExcelJS from 'exceljs';
 import { stories, GameEngine } from '../server/catalog';
@@ -40,6 +41,27 @@ await guest.request('/api/play/events', { events: [] }, 401);
 await admin.request('/api/admin/login', {
   password: process.env.PLATFORM_TEST_ADMIN_PASSWORD ?? 'change-me',
 });
+// Independent administrator access must preserve the original administrator login.
+const db = new Pool({ connectionString: process.env.DATABASE_URL });
+const extraAdminId = randomUUID();
+const extraPassword = randomBytes(24).toString('hex');
+const salt = randomBytes(16).toString('hex');
+const extraAdmin = new Client();
+try {
+  await db.query('INSERT INTO admin_accounts(id,username,password_hash) VALUES($1,$2,$3)', [
+    extraAdminId, `admin_${extraAdminId}`, `${salt}:${scryptSync(extraPassword, salt, 64).toString('hex')}`,
+  ]);
+  await extraAdmin.request('/api/admin/login', { password: extraPassword });
+  await extraAdmin.request('/api/admin/research?range=all');
+  await db.query('UPDATE admin_accounts SET enabled=false WHERE id=$1', [extraAdminId]);
+  await extraAdmin.request('/api/admin/research', undefined, 401);
+  await extraAdmin.request('/api/admin/login', { password: extraPassword }, 401);
+  await admin.request('/api/admin/research?range=all');
+} finally {
+  await db.query('DELETE FROM account_sessions WHERE admin_id=$1', [extraAdminId]);
+  await db.query('DELETE FROM admin_accounts WHERE id=$1', [extraAdminId]);
+  await db.end();
+}
 const suffix = Date.now().toString(36);
 const school = await admin.request('/api/admin/schools', {
   name: `مدرسه آزمایشی ${suffix}`,
