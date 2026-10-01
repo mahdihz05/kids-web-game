@@ -22,26 +22,33 @@
   "dependencies": {
     "@fastify/cookie": "^11.1.2",
     "@fastify/rate-limit": "^11.2.0",
-    "@vitejs/plugin-react": "latest",
     "docx": "^9.7.1",
     "exceljs": "^4.4.0",
     "fastify": "^5.12.1",
     "pg": "^8.23.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "tsx": "^4.23.15",
     "zod": "^4.4.3"
   },
-  "overrides": { "exceljs": { "uuid": "11.1.1" }, "minimatch@10": { "brace-expansion": "5.0.12" } },
+  "overrides": {
+    "exceljs": {
+      "uuid": "11.1.1"
+    },
+    "minimatch@10": {
+      "brace-expansion": "5.0.12"
+    }
+  },
   "devDependencies": {
     "@eslint/js": "latest",
     "@types/pg": "^8.23.1",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "@vitejs/plugin-react": "^6.1.1",
     "eslint": "latest",
     "eslint-plugin-react-hooks": "latest",
     "eslint-plugin-react-refresh": "latest",
     "globals": "latest",
-    "tsx": "^4.23.12",
     "typescript": "~5.8.3",
     "typescript-eslint": "latest",
     "vite": "latest"
