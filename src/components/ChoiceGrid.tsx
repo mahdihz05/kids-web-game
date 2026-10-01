@@ -27,7 +27,7 @@ export function ChoiceGrid({ choices, onChoose, compact = false, interaction = '
   return <div className={`choice-grid ${compact ? 'choice-grid--compact' : ''}`}>
     {choices.map((choice) => <button className={`choice-card ${selectedId === choice.id ? 'choice-card--selected' : ''}`} key={choice.id}
       aria-pressed={!immediate && desktopMode ? selectedId === choice.id : undefined}
-      onClick={() => immediate || !desktopMode ? onChoose(choice) : setSelectedId(choice.id)} type="button">
+      onClick={() => { if(immediate || !desktopMode) onChoose(choice); else { window.dispatchEvent(new CustomEvent('game-ui-action',{detail:{kind:'preview',itemId:choice.id}}));setSelectedId(choice.id); } }} type="button">
       {choice.imageCrop ? <span className={`choice-card__crop choice-card__crop--${choice.imageCrop}`} style={{ backgroundImage: `url("${assetPath(choice.image)}")` }} role="img" aria-label={choice.caption} /> : <img src={assetPath(choice.image)} alt={choice.caption} />}
       {choice.icon && <b className="choice-card__icon" aria-hidden="true">{choice.icon}</b>}
       <span><strong>{choice.caption}</strong><small>{choice.text}</small></span>

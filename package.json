@@ -1,7 +1,7 @@
 {
   "name": "magical-library-game",
   "private": true,
-  "version": "1.0.1",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,6 +11,7 @@
     "test": "node scripts/test-story.mjs",
     "test:responsive": "node scripts/test-responsive.mjs",
     "test:analytics": "node scripts/test-analytics-contract.mjs",
+    "test:platform": "node scripts/run-platform-tests.mjs",
     "audit:client": "node scripts/audit-client-requirements.mjs",
     "check": "npm run audit:client && npm run test && npm run test:responsive && npm run test:analytics && npm run validate:v1 && npm run lint && npm run server:check && npm run build",
     "preview": "vite preview",
@@ -23,12 +24,14 @@
     "@fastify/rate-limit": "^11.2.0",
     "@vitejs/plugin-react": "latest",
     "docx": "^9.7.1",
+    "exceljs": "^4.4.0",
     "fastify": "^5.12.1",
     "pg": "^8.23.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "zod": "^4.4.3"
   },
+  "overrides": { "exceljs": { "uuid": "11.1.1" }, "minimatch@10": { "brace-expansion": "5.0.12" } },
   "devDependencies": {
     "@eslint/js": "latest",
     "@types/pg": "^8.23.1",

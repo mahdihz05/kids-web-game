@@ -1,0 +1,12 @@
+.git
+node_modules
+dist
+tmp
+artifacts
+assets-source
+public
+.env
+.env.*
+*.log
+تحویل
+راهنما

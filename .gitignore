@@ -24,12 +24,15 @@ Thumbs.db
 # TypeScript and test artifacts
 *.tsbuildinfo
 coverage/
+__pycache__/
 
 # Temporary files
 tmp/
 temp/
 tmp-screens/
 tmp-preview.pid
+releases/
+docker-compose.release.yml
 
 # Local handoff archives (generated for delivery, not versioned)
 تحویل/*.zip

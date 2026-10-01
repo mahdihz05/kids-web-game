@@ -13,6 +13,7 @@ export function NarrationButton({ text, audio, iconOnly = false }: { text?: stri
     window.speechSynthesis.cancel(); window.speechSynthesis.speak(utterance); setSpeaking(true);
   };
   const play = () => {
+    window.dispatchEvent(new CustomEvent('game-ui-action',{detail:{kind:speaking?'narration_stop':'narration_start'}}));
     if (speaking) return stop();
     if (!audio) return speak();
     const element = new Audio(audio); player.current = element;

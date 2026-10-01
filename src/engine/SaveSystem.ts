@@ -3,8 +3,10 @@ import type { GameProgress } from '../types/story';
 export class SaveSystem {
   private readonly key: string;
 
-  constructor(storyId: string) {
-    this.key = `magical-library:progress:${storyId}`;
+  constructor(storyId: string, childId?: string) {
+    this.key = childId
+      ? `motefaker:progress:${childId}:${storyId}`
+      : `magical-library:progress:${storyId}`;
   }
 
   load(): GameProgress | null {

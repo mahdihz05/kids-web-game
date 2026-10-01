@@ -4,10 +4,10 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   server: {
-    proxy: { '/api': 'http://localhost:3001' },
+    proxy: { '/api': { target: process.env.API_PROXY_TARGET ?? 'http://localhost:3001', xfwd: true } },
   },
   preview: {
-    proxy: { '/api': 'http://localhost:3001' },
+    proxy: { '/api': { target: process.env.API_PROXY_TARGET ?? 'http://localhost:3001', xfwd: true } },
   },
   build: {
     target: 'es2022',

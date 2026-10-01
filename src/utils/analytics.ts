@@ -1,65 +1,168 @@
-export type AnalyticsEventType = 'start' | 'scene_enter' | 'choice' | 'interaction' | 'complete' | 'replay' | 'heartbeat';
+import type { GameAction, RunState } from '../types/account';
+import { api, post } from './api';
 
-const DEVICE_KEY = 'motefaker:analytics:device:v1';
-const RUN_KEY = 'motefaker:analytics:run:v1';
-const QUEUE_KEY = 'motefaker:analytics:queue:v1';
-
-type EventPayload = {
+type Event = {
   eventId: string;
-  deviceId: string;
   runId: string;
-  storyId: string;
-  type: AnalyticsEventType;
-  sceneId?: string;
-  choiceId?: string;
+  sequence: number;
   occurredAt: string;
+  activeMs: number;
+  action: GameAction;
 };
-
-const uuid = () => {
-  if (typeof globalThis.crypto?.randomUUID === 'function') return globalThis.crypto.randomUUID();
-
+let childId = '';
+let runs: Record<string, RunState> = {};
+let flushing: Promise<void> | null = null;
+let lastActivity = performance.now();
+let wasVisible = !document.hidden;
+let blocked = false;
+let problemCode = 0;
+const queueKey = () => `motefaker:outbox:v2:${childId}`;
+const queue = (): Event[] =>
+  JSON.parse(localStorage.getItem(queueKey()) ?? '[]');
+const status = (message: string) =>
+  window.dispatchEvent(
+    new CustomEvent('game-sync-status', { detail: message }),
+  );
+function uuid() {
+  if (typeof globalThis.crypto?.randomUUID === 'function')
+    return crypto.randomUUID();
   const bytes = new Uint8Array(16);
-  if (typeof globalThis.crypto?.getRandomValues === 'function') globalThis.crypto.getRandomValues(bytes);
-  else for (let index = 0; index < bytes.length; index += 1) bytes[index] = Math.floor(Math.random() * 256);
-
-  bytes[6] = (bytes[6] & 0x0f) | 0x40;
-  bytes[8] = (bytes[8] & 0x3f) | 0x80;
-  const hex = [...bytes].map((value) => value.toString(16).padStart(2, '0')).join('');
-  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
-};
-const getOrCreate = (key: string) => {
-  const saved = localStorage.getItem(key);
-  if (saved) return saved;
-  const value = uuid();
-  localStorage.setItem(key, value);
-  return value;
-};
-
-function queue(): EventPayload[] {
-  try { return JSON.parse(localStorage.getItem(QUEUE_KEY) ?? '[]') as EventPayload[]; }
-  catch { return []; }
+  crypto.getRandomValues(bytes);
+  bytes[6] = (bytes[6] & 15) | 64;
+  bytes[8] = (bytes[8] & 63) | 128;
+  const text = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join(
+    '',
+  );
+  return `${text.slice(0, 8)}-${text.slice(8, 12)}-${text.slice(12, 16)}-${text.slice(16, 20)}-${text.slice(20)}`;
 }
-
-export function newAnalyticsRun(): string {
-  const runId = uuid();
-  try { sessionStorage.setItem(RUN_KEY, runId); } catch { /* Analytics must never block the game. */ }
-  return runId;
+export function configureAnalytics(id: string, states: RunState[]) {
+  childId = id;
+  runs = Object.fromEntries(states.map((r) => [r.storyId, r]));
+  blocked = false;
+  problemCode = 0;
+  lastActivity = performance.now();
+  wasVisible = !document.hidden;
 }
-
-export async function flushAnalytics(): Promise<void> {
+export function pendingCount() {
+  return childId ? queue().length : 0;
+}
+export function syncProblem() { return problemCode; }
+export async function recoverSyncConflict() {
+  const states = await api<RunState[]>(`/api/children/${childId}/state`);
+  const data = localStorage.getItem(queueKey());
+  if (data) localStorage.setItem(`motefaker:conflict-backup:${childId}:${Date.now()}`,data);
+  localStorage.setItem(queueKey(),'[]'); blocked=true; problemCode=0; status('');
+  return states;
+}
+export function recordAction(storyId: string, action: GameAction) {
+  if (blocked)
+    throw new Error('پیشرفت نیاز به همگام‌سازی دارد. صفحه را تازه کنید.');
+  const run = runs[storyId];
+  if (!run) throw new Error('ابتدا نوبت بازی را شروع کنید.');
+  const now = performance.now();
+  const activeMs = wasVisible
+    ? Math.min(60000, Math.max(0, Math.round(now - lastActivity)))
+    : 0;
+  lastActivity = now;
+  wasVisible = !document.hidden;
   const events = queue();
-  if (!events.length) return;
+  const sequence =
+    Math.max(
+      run.lastSequence,
+      ...events.filter((e) => e.runId === run.id).map((e) => e.sequence),
+      0,
+    ) + 1;
+  const event: Event = {
+    eventId: uuid(),
+    runId: run.id,
+    sequence,
+    action,
+    occurredAt: new Date().toISOString(),
+    activeMs,
+  };
   try {
-    const response = await fetch('/api/events', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ events }), keepalive: true });
-    if (response.ok) localStorage.setItem(QUEUE_KEY, JSON.stringify(queue().filter((item) => !events.some((sent) => sent.eventId === item.eventId))));
-  } catch { /* Offline play remains fully available. */ }
+    localStorage.setItem(queueKey(), JSON.stringify([...events, event]));
+  } catch {
+    status(
+      'فضای ذخیرهٔ مرورگر کافی نیست. برای حفظ اطلاعات، ادامهٔ بازی پس از آزادکردن فضا ممکن است.',
+    );
+    throw new Error('ذخیره اطلاعات انجام نشد.');
+  }
+  void flushAnalytics();
 }
-
-export function trackAnalytics(storyId: string, type: AnalyticsEventType, sceneId?: string, choiceId?: string): void {
-  try {
-    const runId = sessionStorage.getItem(RUN_KEY) ?? newAnalyticsRun();
-    const event: EventPayload = { eventId: uuid(), deviceId: getOrCreate(DEVICE_KEY), runId, storyId, type, sceneId, choiceId, occurredAt: new Date().toISOString() };
-    localStorage.setItem(QUEUE_KEY, JSON.stringify([...queue(), event].slice(-500)));
-    void flushAnalytics();
-  } catch { /* Storage/network/privacy settings must never interrupt play. */ }
+export async function flushAnalytics(): Promise<void> {
+  if (!childId || blocked) return;
+  if (flushing) return flushing;
+  const id = childId;
+  const key = queueKey();
+  flushing = (async () => {
+    try {
+      let events = JSON.parse(localStorage.getItem(key) ?? '[]') as Event[];
+      while (events.length) {
+        const batch = events.slice(0, 100);
+        const result = await post<{
+          accepted: string[];
+          states: Record<
+            string,
+            { progress: RunState['progress']; lastSequence: number }
+          >;
+        }>('/api/play/events', { events: batch });
+        const current = JSON.parse(
+          localStorage.getItem(key) ?? '[]',
+        ) as Event[];
+        events = current.filter((e) => !result.accepted.includes(e.eventId));
+        localStorage.setItem(key, JSON.stringify(events));
+        if (id === childId)
+          for (const run of Object.values(runs))
+            if (result.states[run.id]) {
+              run.lastSequence = result.states[run.id].lastSequence;
+              run.progress = result.states[run.id].progress;
+            }
+      }
+      status('');
+    } catch (e) {
+      const err = e as Error & { status?: number };
+      if (err.status === 409 || err.status === 401 || err.status === 404) {
+        blocked = true;
+        problemCode = err.status;
+        status(err.message);
+      } else
+        status(
+          'ارتباط قطع است؛ عملکرد شما روی این دستگاه ذخیره شده و پس از اتصال ارسال می‌شود.',
+        );
+    }
+  })().finally(() => {
+    flushing = null;
+  });
+  return flushing;
+}
+export async function startRun(storyId: string): Promise<RunState> {
+  await flushAnalytics();
+  if (blocked)
+    throw new Error('برای ادامه، صفحه را تازه کنید و وارد حساب شوید.');
+  const current = runs[storyId];
+  if (current && !current.progress.completed) return current;
+  if (pendingCount())
+    throw new Error(
+      'پیش از شروع بازی جدید، اطلاعات بازی قبلی باید به سرور ارسال شود.',
+    );
+  const run = await post<RunState>(`/api/children/${childId}/runs`, {
+    storyId,
+  });
+  runs[storyId] = run;
+  lastActivity = performance.now();
+  wasVisible = !document.hidden;
+  return run;
+}
+export async function loadChildStates(id: string) {
+  await flushAnalytics();
+  if (pendingCount())
+    throw new Error('ابتدا اتصال را برقرار کنید تا اطلاعات ثبت‌شده ارسال شود.');
+  configureAnalytics(id, []);
+  await flushAnalytics();
+  if (pendingCount())
+    throw new Error('اطلاعات ذخیره‌شدهٔ این کودک هنوز ارسال نشده است.');
+  const states = await api<RunState[]>(`/api/children/${id}/state`);
+  configureAnalytics(id, states);
+  return states;
 }

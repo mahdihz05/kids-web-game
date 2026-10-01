@@ -12,21 +12,30 @@ jobs:
   quality:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: motefaker_test
+          POSTGRES_USER: motefaker_test
+          POSTGRES_PASSWORD: ci-test-password
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U motefaker_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
       - name: Install dependencies
         run: npm ci
-      - name: Story tests
-        run: npm test
-      - name: Validate production contract
-        run: npm run validate:v1
-      - name: Lint
-        run: npm run lint
-      - name: Build
-        run: npm run build
+      - name: Quality checks
+        run: npm run check
+      - name: Account and reporting integration tests
+        run: npm run test:platform
+        env:
+          DATABASE_URL: postgres://motefaker_test:ci-test-password@localhost:5432/motefaker_test

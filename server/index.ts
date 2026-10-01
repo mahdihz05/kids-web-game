@@ -1,27 +1,23 @@
-import Fastify from 'fastify';
+import Fastify, { type FastifyRequest } from 'fastify';
 import cookie from '@fastify/cookie';
 import rateLimit from '@fastify/rate-limit';
 import { Pool } from 'pg';
 import { z } from 'zod';
-import { createHash, timingSafeEqual } from 'node:crypto';
-import { readFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { readFile, readdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { AlignmentType, Document, HeadingLevel, Packer, Paragraph, Table, TableCell, TableRow, TextRun, WidthType } from 'docx';
+import { accountFor, registerAccounts } from './accounts.js';
 
-const app = Fastify({ logger: true });
+const app = Fastify({ logger: true, trustProxy: true });
 const pool = new Pool({ connectionString: process.env.DATABASE_URL ?? 'postgres://postgres:postgres@localhost:5432/motefaker' });
 const cookieSecret = process.env.COOKIE_SECRET ?? 'development-only-change-this-secret';
 const adminPasswordHash = process.env.ADMIN_PASSWORD_SHA256 ?? createHash('sha256').update('change-me').digest('hex');
+if (process.env.NODE_ENV === 'production' && (!process.env.DATABASE_URL || !process.env.COOKIE_SECRET || process.env.COOKIE_SECRET.length < 32 || !/^[a-f0-9]{64}$/i.test(process.env.ADMIN_PASSWORD_SHA256 ?? ''))) throw new Error('Production credentials are required');
 
 await app.register(cookie, { secret: cookieSecret });
 await app.register(rateLimit, { global: false });
-
-const eventSchema = z.object({
-  eventId: z.string().uuid(), deviceId: z.string().uuid(), runId: z.string().uuid(), storyId: z.string().min(1).max(80),
-  type: z.enum(['start', 'scene_enter', 'choice', 'interaction', 'complete', 'replay', 'heartbeat']),
-  sceneId: z.string().max(100).optional(), choiceId: z.string().max(100).optional(), occurredAt: z.string().datetime(),
-});
-const bodySchema = z.object({ events: z.array(eventSchema).min(1).max(100) });
+await registerAccounts(app, pool, adminPasswordHash);
 const titles: Record<string, string> = {
   'grandmas-birthday-gift': 'هدیه تولد مادربزرگ',
   'oak-rescue': 'راه نجات بلوط‌ها',
@@ -89,16 +85,7 @@ const choiceMetadata: Record<string, Record<string, ChoiceMeta[]>> = {
   },
 };
 
-function isAdmin(request: { cookies: Record<string, string | undefined>; unsignCookie: (value: string) => { valid: boolean; value: string | null } }) {
-  const value = request.cookies.admin_session;
-  return Boolean(value && request.unsignCookie(value).valid && request.unsignCookie(value).value === 'authorized');
-}
-
-function safePasswordMatch(value: string) {
-  const expected = Buffer.from(adminPasswordHash, 'hex');
-  const actual = createHash('sha256').update(value).digest();
-  return expected.length === actual.length && timingSafeEqual(expected, actual);
-}
+async function isAdmin(request: FastifyRequest) { return (await accountFor(pool, request))?.role === 'admin'; }
 
 function since(range: string): Date | null {
   const now = new Date();
@@ -114,7 +101,7 @@ function since(range: string): Date | null {
 type DbEvent = { device_id: string; run_id: string; story_id: string; event_type: string; scene_id: string | null; choice_id: string | null; occurred_at: Date };
 async function report(range: string) {
   const start = since(range);
-  const result = await pool.query<DbEvent>(`SELECT device_id, run_id, story_id, event_type, scene_id, choice_id, occurred_at FROM analytics_events ${start ? 'WHERE occurred_at >= $1' : ''} ORDER BY occurred_at`, start ? [start] : []);
+  const result = await pool.query<DbEvent>(`SELECT * FROM (SELECT device_id, run_id, story_id, event_type, scene_id, choice_id, occurred_at FROM analytics_events UNION ALL SELECT r.child_id AS device_id,e.run_id,r.story_id,e.event_type,e.scene_id,e.choice_id,e.occurred_at FROM child_game_events e JOIN game_runs r ON r.id=e.run_id) events ${start ? 'WHERE occurred_at >= $1' : ''} ORDER BY occurred_at`, start ? [start] : []);
   const byStory = new Map<string, DbEvent[]>();
   for (const event of result.rows) byStory.set(event.story_id, [...(byStory.get(event.story_id) ?? []), event]);
   const games = Object.entries(titles).map(([storyId, title]) => {
@@ -186,34 +173,22 @@ async function reportDocx(data: Awaited<ReturnType<typeof report>>) {
   return Packer.toBuffer(document);
 }
 
-app.get('/api/health', async () => ({ ok: true }));
-app.post('/api/events', { config: { rateLimit: { max: 120, timeWindow: '1 minute' } } }, async (request, reply) => {
-  const parsed = bodySchema.safeParse(request.body); if (!parsed.success) return reply.code(400).send({ error: 'invalid_events' });
-  const client = await pool.connect();
-  try {
-    await client.query('BEGIN');
-    for (const event of parsed.data.events) await client.query('INSERT INTO analytics_events(event_id,device_id,run_id,story_id,event_type,scene_id,choice_id,occurred_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT(event_id) DO NOTHING', [event.eventId, event.deviceId, event.runId, event.storyId, event.type, event.sceneId ?? null, event.choiceId ?? null, event.occurredAt]);
-    await client.query('COMMIT'); return reply.code(202).send({ accepted: parsed.data.events.length });
-  } catch (error) { await client.query('ROLLBACK'); throw error; } finally { client.release(); }
-});
-app.post('/api/admin/login', { config: { rateLimit: { max: 5, timeWindow: '5 minutes' } } }, async (request, reply) => {
-  const parsed = z.object({ password: z.string().min(1).max(200) }).safeParse(request.body);
-  if (!parsed.success || !safePasswordMatch(parsed.data.password)) return reply.code(401).send({ error: 'unauthorized' });
-  const secureCookie = process.env.COOKIE_SECURE === 'true' || (process.env.COOKIE_SECURE !== 'false' && process.env.NODE_ENV === 'production');
-  reply.setCookie('admin_session', 'authorized', { path: '/', httpOnly: true, sameSite: 'strict', secure: secureCookie, signed: true, maxAge: 8 * 60 * 60 });
-  return { ok: true };
-});
+app.get('/api/health', async () => { await pool.query('SELECT 1'); return { ok: true, version: '2.0.0' }; });
+app.post('/api/events', async (_request, reply) => reply.code(410).send({ error: 'upgrade_required' }));
 app.get('/api/admin/report', async (request, reply) => {
-  if (!isAdmin(request)) return reply.code(401).send({ error: 'unauthorized' });
+  if (!await isAdmin(request)) return reply.code(401).send({ error: 'unauthorized' });
   const range = z.enum(['today', '7d', '30d', 'all']).catch('7d').parse((request.query as { range?: string }).range); return report(range);
 });
 app.get('/api/admin/report.docx', async (request, reply) => {
-  if (!isAdmin(request)) return reply.code(401).send({ error: 'unauthorized' });
+  if (!await isAdmin(request)) return reply.code(401).send({ error: 'unauthorized' });
   const range = z.enum(['today', '7d', '30d', 'all']).catch('7d').parse((request.query as { range?: string }).range);
   const buffer = await reportDocx(await report(range));
   return reply.header('content-type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document').header('content-disposition', `attachment; filename="management-report-${range}.docx"`).send(buffer);
 });
 
-const migration = await readFile(resolve(process.cwd(), 'server/migrations/001_analytics.sql'), 'utf8');
-await pool.query(migration);
+for (const file of (await readdir(resolve(process.cwd(), 'server/migrations'))).filter((f) => f.endsWith('.sql')).sort()) {
+  await pool.query(await readFile(resolve(process.cwd(), 'server/migrations', file), 'utf8'));
+}
+app.addHook('onClose', async () => { await pool.end(); });
+for (const signal of ['SIGTERM', 'SIGINT'] as const) process.on(signal, () => { void app.close(); });
 await app.listen({ port: Number(process.env.PORT ?? 3001), host: process.env.HOST ?? '0.0.0.0' });

@@ -3,6 +3,9 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY server ./server
+COPY src/engine ./src/engine
+COPY src/types ./src/types
+COPY src/data ./src/data
 COPY tsconfig.server.json ./
 ENV NODE_ENV=production PORT=3001 HOST=0.0.0.0
 CMD ["npm", "run", "server:start"]
