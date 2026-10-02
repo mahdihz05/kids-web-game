@@ -83,6 +83,34 @@ const school = await admin.request('/api/admin/schools', {
 const school2 = await admin.request('/api/admin/schools', {
   name: `مدرسه دوم ${suffix}`,
 });
+const managedInput = { role: 'parent', username: `managed_${suffix}`, password: 'managed-test-password', fullName: 'والد ساخته‌شده توسط مدیر', child: { firstName: 'کودک', lastName: 'مدیریت', age: 9, schoolId: school.id } };
+await guest.request('/api/admin/accounts', managedInput, 401);
+const managed = await admin.request('/api/admin/accounts', managedInput);
+assert.match(managed.child.publicId, /^K-/);
+assert.equal((await admin.request('/api/session')).role, 'admin', 'Creating accounts must retain admin session');
+await admin.request('/api/admin/accounts', managedInput, 409);
+const managedParent = new Client();
+await managedParent.request('/api/auth/login', managedInput);
+assert.equal((await managedParent.request('/api/session')).role, 'parent');
+assert.equal((await managedParent.request('/api/children'))[0].id, managed.child.id);
+await managedParent.request('/api/admin/accounts', managedInput, 401);
+const managedPlayerInput = { role: 'player', username: `managed_player_${suffix}`, password: 'managed-player-password', parentId: managed.id, childId: managed.child.id };
+await admin.request('/api/admin/accounts', managedPlayerInput);
+await admin.request('/api/admin/accounts', { ...managedPlayerInput, username: `duplicate_${suffix}` }, 409);
+const managedPlayer = new Client();
+await managedPlayer.request('/api/auth/login', managedPlayerInput);
+assert.equal((await managedPlayer.request('/api/session')).role, 'player');
+await managedPlayer.request('/api/parent/report', undefined, 403);
+await managedPlayer.request('/api/admin/accounts', managedInput, 401);
+const existing = await admin.request(`/api/admin/parents/${managed.id}/children`);
+assert.equal(existing[0].playerUsername, managedPlayerInput.username);
+await admin.request('/api/admin/accounts', { ...managedPlayerInput, username: `wrong_owner_${suffix}`, parentId: randomUUID() }, 404);
+const freshPlayer = await admin.request('/api/admin/accounts', { role: 'player', username: `new_child_${suffix}`, password: 'new-child-password', parentId: managed.id, child: { ...managedInput.child, firstName: 'دوم' } });
+assert.notEqual(freshPlayer.child.id, managed.child.id);
+assert.equal((await managedParent.request('/api/children')).length, 2);
+const beforeChildren = (await managedParent.request('/api/children')).length;
+await admin.request('/api/admin/accounts', { ...managedPlayerInput, childId: undefined, child: managedInput.child }, 409);
+assert.equal((await managedParent.request('/api/children')).length, beforeChildren, 'Failed creation rolls back new child');
 const invite = await admin.request('/api/admin/invites', {
   label: `آزمون ${suffix}`,
   uses: 2,

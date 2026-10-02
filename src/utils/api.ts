@@ -3,6 +3,8 @@ export const messages: Record<string, string> = {
   invalid_input: 'اطلاعات فرم را کامل و صحیح وارد کنید.',
   invalid_invite: 'کد دعوت نامعتبر، منقضی یا مصرف‌شده است.',
   username_taken: 'این نام کاربری قبلاً ثبت شده است.',
+  child_account_exists: 'این کودک قبلاً حساب بازیکن دارد؛ از فهرست حساب‌ها دسترسی آن را بازیابی کنید.',
+  parent_not_found: 'یک والد فعال را انتخاب کنید.',
   invalid_school: 'مدرسه را از فهرست انتخاب کنید.',
   invalid_origin: 'درخواست معتبر نیست. صفحه را دوباره باز کنید.',
   out_of_order:

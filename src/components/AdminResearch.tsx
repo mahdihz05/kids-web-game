@@ -3,6 +3,7 @@ import type { Child, RunReport, School } from '../types/account';
 import { api, post } from '../utils/api';
 import { getStory, storyRegistry } from '../data/storyRegistry';
 import { skillLabels } from '../engine/ScoreSystem';
+import { AdminAccountCreate, type ManagedAccount } from './AdminAccountCreate';
 
 type EventRow = {
   eventId: string;
@@ -209,7 +210,7 @@ export function AdminResearch() {
           onClick={() => setTab('accounts')}
           type="button"
         >
-          مدارس، دعوت و حساب والد
+          مدارس، دعوت و حساب‌ها
         </button>
       </div>
       {tab === 'accounts' ? (
@@ -622,7 +623,7 @@ function AccountManagement({ onChange }: { onChange: () => void }) {
     { id: string; label: string; remainingUses: number; expiresAt: string }[]
   >([]);
   const [parents, setParents] = useState<
-    { id: string; username: string; fullName: string; enabled: boolean }[]
+    ManagedAccount[]
   >([]);
   const [error, setError] = useState('');
   const [secret, setSecret] = useState('');
@@ -668,7 +669,7 @@ function AccountManagement({ onChange }: { onChange: () => void }) {
         <section className="account-card one-time-secret">
           <h2>اطلاعات تازه ایجادشده</h2>
           <p>
-            این مقدار فقط اکنون نمایش داده می‌شود؛ آن را برای تحویل به والد
+            این مقدار فقط اکنون نمایش داده می‌شود؛ آن را برای تحویل به صاحب حساب
             نگهداری کنید.
           </p>
           <textarea
@@ -686,6 +687,7 @@ function AccountManagement({ onChange }: { onChange: () => void }) {
           </button>
         </section>
       )}
+      <AdminAccountCreate accounts={parents} schools={schools} busy={busy} run={run} onCreated={setSecret} />
       <section className="account-card">
         <h2>فهرست مدارس</h2>
         <form
@@ -803,13 +805,14 @@ function AccountManagement({ onChange }: { onChange: () => void }) {
         </div>
       </section>
       <section className="account-card parent-management">
-        <h2>حساب‌های والد و بازیابی دسترسی</h2>
+        <h2>حساب‌های والد و بازیکن و بازیابی دسترسی</h2>
         <div className="admin-table-wrap">
           <table className="report-table">
             <thead>
               <tr>
                 <th>نام</th>
                 <th>نام کاربری</th>
+                <th>نوع حساب</th>
                 <th>وضعیت</th>
                 <th>دسترسی</th>
                 <th>بازیابی رمز</th>
@@ -820,6 +823,7 @@ function AccountManagement({ onChange }: { onChange: () => void }) {
                 <tr key={p.id}>
                   <td>{p.fullName}</td>
                   <td dir="ltr">{p.username}</td>
+                  <td>{p.role === 'player' ? 'بازیکن' : 'والد'}</td>
                   <td>{p.enabled ? 'فعال' : 'غیرفعال'}</td>
                   <td>
                     <button

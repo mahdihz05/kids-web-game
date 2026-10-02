@@ -1068,9 +1068,63 @@ export async function registerAccounts(
     await requireAccount(pool, request, true);
     return (
       await pool.query(
-        'SELECT id,username,full_name AS "fullName",enabled FROM parent_accounts ORDER BY created_at DESC',
+        'SELECT id,username,full_name AS "fullName",enabled,access_role AS role,player_child_id AS "childId" FROM parent_accounts ORDER BY created_at DESC',
       )
     ).rows;
+  });
+  app.get('/api/admin/parents/:id/children', async (request) => {
+    await requireAccount(pool, request, true);
+    const { id } = z.object({ id: z.string().uuid() }).parse(request.params);
+    return (await pool.query(`SELECT c.*,s.name AS school_name,p.username AS player_username
+      FROM child_profiles c JOIN schools s ON s.id=c.school_id
+      LEFT JOIN parent_accounts p ON p.player_child_id=c.id AND p.access_role='player'
+      WHERE c.parent_id=$1 ORDER BY c.created_at`, [id])).rows.map(c => ({ ...childJson(c), playerUsername: c.player_username }));
+  });
+  app.post('/api/admin/accounts', async (request) => {
+    await requireAccount(pool, request, true);
+    const input = z.discriminatedUnion('role', [
+      credentials.extend({ role: z.literal('parent'), fullName: z.string().trim().min(2).max(100), child: childSchema.optional() }),
+      credentials.extend({ role: z.literal('player'), parentId: z.string().uuid(), childId: z.string().uuid().optional(), child: childSchema.optional() })
+        .refine(v => Boolean(v.childId) !== Boolean(v.child), { message: 'Choose an existing or new child' }),
+    ]).parse(request.body);
+    const digest = passwordHash(input.password);
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      const id = randomUUID();
+      let parentId: string = id;
+      let child: Record<string, unknown> | undefined;
+      if (input.role === 'parent') {
+        await client.query('INSERT INTO parent_accounts(id,username,full_name,password_hash) VALUES($1,$2,$3,$4)', [id, input.username, input.fullName, digest]);
+      } else {
+        parentId = input.parentId;
+        const parent = await client.query("SELECT id FROM parent_accounts WHERE id=$1 AND access_role='parent' AND enabled=true FOR UPDATE", [parentId]);
+        if (!parent.rowCount) throw error('parent_not_found', 404);
+        if (input.childId) child = await ownChild(client, input.childId, { role: 'parent', parent_id: parentId });
+      }
+      if (input.child) {
+        const school = await client.query('SELECT name FROM schools WHERE id=$1 AND enabled=true', [input.child.schoolId]);
+        if (!school.rowCount) throw error('invalid_school');
+        const c = input.child;
+        const result = await client.query('INSERT INTO child_profiles(id,public_id,parent_id,first_name,last_name,age,school_id,avatar) VALUES($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *',
+          [randomUUID(), `K-${randomBytes(5).toString('hex').toUpperCase()}`, parentId, c.firstName, c.lastName, c.age, c.schoolId, c.avatar]);
+        child = { ...result.rows[0], school_name: school.rows[0].name };
+      }
+      if (input.role === 'player') {
+        await client.query("INSERT INTO parent_accounts(id,username,full_name,password_hash,access_role,player_child_id) VALUES($1,$2,$3,$4,'player',$5)",
+          [id, input.username, `${child!.first_name} ${child!.last_name}`, digest, child!.id]);
+      }
+      await client.query('COMMIT');
+      return { id, role: input.role, username: input.username, child: child ? childJson(child) : null };
+    } catch (e) {
+      await client.query('ROLLBACK');
+      if ((e as { code?: string }).code === '23505') {
+        throw error((e as { constraint?: string }).constraint === 'player_child_login_idx' ? 'child_account_exists' : 'username_taken', 409);
+      }
+      throw e;
+    } finally {
+      client.release();
+    }
   });
   app.post('/api/admin/parents/:id/reset-password', async (request) => {
     await requireAccount(pool, request, true);
